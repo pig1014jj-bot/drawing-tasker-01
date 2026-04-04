@@ -559,7 +559,8 @@
 
       const handleZoomStep = (delta) => {
         setScale(prevScale => {
-            const newScale = Math.min(Math.max(0.1, prevScale + delta), 5);
+            // 最大ズーム率を 4 に制限
+            const newScale = Math.min(Math.max(0.1, prevScale + delta), 4);
             if (viewportRef.current) {
                 const rect = viewportRef.current.getBoundingClientRect();
                 setPan(prevPan => ({
@@ -589,7 +590,8 @@
           e.preventDefault(); 
           const delta = -e.deltaY * 0.002;
           setScale(prevScale => {
-            const newScale = Math.min(Math.max(0.1, prevScale + delta), 5); 
+            // 最大ズーム率を 4 に制限
+            const newScale = Math.min(Math.max(0.1, prevScale + delta), 4); 
             const rect = viewport.getBoundingClientRect();
             setPan(prevPan => ({
               x: (e.clientX - rect.left) - ((e.clientX - rect.left) - prevPan.x) * (newScale / prevScale),
@@ -623,10 +625,12 @@
           const dist = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
           const center = { x: (pts[0].x + pts[1].x) / 2, y: (pts[0].y + pts[1].y) / 2 };
 
-          if (lastPinchDist.current && lastPinchCenter.current) {
+          // ピンチ距離が小さすぎるとゼロ除算や無限大になるのを防ぐセーフガード
+          if (lastPinchDist.current && lastPinchCenter.current && lastPinchDist.current > 5) {
             const scaleFactor = dist / lastPinchDist.current;
             setScale(prevScale => {
-              const newScale = Math.min(Math.max(0.1, prevScale * scaleFactor), 5);
+              // 最大ズーム率を 4 に制限してメモリ崩壊を防ぐ
+              const newScale = Math.min(Math.max(0.1, prevScale * scaleFactor), 4);
               if (viewportRef.current) {
                 const rect = viewportRef.current.getBoundingClientRect();
                 setPan(prevPan => ({
@@ -689,7 +693,19 @@
           if (viewMode !== 'pdf' || !pdfDocument || !canvasRef.current || (appView !== 'blueprint' && appView !== 'report')) return;
           setIsRendering(true);
           try {
-            const page = await pdfDocument.getPage(currentPage), canvas = canvasRef.current, ctx = canvas.getContext('2d'), viewport = page.getViewport({ scale: 2.0 });
+            const page = await pdfDocument.getPage(currentPage);
+            let renderScale = 2.0;
+            const unscaledViewport = page.getViewport({ scale: 1.0 });
+            
+            // iPad/iOS における Canvas の面積制限（約16MBピクセル）のセーフガード
+            const maxArea = 16777000;
+            const currentArea = unscaledViewport.width * unscaledViewport.height * renderScale * renderScale;
+            if (currentArea > maxArea) {
+               renderScale = Math.floor(Math.sqrt(maxArea / (unscaledViewport.width * unscaledViewport.height)) * 10) / 10;
+            }
+
+            const viewport = page.getViewport({ scale: renderScale });
+            const canvas = canvasRef.current, ctx = canvas.getContext('2d');
             canvas.width = viewport.width; canvas.height = viewport.height;
             await page.render({ canvasContext: ctx, viewport }).promise;
           } catch (err) { console.error(err); } finally { setIsRendering(false); }
@@ -2502,7 +2518,8 @@
                     <button onClick={() => handleZoomStep(-0.2)} className="p-1.5 hover:bg-gray-100 rounded text-gray-700"><Minus size={16} /></button>
                   </div>
 
-                  <div className="absolute origin-top-left pointer-events-none" style={{ transform: `translate(${pan.x}px, ${pan.y}px) scale(${scale})`, width: '1200px' }}>
+                  {/* iPad ホワイトアウト対策: translate3d + will-change を付与し最大スケールを抑制 */}
+                  <div className="absolute origin-top-left pointer-events-none" style={{ transform: `translate3d(${pan.x}px, ${pan.y}px, 0) scale(${scale})`, width: '1200px', willChange: 'transform' }}>
                     <div className={`relative inline-block w-full bg-white shadow-2xl ${!isSpacePressed && !isPanning && addMode !== 'none' ? 'cursor-crosshair' : ''}`} style={{ pointerEvents: isSpacePressed || isPanning ? 'none' : 'auto' }} onPointerDown={!isSpacePressed ? handleContentPointerDown : undefined} onPointerMove={!isSpacePressed ? handleContentPointerMove : undefined} onPointerUp={!isSpacePressed ? handleContentPointerUp : undefined} onPointerLeave={!isSpacePressed ? handleContentPointerUp : undefined}>
                       
                       {/* 圖面渲染，套用 Filters */}
