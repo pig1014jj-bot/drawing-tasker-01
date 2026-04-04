@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Drawing Task Manager Pro</title>
+  <title>Drawing Tasker Pro</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="圖面管理">
@@ -85,7 +85,7 @@
       Printer, Layers, Eye, EyeOff, Tag, Camera, Save, AlertTriangle, Image: ImageIcon,
       Map: MapIcon, PenLine, PenTool, History, MessageSquare, Send,
       FolderUp, FolderDown, Sun, SlidersHorizontal, MousePointerClick, MoreVertical,
-      FilePlus, CalendarDays, FileSpreadsheet, CalendarPlus // 新增 CalendarPlus 圖示
+      FilePlus, CalendarDays, FileSpreadsheet, CalendarPlus
     } = lucide;
 
     const getToday = (offset = 0) => {
@@ -198,7 +198,7 @@
       if (type === 'highlight') return <Highlighter size={size} color={markerColor} className={`flex-shrink-0 ${className}`} />;
       if (type === 'pen') return <PenLine size={size} color={markerColor} className={`flex-shrink-0 ${className}`} /> || <Edit3 size={size} color={markerColor} className={`flex-shrink-0 ${className}`} />;
       if (type === 'cloud') return <Cloud size={size} className={`text-gray-500 flex-shrink-0 ${className}`} />;
-      if (type === 'stamp') return <Stamp size={size} className={`text-brand-danger flex-shrink-0 ${className}`} />; // 印章預設紅色
+      if (type === 'stamp') return <Stamp size={size} className={`text-brand-danger flex-shrink-0 ${className}`} />; 
       return <MapPin size={size} className={`text-gray-400 flex-shrink-0 ${className}`} />;
     };
 
@@ -324,7 +324,6 @@
     const StampMark = ({ task, isActive, onClick, onContextMenu }) => (
       <div className="absolute transform -translate-x-1/2 -translate-y-1/2 group pointer-events-auto" style={{ left: `${task.x}%`, top: `${task.y}%` }} onClick={(e) => { e.stopPropagation(); onClick(); }} onContextMenu={onContextMenu}>
         <div className={`relative flex items-center justify-center cursor-pointer transition-transform duration-300 ${isActive ? 'scale-110 z-30' : 'scale-100 z-10 hover:scale-105'}`}>
-          {/* 印章預設為紅色邊框與文字 */}
           <div className={`border-2 border-brand-danger text-brand-danger bg-white font-bold px-1.5 py-0.5 rounded-sm shadow-sm text-[11px] whitespace-nowrap tracking-wider ${isActive ? 'ring-2 ring-brand-danger/50 shadow-md' : ''}`}>
             [{task.stampCode}]
           </div>
@@ -385,7 +384,6 @@
 
       const [filterQuery, setFilterQuery] = useState('');
       
-      // === 修改：人員篩選改為陣列（複選） ===
       const [filterAssignees, setFilterAssignees] = useState([]); 
       const [showAssigneeFilter, setShowAssigneeFilter] = useState(false);
       
@@ -408,22 +406,17 @@
       const [newUserForm, setNewUserForm] = useState({ name: '', avatar: '' }); 
       const [newTagForm, setNewTagForm] = useState({ name: '' });
 
-      // 專案總期程設定 (Project Period)
       const [projectStartDate, setProjectStartDate] = useState(getToday(-7));
       const [projectEndDate, setProjectEndDate] = useState(getToday(30));
 
-      // 圖片視覺濾鏡與右鍵選單
       const [imageFilters, setImageFilters] = useState({ brightness: 100, contrast: 100, invert: false, grayscale: false });
       const [showDisplaySettings, setShowDisplaySettings] = useState(false);
       const [contextMenu, setContextMenu] = useState(null);
 
-      // 新增：開啟新專案確認 Modal 狀態
       const [showConfirmNew, setShowConfirmNew] = useState(false);
 
-      // Gantt Task Drag State
       const [ganttDrag, setGanttDrag] = useState({ id: null, startY: 0, offsetY: 0 });
 
-      // Calendar State
       const [calendarMonth, setCalendarMonth] = useState(() => {
         const d = new Date();
         d.setDate(1);
@@ -451,7 +444,6 @@
       const projectInputRef = useRef(null);
       const viewportRef = useRef(null);
       
-      // Gantt Scroll Ref
       const ganttScrollRef = useRef(null);
       
       const activePointers = useRef(new window.Map());
@@ -495,7 +487,7 @@
         if (isReadOnly) return;
         setFutureTasks(fut => {
           if (fut.length === 0) return fut;
-          const newFut = slice(1);
+          const newFut = fut.slice(1);
           const next = fut[0];
           setTasks(currentTasks => { setPastTasks(past => [...past, currentTasks]); return next; });
           return newFut;
@@ -778,7 +770,6 @@
         e.target.value = null; // reset input
       };
 
-      // === 匯出為 iCalendar (.ics) ===
       const exportToICal = () => {
         if (filteredTasks.length === 0) return alert("目前沒有可匯出的任務！");
         let icsContent = "BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Drawing Task Manager//TW\n";
@@ -807,7 +798,6 @@
         document.body.removeChild(link);
       };
 
-      // === 產生 Google 日曆新增連結 ===
       const getGoogleCalendarUrl = (task) => {
           if (!task.title || !task.startDate) return '#';
           const start = task.startDate.replace(/-/g, '');
@@ -1078,7 +1068,6 @@
         link.download = `巡檢缺失報表_${getToday()}.csv`; link.click();
       };
 
-      // === 修改：匯出有底色、合併儲存格的 Excel (Gantt to ExcelJS) ===
       const handleExportGanttExcel = async () => {
         if (!window.ExcelJS) {
           alert("Excel 引擎載入中，請稍後再試。");
@@ -1091,26 +1080,22 @@
 
         const workbook = new window.ExcelJS.Workbook();
         const sheet = workbook.addWorksheet('專案進度表', {
-          views: [{ state: 'frozen', xSplit: 3, ySplit: 3 }] // 凍結前三行與前三欄
+          views: [{ state: 'frozen', xSplit: 3, ySplit: 3 }] 
         });
 
-        // 1. 設定欄位寬度
         const columns = [
-          { width: 3 },  // A: 留白縮排用
-          { width: 18 }, // B: 負責人/分類
-          { width: 35 }, // C: 任務名稱
+          { width: 3 },  
+          { width: 18 }, 
+          { width: 35 }, 
         ];
-        ganttData.days.forEach(() => columns.push({ width: 4.5 })); // 日期欄位較窄
+        ganttData.days.forEach(() => columns.push({ width: 4.5 }));
         sheet.columns = columns;
 
-        // 2. 建立標題列
-        // Row 1: 大標題
         sheet.getCell('A1').value = `圖面任務進度表 (${getToday()})`;
         sheet.getCell('A1').font = { size: 14, bold: true };
         
-        // Row 2: 年/月 (合併儲存格)
         let currentMonth = -1;
-        let monthStartCol = 4; // D欄開始是日期
+        let monthStartCol = 4;
         ganttData.days.forEach((d, index) => {
           const colIdx = index + 4;
           if (d.getMonth() !== currentMonth) {
@@ -1124,41 +1109,34 @@
             monthStartCol = colIdx;
           }
         });
-        // 處理最後一個月
         sheet.mergeCells(2, monthStartCol, 2, ganttData.days.length + 3);
         const lastMonthCell = sheet.getCell(2, monthStartCol);
         lastMonthCell.value = `${ganttData.days[monthStartCol-4].getFullYear()}年 ${currentMonth + 1}月`;
         lastMonthCell.alignment = { horizontal: 'center', vertical: 'middle' };
 
-        // Row 3: 日期與固定標題
         sheet.getCell('B3').value = '分類 / 負責人';
         sheet.getCell('C3').value = '任務名稱';
         ganttData.days.forEach((d, index) => {
           const cell = sheet.getCell(3, index + 4);
           cell.value = d.getDate();
           cell.alignment = { horizontal: 'center' };
-          // 週末標記底色
           if ([0, 6].includes(d.getDay())) {
             cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF3F4F6' } };
           }
         });
 
-        // 樣式：Row 2, 3 底線與粗體
         sheet.getRow(2).font = { bold: true };
         sheet.getRow(3).font = { bold: true };
         sheet.getRow(3).border = { bottom: { style: 'thin', color: { argb: 'FF000000' } } };
 
-        // 3. 填入資料與甘特圖色塊
         let currentRow = 4;
         ganttTasksByAssignee.forEach(group => {
-          // 負責人群組標題
           const groupRow = sheet.getRow(currentRow);
           groupRow.getCell(2).value = group.name;
           groupRow.font = { bold: true };
-          groupRow.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF3F4F6' } }; // 淺灰底色
-          sheet.mergeCells(currentRow, 2, currentRow, 3); // 合併到 C 欄
+          groupRow.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF3F4F6' } };
+          sheet.mergeCells(currentRow, 2, currentRow, 3);
           
-          // 為群組標題列的週末加上底色
           ganttData.days.forEach((d, index) => {
             if ([0, 6].includes(d.getDay())) {
                groupRow.getCell(index + 4).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF3F4F6' } };
@@ -1166,20 +1144,17 @@
           });
           currentRow++;
 
-          // 該負責人的任務
           group.tasks.forEach(task => {
             const row = sheet.getRow(currentRow);
             row.getCell(3).value = task.title;
 
-            // 決定甘特圖條塊顏色 (依照狀態)
             const colorMap = {
-              'todo': 'FFFAD1D1',        // 淺紅 (待辦)
-              'in-progress': 'FFFDF6B2', // 淺黃 (進行中)
-              'done': 'FFDEF7EC'         // 淺綠 (已完成)
+              'todo': 'FFFAD1D1',
+              'in-progress': 'FFFDF6B2',
+              'done': 'FFDEF7EC'
             };
             const fillColor = colorMap[task.status] || 'FFEEEEEE';
 
-            // 畫出甘特圖
             const sD = new Date(task.startDate + 'T00:00:00');
             const eD = new Date(task.endDate + 'T00:00:00');
             const durationDays = Math.round((eD - sD) / 86400000) + 1;
@@ -1191,17 +1166,13 @@
               const dTime = d.getTime();
 
               if (dTime >= sD.getTime() && dTime <= eD.getTime()) {
-                // 塗上背景色
                 cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: fillColor } };
-                
-                // 在第一格寫上任務狀態或天數等文字 (模仿圖片中的條塊文字)
                 if (isFirstCell) {
                   cell.value = ` ${STATUS_CONFIG[task.status]?.label} (${durationDays}天)`;
                   cell.font = { size: 9, color: { argb: 'FF555555' } };
                   isFirstCell = false;
                 }
               } else if ([0, 6].includes(d.getDay())) {
-                // 非任務期間の週末加上底色
                 cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF9FAFB' } };
               }
             });
@@ -1210,7 +1181,6 @@
           });
         });
 
-        // 4. 輸出 Excel 檔案
         const buffer = await workbook.xlsx.writeBuffer();
         const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
         const link = document.createElement('a');
@@ -1219,7 +1189,6 @@
         link.click();
       };
 
-      // === 修改：人員篩選改為陣列（複選） ===
       const filteredTasks = useMemo(() => currentDisplayTasks.filter(task => {
         const matchSearch = [task.title, task.description, task.stampCode].some(val => val && val.toLowerCase().includes(filterQuery.toLowerCase()));
         const matchAssignee = filterAssignees.length === 0 || filterAssignees.includes(task.assigneeId);
@@ -1229,7 +1198,6 @@
         return matchSearch && matchAssignee && matchPage && matchStatus && matchTag;
       }), [currentDisplayTasks, filterQuery, filterAssignees, filterPage, layerVisibility]);
 
-      // === 新增：根據人員分群的 Gantt 資料 ===
       const ganttTasksByAssignee = useMemo(() => {
         const groups = {
           unassigned: { name: '未指派', tasks: [], user: null }
@@ -1244,12 +1212,10 @@
           }
         });
 
-        // 依開始日期排序
         Object.values(groups).forEach(g => {
           g.tasks.sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
         });
 
-        // 只回傳有任務的群組
         return Object.values(groups).filter(g => g.tasks.length > 0);
       }, [filteredTasks, users]);
 
@@ -1296,14 +1262,21 @@
         setContextMenu(null);
       };
 
+      // 導航按鈕 (純圖示)
       const NavButton = ({ view, icon: Icon, label }) => (
-        <button onClick={() => setAppView(view)} title={label} className={`p-2 rounded-lg transition-colors flex items-center justify-center ${appView === view ? 'bg-gray-200 text-black shadow-inner' : 'text-gray-500 hover:text-black hover:bg-gray-100'}`}><Icon size={20} /></button>
+        <button 
+          onClick={() => setAppView(view)} 
+          title={label} 
+          className={`p-2 rounded-lg transition-all flex items-center justify-center ${appView === view ? 'bg-white text-brand-primary shadow-sm border border-gray-200' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-200/50 border border-transparent'}`}
+        >
+          <Icon size={20} />
+        </button>
       );
+
       const ToolbarBtn = ({ mode, icon: Icon, title, onClick }) => (
         <button onClick={onClick || (() => setAddMode(addMode === mode ? 'none' : mode))} className={`flex items-center justify-center p-2 rounded-full transition-colors ${addMode === mode ? 'bg-black text-white shadow-md' : 'text-gray-600 hover:bg-gray-100 hover:text-black'}`} title={title}><Icon size={16} /></button>
       );
 
-      // Auto-scroll to "Today" in Gantt Chart when opened
       useEffect(() => {
         if (appView === 'gantt' && ganttScrollRef.current && ganttData.days.length > 0) {
           const timer = setTimeout(() => {
@@ -1316,8 +1289,8 @@
             
             if (daysDiff >= 0 && daysDiff < ganttData.totalDays) {
                const scrollContainer = ganttScrollRef.current;
-               const leftSidebarWidth = 288; // w-72 = 18rem = 288px
-               const dayWidth = 40; // w-10 = 2.5rem = 40px
+               const leftSidebarWidth = 288;
+               const dayWidth = 40; 
                
                const targetX = leftSidebarWidth + (daysDiff * dayWidth) + (dayWidth / 2);
                const scrollLeft = targetX - (scrollContainer.clientWidth / 2);
@@ -1336,7 +1309,7 @@
         <div className="flex flex-col h-screen w-full bg-white font-sans overflow-hidden text-gray-900 selection:bg-gray-200 relative">
           
           {isShiftPressedUI && appView === 'blueprint' && addMode !== 'none' && !isReadOnly && (
-            <div className="absolute top-16 left-1/2 -translate-x-1/2 z-50 pointer-events-none mt-4">
+            <div className="absolute top-24 left-1/2 -translate-x-1/2 z-50 pointer-events-none mt-4">
               <div className="bg-brand-primary text-white text-xs px-3 py-1.5 rounded-full shadow-lg font-bold tracking-wider animate-pulse flex items-center gap-1.5">
                 🔒 鎖點模式啟動 (正交 / 網格)
               </div>
@@ -1395,131 +1368,166 @@
             </div>
           )}
 
-          {/* Header */}
-          <header className="bg-white border-b border-gray-200 px-6 py-3 flex justify-between items-center z-50 flex-shrink-0 shadow-sm relative print:hidden">
-            <div className="flex items-center gap-3">
-              <div className="bg-gradient-to-br from-brand-primary to-brand-secondary w-8 h-8 rounded text-white shadow-md flex items-center justify-center font-black tracking-tighter">DT</div>
-              <div>
-                <h1 className="text-lg font-black text-gray-900 leading-tight tracking-tight">Drawing Task Manager <span className="text-xs bg-brand-primary/10 text-brand-primary px-1.5 py-0.5 rounded font-bold ml-1 align-middle border border-brand-primary/20">Pro</span></h1>
-                <p className="text-[11px] text-gray-500 mt-0.5 font-medium">支援 DXF 擴充介面、智慧鎖點與照片附件</p>
+          {/* === 修改區塊：雙層選單設計 === */}
+          <header className="bg-white flex flex-col z-50 flex-shrink-0 shadow-sm relative print:hidden">
+            
+            {/* 上方第一欄：標題、快照下拉、人員、搜尋過濾 */}
+            <div className="px-6 py-3 flex justify-between items-center w-full border-b border-gray-200">
+              <div className="flex items-center gap-3">
+                <div className="bg-gradient-to-br from-brand-primary to-brand-secondary w-8 h-8 rounded text-white shadow-md flex items-center justify-center font-black tracking-tighter">DT</div>
+                <div>
+                  <h1 className="text-lg font-black text-black leading-tight tracking-tight">Drawing Tasker <span className="text-sm font-bold text-gray-400 ml-1 align-middle">Pro</span></h1>
+                </div>
               </div>
-            </div>
 
-            <div className="hidden lg:flex items-center gap-2 bg-gray-100 p-1 rounded-lg border border-gray-200 ml-6 flex-shrink-0">
-               <Camera size={14} className="text-gray-500 ml-2" />
-               <select value={activeSnapshotId || 'live'} onChange={e => { setActiveSnapshotId(e.target.value === 'live' ? null : e.target.value); }} className="bg-transparent border-none outline-none text-sm font-bold text-gray-800 cursor-pointer py-1 pr-2 w-48 truncate">
-                 <option value="live">🟢 最新進度 (即時編輯)</option>
-                 {snapshots.length > 0 && <optgroup label="歷史快照 (唯讀模式)">{snapshots.map(s => <option key={s.id} value={s.id}>📸 {s.name}</option>)}</optgroup>}
-               </select>
-            </div>
-
-            {/* 現在のユーザー(身分)選択 */}
-            <div className="hidden xl:flex items-center gap-2 ml-4 pl-4 border-l border-gray-200">
-              <span className="text-xs font-bold text-gray-400">當前身分:</span>
-              <div className="flex items-center gap-1.5 bg-gray-100 px-2 py-1 rounded-md border border-gray-200 hover:border-gray-300 transition-colors">
-                <UserAvatar user={users.find(u => u.id === currentUserId)} size="w-5 h-5" />
-                <select value={currentUserId} onChange={e => setCurrentUserId(e.target.value)} className="bg-transparent border-none text-xs font-bold outline-none cursor-pointer text-gray-800">
-                  {users.map(u => <option key={u.id} value={u.id}>{u.name}</option>)}
-                </select>
+              <div className="hidden lg:flex items-center gap-2 bg-gray-100 p-1 rounded-lg border border-gray-200 ml-6 flex-shrink-0">
+                 <Camera size={14} className="text-gray-500 ml-2" />
+                 <select value={activeSnapshotId || 'live'} onChange={e => { setActiveSnapshotId(e.target.value === 'live' ? null : e.target.value); }} className="bg-transparent border-none outline-none text-sm font-bold text-gray-800 cursor-pointer py-1 pr-2 w-48 truncate">
+                   <option value="live">🟢 最新進度 (即時編輯)</option>
+                   {snapshots.length > 0 && <optgroup label="歷史快照 (唯讀模式)">{snapshots.map(s => <option key={s.id} value={s.id}>📸 {s.name}</option>)}</optgroup>}
+                 </select>
               </div>
-            </div>
 
-            <div className="flex items-center gap-4 ml-auto">
-              {appView !== 'settings' && appView !== 'snapshots' && appView !== 'report' && (
-                <div className="flex items-center gap-2">
-                  <div className="relative w-40">
-                    <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
-                    <input type="text" placeholder="搜尋..." className="w-full pl-9 pr-3 py-1.5 bg-gray-50 border border-gray-200 rounded-md text-sm focus:bg-white focus:border-black outline-none" value={filterQuery} onChange={e => setFilterQuery(e.target.value)} />
-                  </div>
-                  
-                  {/* === 修改：人員篩選改為陣列（複選下拉選單） === */}
-                  <div className="relative">
-                    <button 
-                      onClick={(e) => { e.stopPropagation(); setShowAssigneeFilter(!showAssigneeFilter); }}
-                      className="pl-8 pr-6 py-1.5 bg-gray-50 border border-gray-200 rounded-md text-sm focus:border-black outline-none text-gray-700 font-medium transition-all flex items-center min-w-[120px] justify-between cursor-pointer"
-                    >
-                      <User className="absolute left-2.5 top-2 h-4 w-4 text-gray-400 pointer-events-none" />
-                      <span className="truncate pr-2 select-none">
-                        {filterAssignees.length === 0 ? '所有人員' : `已篩選 ${filterAssignees.length} 人`}
-                      </span>
-                      <ChevronDown className="h-3 w-3 text-gray-400 flex-shrink-0" />
-                    </button>
+              <div className="hidden xl:flex items-center gap-2 ml-4 pl-4 border-l border-gray-200">
+                <span className="text-xs font-bold text-gray-400">當前身分:</span>
+                <div className="flex items-center gap-1.5 bg-gray-100 px-2 py-1 rounded-md border border-gray-200 hover:border-gray-300 transition-colors">
+                  <UserAvatar user={users.find(u => u.id === currentUserId)} size="w-5 h-5" />
+                  <select value={currentUserId} onChange={e => setCurrentUserId(e.target.value)} className="bg-transparent border-none text-xs font-bold outline-none cursor-pointer text-gray-800">
+                    {users.map(u => <option key={u.id} value={u.id}>{u.name}</option>)}
+                  </select>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-4 ml-auto">
+                {appView !== 'settings' && appView !== 'snapshots' && appView !== 'report' && (
+                  <div className="flex items-center gap-2">
+                    <div className="relative w-40">
+                      <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
+                      <input type="text" placeholder="搜尋..." className="w-full pl-9 pr-3 py-1.5 bg-gray-50 border border-gray-200 rounded-md text-sm focus:bg-white focus:border-black outline-none" value={filterQuery} onChange={e => setFilterQuery(e.target.value)} />
+                    </div>
                     
-                    {showAssigneeFilter && (
-                      <div 
-                        className="absolute top-full right-0 mt-1.5 w-56 bg-white border border-gray-200 shadow-xl rounded-lg p-2 z-50 max-h-64 overflow-y-auto"
-                        onClick={e => e.stopPropagation()}
+                    <div className="relative">
+                      <button 
+                        onClick={(e) => { e.stopPropagation(); setShowAssigneeFilter(!showAssigneeFilter); }}
+                        className="pl-8 pr-6 py-1.5 bg-gray-50 border border-gray-200 rounded-md text-sm focus:border-black outline-none text-gray-700 font-medium transition-all flex items-center min-w-[120px] justify-between cursor-pointer"
                       >
-                        <div className="text-[10px] font-bold text-gray-400 mb-1.5 uppercase tracking-wider px-2 pt-1">篩選經手人員 (可複選)</div>
+                        <User className="absolute left-2.5 top-2 h-4 w-4 text-gray-400 pointer-events-none" />
+                        <span className="truncate pr-2 select-none">
+                          {filterAssignees.length === 0 ? '所有人員' : `已篩選 ${filterAssignees.length} 人`}
+                        </span>
+                        <ChevronDown className="h-3 w-3 text-gray-400 flex-shrink-0" />
+                      </button>
+                      
+                      {showAssigneeFilter && (
                         <div 
-                          className="flex items-center gap-2 px-2 py-1.5 hover:bg-gray-50 rounded cursor-pointer transition-colors"
-                          onClick={() => setFilterAssignees([])}
+                          className="absolute top-full right-0 mt-1.5 w-56 bg-white border border-gray-200 shadow-xl rounded-lg p-2 z-50 max-h-64 overflow-y-auto"
+                          onClick={e => e.stopPropagation()}
                         >
-                          <input type="checkbox" checked={filterAssignees.length === 0} readOnly className="rounded text-brand-primary focus:ring-brand-primary w-4 h-4 cursor-pointer" />
-                          <span className={`text-sm ${filterAssignees.length === 0 ? 'font-bold text-brand-primary' : 'font-medium text-gray-700'}`}>顯示所有人</span>
-                        </div>
-                        <div className="w-full h-px bg-gray-100 my-1"></div>
-                        <div 
-                          className="flex items-center gap-2 px-2 py-1.5 hover:bg-gray-50 rounded cursor-pointer transition-colors"
-                          onClick={() => {
-                            if (filterAssignees.includes('unassigned')) setFilterAssignees(filterAssignees.filter(id => id !== 'unassigned'));
-                            else setFilterAssignees([...filterAssignees, 'unassigned']);
-                          }}
-                        >
-                          <input type="checkbox" checked={filterAssignees.includes('unassigned')} readOnly className="rounded text-brand-primary focus:ring-brand-primary w-4 h-4 cursor-pointer" />
-                          <span className="text-sm font-medium text-gray-600">未指派任務</span>
-                        </div>
-                        {users.map(u => (
+                          <div className="text-[10px] font-bold text-gray-400 mb-1.5 uppercase tracking-wider px-2 pt-1">篩選經手人員 (可複選)</div>
                           <div 
-                            key={u.id}
+                            className="flex items-center gap-2 px-2 py-1.5 hover:bg-gray-50 rounded cursor-pointer transition-colors"
+                            onClick={() => setFilterAssignees([])}
+                          >
+                            <input type="checkbox" checked={filterAssignees.length === 0} readOnly className="rounded text-brand-primary focus:ring-brand-primary w-4 h-4 cursor-pointer" />
+                            <span className={`text-sm ${filterAssignees.length === 0 ? 'font-bold text-brand-primary' : 'font-medium text-gray-700'}`}>顯示所有人</span>
+                          </div>
+                          <div className="w-full h-px bg-gray-100 my-1"></div>
+                          <div 
                             className="flex items-center gap-2 px-2 py-1.5 hover:bg-gray-50 rounded cursor-pointer transition-colors"
                             onClick={() => {
-                              if (filterAssignees.includes(u.id)) setFilterAssignees(filterAssignees.filter(id => id !== u.id));
-                              else setFilterAssignees([...filterAssignees, u.id]);
+                              if (filterAssignees.includes('unassigned')) setFilterAssignees(filterAssignees.filter(id => id !== 'unassigned'));
+                              else setFilterAssignees([...filterAssignees, 'unassigned']);
                             }}
                           >
-                            <input type="checkbox" checked={filterAssignees.includes(u.id)} readOnly className="rounded text-brand-primary focus:ring-brand-primary w-4 h-4 cursor-pointer" />
-                            <div className="flex items-center gap-2 truncate">
-                              <UserAvatar user={u} size="w-5 h-5" />
-                              <span className="text-sm font-medium text-gray-700 truncate">{u.name}</span>
-                            </div>
+                            <input type="checkbox" checked={filterAssignees.includes('unassigned')} readOnly className="rounded text-brand-primary focus:ring-brand-primary w-4 h-4 cursor-pointer" />
+                            <span className="text-sm font-medium text-gray-600">未指派任務</span>
                           </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
+                          {users.map(u => (
+                            <div 
+                              key={u.id}
+                              className="flex items-center gap-2 px-2 py-1.5 hover:bg-gray-50 rounded cursor-pointer transition-colors"
+                              onClick={() => {
+                                if (filterAssignees.includes(u.id)) setFilterAssignees(filterAssignees.filter(id => id !== u.id));
+                                else setFilterAssignees([...filterAssignees, u.id]);
+                              }}
+                            >
+                              <input type="checkbox" checked={filterAssignees.includes(u.id)} readOnly className="rounded text-brand-primary focus:ring-brand-primary w-4 h-4 cursor-pointer" />
+                              <div className="flex items-center gap-2 truncate">
+                                <UserAvatar user={u} size="w-5 h-5" />
+                                <span className="text-sm font-medium text-gray-700 truncate">{u.name}</span>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
 
-                  <div className="relative">
-                    <select value={filterPage} onChange={e => setFilterPage(e.target.value)} className="pl-8 pr-6 py-1.5 bg-gray-50 border border-gray-200 rounded-md text-sm focus:border-black outline-none text-gray-700 font-medium appearance-none cursor-pointer transition-all">
-                      <option value="all">所有頁面</option>{Array.from({length: totalPages}, (_, i) => i + 1).map(p => <option key={p} value={p}>第 {p} 頁</option>)}
-                    </select>
-                    <FileText className="absolute left-2.5 top-2 h-4 w-4 text-gray-400 pointer-events-none" /><ChevronDown className="absolute right-2 top-2.5 h-3 w-3 text-gray-400 pointer-events-none" />
+                    <div className="relative">
+                      <select value={filterPage} onChange={e => setFilterPage(e.target.value)} className="pl-8 pr-6 py-1.5 bg-gray-50 border border-gray-200 rounded-md text-sm focus:border-black outline-none text-gray-700 font-medium appearance-none cursor-pointer transition-all">
+                        <option value="all">所有頁面</option>{Array.from({length: totalPages}, (_, i) => i + 1).map(p => <option key={p} value={p}>第 {p} 頁</option>)}
+                      </select>
+                      <FileText className="absolute left-2.5 top-2 h-4 w-4 text-gray-400 pointer-events-none" /><ChevronDown className="absolute right-2 top-2.5 h-3 w-3 text-gray-400 pointer-events-none" />
+                    </div>
                   </div>
-                </div>
-              )}
-              <div className="w-px h-6 bg-gray-200" />
-              <div className="flex items-center gap-1.5">
-                <NavButton view="blueprint" icon={Crosshair} label="圖面" />
-                <NavButton view="board" icon={Kanban} label="看板" />
-                <NavButton view="calendar" icon={CalendarDays} label="日曆" />
-                <NavButton view="gantt" icon={BarChartHorizontal} label="進度表" />
-                <NavButton view="snapshots" icon={Camera} label="快照" />
-                <NavButton view="settings" icon={Settings} label="設定" />
-                <div className="w-px h-5 bg-gray-200 mx-1" />
-                
-                <button onClick={() => { setAppView('report'); setAddMode('none'); setShowLayerMenu(false); }} className={`p-2 rounded-lg transition-colors flex items-center justify-center ${appView === 'report' ? 'bg-brand-primary/10 text-brand-primary shadow-inner' : 'text-brand-primary hover:bg-brand-primary/10'}`} title="產生 PDF"><Printer size={20} /></button>
-                <button onClick={handleExportCSV} className="p-2 rounded-lg transition-colors flex items-center justify-center text-gray-500 hover:text-black hover:bg-gray-100" title="匯出 Excel 相容的 CSV"><Download size={20} /></button>
-                
-                <div className="w-px h-5 bg-gray-200 mx-1" />
-                {/* 開啟新專案 */}
-                <button onClick={() => setShowConfirmNew(true)} className="p-2 rounded-lg transition-colors flex items-center justify-center text-gray-500 hover:text-black hover:bg-gray-100" title="開啟新專案 (清除目前所有資料)"><FilePlus size={20} /></button>
-                {/* 新增專案儲存/讀取 */}
-                <button onClick={handleExportProject} className="p-2 rounded-lg transition-colors flex items-center justify-center text-brand-secondary bg-brand-secondary/10 hover:bg-brand-secondary/20 border border-brand-secondary/20 shadow-sm" title="備份專案 (將專案所有資料匯出成 JSON)"><FolderDown size={20} /></button>
-                <input type="file" className="hidden" ref={projectInputRef} accept=".json" onChange={handleImportProject} />
-                <button onClick={() => projectInputRef.current?.click()} className="p-2 rounded-lg transition-colors flex items-center justify-center text-gray-500 hover:text-black hover:bg-gray-100" title="讀取專案 (讀取先前儲存的 JSON 專案)"><FolderUp size={20} /></button>
+                )}
               </div>
             </div>
+
+            {/* 下方第二欄：導覽列 / 動作按鈕 */}
+            <div className="px-6 py-2 bg-gray-50 border-b border-gray-200 flex items-center justify-start gap-2 overflow-x-auto min-h-[48px]">
+              <NavButton view="blueprint" icon={Crosshair} label="圖面" />
+              <NavButton view="board" icon={Kanban} label="看板" />
+              <NavButton view="calendar" icon={CalendarDays} label="日曆" />
+              <NavButton view="gantt" icon={BarChartHorizontal} label="進度表" />
+              <NavButton view="snapshots" icon={Camera} label="快照" />
+              <NavButton view="settings" icon={Settings} label="設定" />
+              
+              <div className="w-px h-5 bg-gray-300 mx-2 flex-shrink-0" />
+              
+              <button 
+                onClick={() => { setAppView('report'); setAddMode('none'); setShowLayerMenu(false); }} 
+                className={`p-2 rounded-lg transition-all flex items-center justify-center ${appView === 'report' ? 'bg-brand-primary/10 text-brand-primary shadow-inner border border-brand-primary/20' : 'text-brand-primary hover:bg-brand-primary/10 border border-transparent'}`} 
+                title="產生 PDF"
+              >
+                <Printer size={20} />
+              </button>
+              <button 
+                onClick={handleExportCSV} 
+                className="p-2 rounded-lg transition-all flex items-center justify-center text-gray-600 hover:text-black hover:bg-gray-200/50 border border-transparent" 
+                title="匯出 Excel 相容的 CSV"
+              >
+                <Download size={20} />
+              </button>
+              
+              <div className="w-px h-5 bg-gray-300 mx-2 flex-shrink-0" />
+              
+              <button 
+                onClick={() => setShowConfirmNew(true)} 
+                className="p-2 rounded-lg transition-all flex items-center justify-center text-gray-600 hover:text-brand-danger hover:bg-red-50 border border-transparent" 
+                title="開啟新專案 (清除目前所有資料)"
+              >
+                <FilePlus size={20} />
+              </button>
+              
+              <button 
+                onClick={handleExportProject} 
+                className="p-2 rounded-lg transition-all flex items-center justify-center text-brand-secondary bg-brand-secondary/10 hover:bg-brand-secondary/20 border border-brand-secondary/20 shadow-sm ml-1" 
+                title="備份專案 (將專案所有資料匯出成 JSON)"
+              >
+                <FolderDown size={20} />
+              </button>
+              
+              <input type="file" className="hidden" ref={projectInputRef} accept=".json" onChange={handleImportProject} />
+              <button 
+                onClick={() => projectInputRef.current?.click()} 
+                className="p-2 rounded-lg transition-all flex items-center justify-center text-gray-600 hover:text-black hover:bg-gray-200/50 border border-transparent" 
+                title="讀取專案 (讀取先前儲存的 JSON 專案)"
+              >
+                <FolderUp size={20} />
+              </button>
+            </div>
           </header>
+          {/* === 修改區塊結束 === */}
 
           {isReadOnly && (
             <div className="bg-brand-warning text-[#4a3904] px-6 py-2 flex justify-between items-center z-40 shadow-sm font-bold text-sm shrink-0 border-b border-brand-warningDark">
@@ -1683,7 +1691,7 @@
                          <li><strong>全新配色：</strong> 已套用您指定的客製化品牌色調（深藍、淺藍、碧綠、銘黃、橘紅）。</li>
                          <li><strong>快捷鍵：</strong> 在圖面檢視時，按下 <code>1</code>~<code>6</code> 可以快速切換不同的繪圖工具。</li>
                          <li><strong>右鍵選單：</strong> 在圖面的標記上點擊右鍵，可以直接更改任務狀態或刪除。</li>
-                         <li><strong>本地備份：</strong> 點擊右上角「備份專案」，可以將目前所有設定與標記打包存入您的電腦。</li>
+                         <li><strong>本地備份：</strong> 點擊下方選單「備份專案」，可以將目前所有設定與標記打包存入您的電腦。</li>
                          <li><strong>顯示濾鏡：</strong> 點擊右下角設定圖示，可調整底圖亮度與對比。</li>
                        </ul>
                      </div>
@@ -2059,7 +2067,6 @@
                      </div>
                    </div>
                    
-                   {/* 新增匯出 Excel 按鈕 */}
                    <button 
                      onClick={handleExportGanttExcel} 
                      className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-md text-sm font-bold shadow-sm hover:bg-green-700 transition-colors ml-4"
@@ -2086,10 +2093,8 @@
                   <div className="flex flex-col relative z-10">
                     {filteredTasks.length === 0 && <div className="p-8 text-center text-sm font-bold text-gray-400 sticky left-0">沒有符合圖層篩選條件的任務</div>}
                     
-                    {/* === 修改：依負責人分群顯示的 Gantt 列表 === */}
                     {ganttTasksByAssignee.map(group => (
                       <React.Fragment key={group.name}>
-                        {/* Group Header 行 */}
                         <div className="flex bg-gray-100/80 border-b border-gray-200">
                            <div className="w-72 flex-shrink-0 border-r border-gray-200 p-2 pl-4 sticky left-0 bg-gray-100 z-20 flex items-center gap-2">
                              {group.user ? <UserAvatar user={group.user} size="w-6 h-6" /> : <div className="w-6 h-6 rounded-full bg-gray-200 border border-gray-300 flex items-center justify-center text-gray-500"><User size={12}/></div>}
@@ -2104,7 +2109,6 @@
                            </div>
                         </div>
 
-                        {/* 該負責人的任務列表 */}
                         {group.tasks.map(task => {
                           const sD = new Date(task.startDate + 'T00:00:00'), duration = (new Date(task.endDate + 'T00:00:00') - sD) / 86400000 + 1, left = ((sD - ganttData.minD) / 86400000) * 40;
                           return (
