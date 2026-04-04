@@ -415,7 +415,8 @@
 
       const [showConfirmNew, setShowConfirmNew] = useState(false);
 
-      const [ganttDrag, setGanttDrag] = useState({ id: null, startY: 0, offsetY: 0 });
+      // 新增：進度表任務拖曳與縮放互動狀態
+      const [ganttInteraction, setGanttInteraction] = useState({ active: false, type: null, taskId: null, startX: 0, currentX: 0, originalStart: null, originalEnd: null });
 
       const [calendarMonth, setCalendarMonth] = useState(() => {
         const d = new Date();
@@ -1560,16 +1561,37 @@
           {/* Context Menu (右鍵選單) */}
           {contextMenu && !isReadOnly && (
             <div 
-              className="fixed z-50 bg-white border border-gray-200 shadow-xl rounded-lg py-1.5 w-40 text-sm overflow-hidden"
+              className="fixed z-50 bg-white border border-gray-200 shadow-xl rounded-lg py-1.5 w-44 text-sm overflow-hidden"
               style={{ top: contextMenu.y, left: contextMenu.x }}
               onContextMenu={e => e.preventDefault()}
             >
               <div className="px-3 py-1.5 text-xs font-bold text-gray-400 border-b border-gray-100 mb-1 truncate">{contextMenu.task.title}</div>
-              <button onClick={() => { changeTaskStatus(contextMenu.task.id, 'todo'); }} className="w-full text-left px-3 py-2 hover:bg-gray-50 flex items-center gap-2"><div className="w-2 h-2 rounded-full bg-brand-danger"></div> 設為待辦</button>
-              <button onClick={() => { changeTaskStatus(contextMenu.task.id, 'in-progress'); }} className="w-full text-left px-3 py-2 hover:bg-gray-50 flex items-center gap-2"><div className="w-2 h-2 rounded-full bg-brand-warning"></div> 設為進行中</button>
-              <button onClick={() => { changeTaskStatus(contextMenu.task.id, 'done'); }} className="w-full text-left px-3 py-2 hover:bg-gray-50 flex items-center gap-2 border-b border-gray-100"><div className="w-2 h-2 rounded-full bg-brand-success"></div> 設為已完成</button>
-              <button onClick={() => { setContextMenu(null); openEditModal(contextMenu.task); }} className="w-full text-left px-3 py-2 hover:bg-gray-50 flex items-center gap-2 text-brand-secondary"><Edit3 size={14} /> 編輯詳情</button>
-              <button onClick={() => { setContextMenu(null); updateTasks(prev => prev.filter(t => t.id !== contextMenu.task.id)); setActiveTaskId(null); }} className="w-full text-left px-3 py-2 hover:bg-brand-danger/10 flex items-center gap-2 text-brand-danger"><Trash2 size={14} /> 刪除標記</button>
+              
+              {/* === 新增：右鍵選單顏色選擇區 === */}
+              <div className="px-3 py-1 flex flex-wrap gap-1.5 border-b border-gray-100 pb-2 mb-1">
+                <button 
+                  onClick={() => { updateTasks(tasks.map(t => t.id === contextMenu.task.id ? { ...t, colorId: null } : t)); setContextMenu(null); }}
+                  className={`w-6 h-6 rounded-full border-2 text-[10px] flex items-center justify-center font-bold transition-all bg-gray-100 text-gray-500 hover:bg-gray-200 ${!contextMenu.task.colorId ? 'border-gray-500 shadow-sm scale-110' : 'border-transparent hover:scale-110'}`}
+                  title="依狀態顯示預設顏色"
+                >
+                  <RefreshCw size={12} />
+                </button>
+                {MARKER_COLORS.filter(c => c.id !== 'white').map(c => (
+                  <button 
+                    key={c.id} 
+                    onClick={() => { updateTasks(tasks.map(t => t.id === contextMenu.task.id ? { ...t, colorId: c.id } : t)); setContextMenu(null); }}
+                    className={`w-6 h-6 rounded-full border-2 transition-transform ${contextMenu.task.colorId === c.id ? 'scale-110 shadow-sm border-black' : 'border-transparent hover:scale-110'}`}
+                    style={{ backgroundColor: c.stroke }}
+                    title={`標示為${c.name}`}
+                  />
+                ))}
+              </div>
+
+              <button onClick={() => { changeTaskStatus(contextMenu.task.id, 'todo'); }} className="w-full text-left px-3 py-1.5 hover:bg-gray-50 flex items-center gap-2"><div className="w-2 h-2 rounded-full bg-brand-danger"></div> 設為待辦</button>
+              <button onClick={() => { changeTaskStatus(contextMenu.task.id, 'in-progress'); }} className="w-full text-left px-3 py-1.5 hover:bg-gray-50 flex items-center gap-2"><div className="w-2 h-2 rounded-full bg-brand-warning"></div> 設為進行中</button>
+              <button onClick={() => { changeTaskStatus(contextMenu.task.id, 'done'); }} className="w-full text-left px-3 py-1.5 hover:bg-gray-50 flex items-center gap-2 border-b border-gray-100"><div className="w-2 h-2 rounded-full bg-brand-success"></div> 設為已完成</button>
+              <button onClick={() => { setContextMenu(null); openEditModal(contextMenu.task); }} className="w-full text-left px-3 py-1.5 hover:bg-gray-50 flex items-center gap-2 text-brand-secondary"><Edit3 size={14} /> 編輯詳情</button>
+              <button onClick={() => { setContextMenu(null); updateTasks(prev => prev.filter(t => t.id !== contextMenu.task.id)); setActiveTaskId(null); }} className="w-full text-left px-3 py-1.5 hover:bg-brand-danger/10 flex items-center gap-2 text-brand-danger"><Trash2 size={14} /> 刪除標記</button>
             </div>
           )}
 
@@ -2068,7 +2090,52 @@
 
             {/* ================= ガントチャート (Gantt View) ================= */}
             {appView === 'gantt' && (
-              <div ref={ganttScrollRef} className="flex-1 bg-gray-50 p-8 overflow-auto flex flex-col gap-4">
+              <div 
+                ref={ganttScrollRef} 
+                className="flex-1 bg-gray-50 p-8 overflow-auto flex flex-col gap-4"
+                onPointerMove={(e) => {
+                  if (ganttInteraction.active) {
+                    setGanttInteraction(prev => ({ ...prev, currentX: e.clientX }));
+                  }
+                }}
+                onPointerUp={(e) => {
+                  if (ganttInteraction.active) {
+                    const dx = e.clientX - ganttInteraction.startX;
+                    const deltaDays = Math.round(dx / 40);
+                    const task = tasks.find(t => t.id === ganttInteraction.taskId);
+                    if (task) {
+                      if (deltaDays !== 0) {
+                        const oldStart = new Date(ganttInteraction.originalStart + 'T00:00:00');
+                        const oldEnd = new Date(ganttInteraction.originalEnd + 'T00:00:00');
+                        const pad = n => n.toString().padStart(2, '0');
+                        const formatD = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+
+                        if (ganttInteraction.type === 'move') {
+                          const newStart = new Date(oldStart.getTime() + deltaDays * 86400000);
+                          const newEnd = new Date(oldEnd.getTime() + deltaDays * 86400000);
+                          const newHistory = [...(task.history || []), { date: getNow(), message: `透過進度表拖曳，日期改為 ${formatD(newStart)} ~ ${formatD(newEnd)}` }];
+                          updateTasks(tasks.map(t => t.id === task.id ? { ...t, startDate: formatD(newStart), endDate: formatD(newEnd), history: newHistory } : t));
+                        } else if (ganttInteraction.type === 'resize') {
+                          const newEnd = new Date(oldEnd.getTime() + deltaDays * 86400000);
+                          if (newEnd >= oldStart) {
+                            const newHistory = [...(task.history || []), { date: getNow(), message: `透過進度表拉伸，結束日期改為 ${formatD(newEnd)}` }];
+                            updateTasks(tasks.map(t => t.id === task.id ? { ...t, endDate: formatD(newEnd), history: newHistory } : t));
+                          }
+                        }
+                      } else {
+                        // 如果沒有移動，視為點擊，開啟編輯模式
+                        openEditModal(task);
+                      }
+                    }
+                    setGanttInteraction({ active: false, type: null, taskId: null, startX: 0, currentX: 0, originalStart: null, originalEnd: null });
+                  }
+                }}
+                onPointerLeave={(e) => {
+                  if (ganttInteraction.active) {
+                     setGanttInteraction({ active: false, type: null, taskId: null, startX: 0, currentX: 0, originalStart: null, originalEnd: null });
+                  }
+                }}
+              >
                 <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 flex items-center justify-between shrink-0 sticky left-0 z-40 w-max min-w-full">
                    <div className="flex items-center gap-6">
                      <div className="flex items-center gap-2">
@@ -2111,13 +2178,41 @@
                     
                     {ganttTasksByAssignee.map(group => (
                       <React.Fragment key={group.name}>
-                        <div className="flex bg-gray-100/80 border-b border-gray-200">
-                           <div className="w-72 flex-shrink-0 border-r border-gray-200 p-2 pl-4 sticky left-0 bg-gray-100 z-20 flex items-center gap-2">
+                        <div 
+                          className="flex bg-gray-100/80 border-b border-gray-200 transition-all"
+                          onDragOver={(e) => {
+                            if (isReadOnly) return;
+                            e.preventDefault();
+                            e.currentTarget.classList.add('brightness-95', 'border-l-4', 'border-l-brand-primary');
+                          }}
+                          onDragLeave={(e) => {
+                            e.currentTarget.classList.remove('brightness-95', 'border-l-4', 'border-l-brand-primary');
+                          }}
+                          onDrop={(e) => {
+                            if (isReadOnly) return;
+                            e.preventDefault();
+                            e.currentTarget.classList.remove('brightness-95', 'border-l-4', 'border-l-brand-primary');
+                            const draggedId = e.dataTransfer.getData('taskId');
+                            if (draggedId) {
+                              const targetAssigneeId = group.user ? group.user.id : 'unassigned';
+                              const draggedTask = tasks.find(t => t.id === draggedId);
+                              if (draggedTask && draggedTask.assigneeId !== targetAssigneeId) {
+                                const oldAssigneeName = users.find(u => u.id === draggedTask.assigneeId)?.name || '未指派';
+                                const newAssigneeName = users.find(u => u.id === targetAssigneeId)?.name || '未指派';
+                                const newHistory = [...(draggedTask.history || []), { date: getNow(), message: `透過進度表拖曳，將經手人由「${oldAssigneeName}」變更為「${newAssigneeName}」` }];
+                                
+                                const newTasks = tasks.map(t => t.id === draggedId ? { ...t, assigneeId: targetAssigneeId, history: newHistory } : t);
+                                updateTasks(newTasks);
+                              }
+                            }
+                          }}
+                        >
+                           <div className="w-72 flex-shrink-0 border-r border-gray-200 p-2 pl-4 sticky left-0 bg-gray-100 z-20 flex items-center gap-2 pointer-events-none">
                              {group.user ? <UserAvatar user={group.user} size="w-6 h-6" /> : <div className="w-6 h-6 rounded-full bg-gray-200 border border-gray-300 flex items-center justify-center text-gray-500"><User size={12}/></div>}
                              <span className="font-black text-sm text-brand-primary">{group.name} 的行事曆</span>
                              <span className="text-[10px] text-brand-primary font-bold bg-white px-1.5 py-0.5 rounded-full border border-brand-primary/20 ml-auto">{group.tasks.length} 任務</span>
                            </div>
-                           <div className="flex relative">
+                           <div className="flex relative pointer-events-none">
                              {ganttData.days.map((d, i) => {
                                const isToday = d.toISOString().split('T')[0] === getToday();
                                return <div key={i} className={`w-10 border-r border-gray-200/50 h-10 ${isToday ? 'bg-brand-warning/20' : [0,6].includes(d.getDay()) ? 'bg-gray-200/30' : ''}`} />
@@ -2126,48 +2221,89 @@
                         </div>
 
                         {group.tasks.map(task => {
-                          const sD = new Date(task.startDate + 'T00:00:00'), duration = (new Date(task.endDate + 'T00:00:00') - sD) / 86400000 + 1, left = ((sD - ganttData.minD) / 86400000) * 40;
+                          const isInteracting = ganttInteraction.active && ganttInteraction.taskId === task.id;
+                          let displayStart = task.startDate;
+                          let displayEnd = task.endDate;
+
+                          if (isInteracting) {
+                            const deltaDays = Math.round((ganttInteraction.currentX - ganttInteraction.startX) / 40);
+                            const oS = new Date(ganttInteraction.originalStart + 'T00:00:00');
+                            const oE = new Date(ganttInteraction.originalEnd + 'T00:00:00');
+                            const pad = n => n.toString().padStart(2, '0');
+                            const formatD = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+
+                            if (ganttInteraction.type === 'move') {
+                              displayStart = formatD(new Date(oS.getTime() + deltaDays * 86400000));
+                              displayEnd = formatD(new Date(oE.getTime() + deltaDays * 86400000));
+                            } else if (ganttInteraction.type === 'resize') {
+                              const newEnd = new Date(oE.getTime() + deltaDays * 86400000);
+                              displayEnd = formatD(newEnd >= oS ? newEnd : oS);
+                            }
+                          }
+
+                          const sD = new Date(displayStart + 'T00:00:00');
+                          const eD = new Date(displayEnd + 'T00:00:00');
+                          const duration = Math.max(1, (eD - sD) / 86400000 + 1);
+                          const left = ((sD - ganttData.minD) / 86400000) * 40;
+
+                          const markerColorInfo = MARKER_COLORS.find(c => c.id === task.colorId);
+                          const bgColor = task.colorId ? markerColorInfo.stroke : (task.status === 'done' ? '#e5e7eb' : '#1f2937');
+                          const textColor = task.colorId && ['warning', 'white'].includes(task.colorId) ? '#000' : (task.colorId ? '#fff' : (task.status === 'done' ? '#6b7280' : '#fff'));
+                          const borderColor = task.colorId ? markerColorInfo.stroke : (task.status === 'done' ? '#d1d5db' : '#111827');
+
                           return (
                             <div 
                               key={task.id} 
-                              draggable={!isReadOnly}
-                              onDragStart={(e) => {
-                                if (isReadOnly) return;
-                                e.dataTransfer.setData('taskId', task.id);
-                                e.dataTransfer.effectAllowed = 'move';
-                                setTimeout(() => e.target.classList.add('opacity-40', 'bg-gray-100'), 0);
-                              }}
-                              onDragEnd={(e) => {
-                                e.target.classList.remove('opacity-40', 'bg-gray-100');
-                              }}
-                              onDragOver={(e) => {
-                                if (isReadOnly) return;
-                                e.preventDefault();
-                                e.currentTarget.classList.add('border-t-2', 'border-t-brand-primary');
-                              }}
-                              onDragLeave={(e) => {
-                                e.currentTarget.classList.remove('border-t-2', 'border-t-brand-primary');
-                              }}
-                              onDrop={(e) => {
-                                if (isReadOnly) return;
-                                e.preventDefault();
-                                e.currentTarget.classList.remove('border-t-2', 'border-t-brand-primary');
-                                const draggedId = e.dataTransfer.getData('taskId');
-                                if (draggedId && draggedId !== task.id) {
-                                   const newTasks = [...tasks];
-                                   const dragIndex = newTasks.findIndex(t => t.id === draggedId);
-                                   const dropIndex = newTasks.findIndex(t => t.id === task.id);
-                                   if (dragIndex > -1 && dropIndex > -1) {
-                                      const [draggedItem] = newTasks.splice(dragIndex, 1);
-                                      newTasks.splice(dropIndex, 0, draggedItem);
-                                      updateTasks(newTasks);
-                                   }
-                                }
-                              }}
-                              className="flex border-b border-gray-100 group hover:bg-gray-50 transition-colors cursor-move"
+                              className="flex border-b border-gray-100 group hover:bg-gray-50 transition-colors"
                             >
-                              <div className="w-72 flex-shrink-0 border-r border-gray-200 p-3 sticky left-0 bg-white group-hover:bg-gray-50 z-20 shadow-[1px_0_0_0_#e5e7eb] flex flex-col justify-center relative">
-                                
+                              <div 
+                                className="w-72 flex-shrink-0 border-r border-gray-200 p-3 sticky left-0 bg-white group-hover:bg-gray-50 z-20 shadow-[1px_0_0_0_#e5e7eb] flex flex-col justify-center relative cursor-move"
+                                draggable={!isReadOnly}
+                                onDragStart={(e) => {
+                                  if (isReadOnly) return;
+                                  e.dataTransfer.setData('taskId', task.id);
+                                  e.dataTransfer.effectAllowed = 'move';
+                                  setTimeout(() => e.target.classList.add('opacity-40', 'bg-gray-100'), 0);
+                                }}
+                                onDragEnd={(e) => {
+                                  e.target.classList.remove('opacity-40', 'bg-gray-100');
+                                }}
+                                onDragOver={(e) => {
+                                  if (isReadOnly) return;
+                                  e.preventDefault();
+                                  e.currentTarget.classList.add('border-t-2', 'border-t-brand-primary');
+                                }}
+                                onDragLeave={(e) => {
+                                  e.currentTarget.classList.remove('border-t-2', 'border-t-brand-primary');
+                                }}
+                                onDrop={(e) => {
+                                  if (isReadOnly) return;
+                                  e.preventDefault();
+                                  e.currentTarget.classList.remove('border-t-2', 'border-t-brand-primary');
+                                  const draggedId = e.dataTransfer.getData('taskId');
+                                  if (draggedId && draggedId !== task.id) {
+                                     const newTasks = [...tasks];
+                                     const dragIndex = newTasks.findIndex(t => t.id === draggedId);
+                                     const dropIndex = newTasks.findIndex(t => t.id === task.id);
+                                     if (dragIndex > -1 && dropIndex > -1) {
+                                        const draggedTask = { ...newTasks[dragIndex] };
+                                        const targetTask = newTasks[dropIndex];
+                                        
+                                        if (draggedTask.assigneeId !== targetTask.assigneeId) {
+                                           const oldAssigneeName = users.find(u => u.id === draggedTask.assigneeId)?.name || '未指派';
+                                           const newAssigneeName = users.find(u => u.id === targetTask.assigneeId)?.name || '未指派';
+                                           draggedTask.history = [...(draggedTask.history || []), { date: getNow(), message: `透過進度表拖曳，將經手人由「${oldAssigneeName}」變更為「${newAssigneeName}」` }];
+                                           draggedTask.assigneeId = targetTask.assigneeId;
+                                        }
+
+                                        newTasks.splice(dragIndex, 1);
+                                        const adjustedDropIndex = dragIndex < dropIndex ? dropIndex - 1 : dropIndex;
+                                        newTasks.splice(adjustedDropIndex, 0, draggedTask);
+                                        updateTasks(newTasks);
+                                     }
+                                  }
+                                }}
+                              >
                                 {!isReadOnly && (
                                   <button 
                                     onPointerDown={(e) => e.stopPropagation()}
@@ -2180,7 +2316,7 @@
                                 )}
 
                                 <div className="flex items-center gap-1.5 pr-8">
-                                  {!isReadOnly && <GripVertical size={14} className="text-gray-300 flex-shrink-0" title="拖曳排序" />}
+                                  {!isReadOnly && <GripVertical size={14} className="text-gray-300 flex-shrink-0" title="拖曳排序或變更負責人" />}
                                   <span className="text-sm font-bold cursor-pointer hover:underline flex items-center gap-1.5 truncate" onClick={() => jumpToBlueprintTask(task)}>
                                     <TaskIcon type={task.type} colorId={task.colorId} />
                                     <span className="truncate">{task.title}</span>
@@ -2196,17 +2332,63 @@
                                    )}
                                 </div>
                               </div>
-                              <div className="flex relative">
+                              <div className="flex relative w-full overflow-hidden">
                                 {ganttData.days.map((d, i) => {
                                   const isToday = d.toISOString().split('T')[0] === getToday();
-                                  return <div key={i} className={`w-10 border-r border-gray-100 h-14 ${isToday ? 'bg-brand-warning/10' : [0,6].includes(d.getDay()) ? 'bg-gray-50/50' : ''}`} />
+                                  return <div key={i} className={`w-10 border-r border-gray-100 h-14 shrink-0 ${isToday ? 'bg-brand-warning/10' : [0,6].includes(d.getDay()) ? 'bg-gray-50/50' : ''}`} />
                                 })}
+                                
+                                {/* 任務條本體 */}
                                 <div 
-                                   className={`absolute top-3 h-8 rounded shadow-sm cursor-pointer border flex items-center px-2 text-xs font-bold overflow-hidden transition-all hover:brightness-110 z-10 ${task.status === 'done' ? 'bg-gray-200 border-gray-300 text-gray-600' : 'bg-black border-black text-white'}`} 
-                                   style={{ left: left, width: duration * 40 }} 
-                                   onClick={(e) => { e.stopPropagation(); openEditModal(task); }}
+                                   className={`absolute top-3 h-8 rounded shadow-sm flex items-center text-xs font-bold z-10 group/bar ${task.status === 'done' && !task.colorId ? 'opacity-60' : ''}`} 
+                                   style={{ 
+                                     left: left, 
+                                     width: duration * 40,
+                                     backgroundColor: bgColor,
+                                     color: textColor,
+                                     border: `1px solid ${borderColor}`,
+                                     cursor: isReadOnly ? 'default' : (ganttInteraction.type === 'resize' && isInteracting ? 'ew-resize' : 'grab'),
+                                     transition: isInteracting ? 'none' : 'all 0.2s ease-out'
+                                   }}
+                                   onPointerDown={(e) => {
+                                     if (isReadOnly || e.button !== 0) return;
+                                     e.preventDefault(); 
+                                     e.stopPropagation();
+                                     e.currentTarget.setPointerCapture(e.pointerId);
+                                     
+                                     const rect = e.currentTarget.getBoundingClientRect();
+                                     const isRightEdge = e.clientX > rect.right - 15;
+                                     
+                                     setGanttInteraction({
+                                       active: true,
+                                       type: isRightEdge ? 'resize' : 'move',
+                                       taskId: task.id,
+                                       startX: e.clientX,
+                                       currentX: e.clientX,
+                                       originalStart: task.startDate,
+                                       originalEnd: task.endDate
+                                     });
+                                   }}
+                                   onPointerCancel={(e) => {
+                                      if (ganttInteraction.active && ganttInteraction.taskId === task.id) {
+                                         e.currentTarget.releasePointerCapture(e.pointerId);
+                                         setGanttInteraction({ active: false, type: null, taskId: null, startX: 0, currentX: 0, originalStart: null, originalEnd: null });
+                                      }
+                                   }}
+                                   onContextMenu={(e) => handleTaskContextMenu(e, task)}
                                 >
-                                   {duration > 1 && task.title}
+                                   <span className="px-2 truncate pointer-events-none w-full select-none text-left">
+                                     {duration >= 1 && task.title}
+                                   </span>
+                                   
+                                   {!isReadOnly && (
+                                     <div 
+                                       className="absolute right-0 top-0 bottom-0 w-3.5 cursor-ew-resize opacity-0 group-hover/bar:opacity-100 flex items-center justify-center rounded-r transition-opacity hover:bg-black/20 z-20"
+                                       title="拖曳拉伸結束日期"
+                                     >
+                                       <div className="w-[2px] h-3 border-l border-r border-white/50" />
+                                     </div>
+                                   )}
                                 </div>
                               </div>
                             </div>
