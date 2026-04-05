@@ -85,7 +85,8 @@
       Printer, Layers, Eye, EyeOff, Tag, Camera, Save, AlertTriangle, Image: ImageIcon,
       Map: MapIcon, PenLine, PenTool, History, MessageSquare, Send,
       FolderUp, FolderDown, Sun, SlidersHorizontal, MousePointerClick, MoreVertical,
-      FilePlus, CalendarDays, FileSpreadsheet, CalendarPlus, RefreshCw
+      FilePlus, CalendarDays, FileSpreadsheet, CalendarPlus, RefreshCw,
+      Lock, Unlock
     } = lucide;
 
     const getToday = (offset = 0) => {
@@ -156,12 +157,12 @@
     ];
 
     const INITIAL_TASKS = [
-      { id: '1', type: 'pin', title: '主臥室管線確認', description: '冷氣排水管似乎與柱子干擾，請機電人員確認。', status: 'done', x: 35.5, y: 42.1, page: 1, startDate: getToday(-5), endDate: getToday(-2), assigneeId: 'u1', tagId: 'tg1', attachments: [], history: [{ date: '2026-03-25 09:00', message: '任務建立' }, { date: '2026-03-27 14:30', message: '狀態由「進行中」變更為「已完成」' }], comments: [{id: 'c1', userId: 'u2', text: '請問這個問題有確認了嗎 @王小明？', date: '2026-03-26 10:15'}, {id: 'c2', userId: 'u1', text: '已經確認並修改圖面囉。', date: '2026-03-27 14:25'}] },
-      { id: '2', type: 'stamp', stampCode: 'W-01', title: '壁面漏水', description: '發現牆面有不正常水痕或滲漏狀況，請相關人員進行管線或防水層查驗。', status: 'in-progress', x: 65.2, y: 55.4, page: 1, startDate: getToday(-1), endDate: getToday(2), assigneeId: 'u2', tagId: 'tg2', attachments: [], history: [{ date: '2026-03-31 10:15', message: '任務建立' }, { date: '2026-04-01 08:20', message: '狀態由「待辦」變更為「進行中」' }], comments: [] },
-      { id: '3', type: 'cloud', title: '牆面裂縫修補', description: '此範圍內的牆面裂縫需要進行修補作業。', status: 'todo', x: 10, y: 65, width: 25, height: 18, page: 1, startDate: getToday(2), endDate: getToday(5), assigneeId: 'u3', tagId: 'tg2', attachments: [], isInverted: false, history: [{ date: getNow(), message: '任務建立' }], comments: [] },
-      { id: '4', type: 'highlight', colorId: 'warning', title: '確認弱電走線', description: '請再次確認這段走廊の弱電線槽配置，確認是否有足夠空間。', status: 'done', x: 45, y: 15, width: 35, height: 10, page: 1, points: [{x: 0, y: 5}, {x: 15, y: 0}, {x: 25, y: 8}, {x: 35, y: 10}], startDate: getToday(-3), endDate: getToday(0), assigneeId: 'u1', tagId: 'tg1', attachments: [], history: [{ date: getNow(), message: '任務建立' }], comments: [] },
-      { id: '5', type: 'pen', colorId: 'danger', title: '新增管線路徑', description: '建議以此路線重新配置消防管線。', status: 'todo', x: 20, y: 30, width: 20, height: 20, page: 1, points: [{x: 0, y: 0}, {x: 10, y: 5}, {x: 15, y: 15}, {x: 20, y: 20}], startDate: getToday(), endDate: getToday(2), assigneeId: 'u2', tagId: 'tg3', attachments: [], history: [{ date: getNow(), message: '任務建立' }], comments: [] },
-      { id: '6', type: 'pin', title: '油漆修補', description: '角落有掉漆現象。', status: 'todo', x: 15, y: 40, page: 1, startDate: getToday(1), endDate: getToday(3), assigneeId: 'unassigned', tagId: 'tg2', attachments: [], history: [], comments: [] }
+      { id: '1', type: 'pin', title: '主臥室管線確認', description: '冷氣排水管似乎與柱子干擾，請機電人員確認。', status: 'done', x: 35.5, y: 42.1, page: 1, startDate: getToday(-5), endDate: getToday(-2), assigneeId: 'u1', tagId: 'tg1', attachments: [], history: [{ date: '2026-03-25 09:00', message: '任務建立' }, { date: '2026-03-27 14:30', message: '狀態由「進行中」變更為「已完成」' }], comments: [{id: 'c1', userId: 'u2', text: '請問這個問題有確認了嗎 @王小明？', date: '2026-03-26 10:15'}, {id: 'c2', userId: 'u1', text: '已經確認並修改圖面囉。', date: '2026-03-27 14:25'}], isLocked: false },
+      { id: '2', type: 'stamp', stampCode: 'W-01', title: '壁面漏水', description: '發現牆面有不正常水痕或滲漏狀況，請相關人員進行管線或防水層查驗。', status: 'in-progress', x: 65.2, y: 55.4, page: 1, startDate: getToday(-1), endDate: getToday(2), assigneeId: 'u2', tagId: 'tg2', attachments: [], history: [{ date: '2026-03-31 10:15', message: '任務建立' }, { date: '2026-04-01 08:20', message: '狀態由「待辦」變更為「進行中」' }], comments: [], isLocked: true },
+      { id: '3', type: 'cloud', title: '牆面裂縫修補', description: '此範圍內的牆面裂縫需要進行修補作業。', status: 'todo', x: 10, y: 65, width: 25, height: 18, page: 1, startDate: getToday(2), endDate: getToday(5), assigneeId: 'u3', tagId: 'tg2', attachments: [], isInverted: false, history: [{ date: getNow(), message: '任務建立' }], comments: [], isLocked: false },
+      { id: '4', type: 'highlight', colorId: 'warning', title: '確認弱電走線', description: '請再次確認這段走廊の弱電線槽配置，確認是否有足夠空間。', status: 'done', x: 45, y: 15, width: 35, height: 10, page: 1, points: [{x: 0, y: 5}, {x: 15, y: 0}, {x: 25, y: 8}, {x: 35, y: 10}], startDate: getToday(-3), endDate: getToday(0), assigneeId: 'u1', tagId: 'tg1', attachments: [], history: [{ date: getNow(), message: '任務建立' }], comments: [], isLocked: false },
+      { id: '5', type: 'pen', colorId: 'danger', title: '新增管線路徑', description: '建議以此路線重新配置消防管線。', status: 'todo', x: 20, y: 30, width: 20, height: 20, page: 1, points: [{x: 0, y: 0}, {x: 10, y: 5}, {x: 15, y: 15}, {x: 20, y: 20}], startDate: getToday(), endDate: getToday(2), assigneeId: 'u2', tagId: 'tg3', attachments: [], history: [{ date: getNow(), message: '任務建立' }], comments: [], isLocked: false },
+      { id: '6', type: 'pin', title: '油漆修補', description: '角落有掉漆現象。', status: 'todo', x: 15, y: 40, page: 1, startDate: getToday(1), endDate: getToday(3), assigneeId: 'unassigned', tagId: 'tg2', attachments: [], history: [], comments: [], isLocked: false }
     ];
 
     const INITIAL_SNAPSHOTS = [
@@ -221,7 +222,7 @@
       </div>
     );
 
-    const CloudMark = ({ task, isActive, onClick, onContextMenu }) => {
+    const CloudMark = ({ task, isActive, onClick, onContextMenu, onPointerDown, onPointerMove, onPointerUp, onPointerCancel }) => {
       const [size, setSize] = useState({ w: 0, h: 0 });
       const ref = useRef();
       useEffect(() => {
@@ -247,52 +248,75 @@
       const colorMap = { 'bg-brand-danger': '#f2572d', 'bg-brand-warning': '#efc028', 'bg-brand-success': '#008972' };
       const strokeColor = colorMap[STATUS_CONFIG[task.status]?.color] || '#f2572d';
       return (
-        <div ref={ref} className={`absolute cursor-pointer group ${isActive ? 'z-30' : 'z-10'}`} style={{ left: `${task.x}%`, top: `${task.y}%`, width: `${task.width}%`, height: `${task.height}%` }} onClick={(e) => { e.stopPropagation(); onClick(); }} onContextMenu={onContextMenu}>
+        <div ref={ref} className={`absolute group pointer-events-auto ${isActive ? 'z-30' : 'z-10'} ${task.isLocked ? 'cursor-pointer' : 'cursor-move'}`} 
+             style={{ left: `${task.x}%`, top: `${task.y}%`, width: `${task.width}%`, height: `${task.height}%` }} 
+             onClick={(e) => { e.stopPropagation(); onClick(); }} 
+             onContextMenu={onContextMenu}
+             onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={onPointerUp} onPointerCancel={onPointerCancel}
+        >
           {isActive && <span className={`absolute -inset-2 rounded opacity-20 animate-pulse ${STATUS_CONFIG[task.status]?.color}`}></span>}
           <svg width="100%" height="100%" style={{ overflow: 'visible' }} className="relative z-10 pointer-events-none">
             <path d={getCloudPath(size.w, size.h, task.isInverted)} fill={isActive ? `${strokeColor}22` : 'transparent'} stroke={strokeColor} strokeWidth={isActive ? "4" : "2.5"} strokeLinecap="round" strokeLinejoin="round" className="transition-all duration-300 drop-shadow-sm" />
           </svg>
+          {task.isLocked && <div className="absolute -top-2 -right-2 bg-gray-800 text-white rounded-full p-0.5 shadow-md z-40"><Lock size={10} /></div>}
           <TaskTooltip task={task} />
         </div>
       );
     };
 
-    const HighlightMark = ({ task, isActive, onClick, onContextMenu }) => {
+    const HighlightMark = ({ task, isActive, onClick, onContextMenu, onPointerDown, onPointerMove, onPointerUp, onPointerCancel }) => {
       const markerColor = MARKER_COLORS.find(c => c.id === task.colorId) || MARKER_COLORS[0];
       const pts = task.points.map(p => `${p.x},${p.y}`).join(' ');
       return (
-        <div className={`absolute cursor-pointer group ${isActive ? 'z-30' : 'z-10'}`} style={{ left: `${task.x}%`, top: `${task.y}%`, width: `${task.width}%`, height: `${task.height}%` }} onClick={(e) => { e.stopPropagation(); onClick(); }} onContextMenu={onContextMenu}>
+        <div className={`absolute group pointer-events-auto ${isActive ? 'z-30' : 'z-10'} ${task.isLocked ? 'cursor-pointer' : 'cursor-move'}`} 
+             style={{ left: `${task.x}%`, top: `${task.y}%`, width: `${task.width}%`, height: `${task.height}%` }} 
+             onClick={(e) => { e.stopPropagation(); onClick(); }} 
+             onContextMenu={onContextMenu}
+             onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={onPointerUp} onPointerCancel={onPointerCancel}
+        >
           {isActive && <span className={`absolute -inset-2 rounded opacity-20 animate-pulse ${STATUS_CONFIG[task.status]?.color}`}></span>}
           <svg viewBox={`0 0 ${task.width} ${task.height}`} preserveAspectRatio="none" width="100%" height="100%" style={{ overflow: 'visible' }} className="relative z-10 pointer-events-none">
             <polyline points={pts} fill="none" stroke={markerColor.stroke} strokeWidth="12" strokeLinecap="round" strokeLinejoin="round" opacity="0.6" vectorEffect="non-scaling-stroke" className={isActive ? "brightness-110 drop-shadow-md" : ""} />
             <polyline points={pts} fill="none" stroke="transparent" strokeWidth="24" strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" className="pointer-events-auto" />
           </svg>
+          {task.isLocked && <div className="absolute -top-2 -right-2 bg-gray-800 text-white rounded-full p-0.5 shadow-md z-40"><Lock size={10} /></div>}
           <TaskTooltip task={task} />
         </div>
       );
     };
 
-    const PenMark = ({ task, isActive, onClick, onContextMenu }) => {
+    const PenMark = ({ task, isActive, onClick, onContextMenu, onPointerDown, onPointerMove, onPointerUp, onPointerCancel }) => {
       const markerColor = MARKER_COLORS.find(c => c.id === task.colorId) || MARKER_COLORS[0];
       const pts = task.points.map(p => `${p.x},${p.y}`).join(' ');
       return (
-        <div className={`absolute cursor-pointer group ${isActive ? 'z-30' : 'z-10'}`} style={{ left: `${task.x}%`, top: `${task.y}%`, width: `${task.width}%`, height: `${task.height}%` }} onClick={(e) => { e.stopPropagation(); onClick(); }} onContextMenu={onContextMenu}>
+        <div className={`absolute group pointer-events-auto ${isActive ? 'z-30' : 'z-10'} ${task.isLocked ? 'cursor-pointer' : 'cursor-move'}`} 
+             style={{ left: `${task.x}%`, top: `${task.y}%`, width: `${task.width}%`, height: `${task.height}%` }} 
+             onClick={(e) => { e.stopPropagation(); onClick(); }} 
+             onContextMenu={onContextMenu}
+             onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={onPointerUp} onPointerCancel={onPointerCancel}
+        >
           {isActive && <span className={`absolute -inset-2 rounded opacity-20 animate-pulse ${STATUS_CONFIG[task.status]?.color}`}></span>}
           <svg viewBox={`0 0 ${task.width} ${task.height}`} preserveAspectRatio="none" width="100%" height="100%" style={{ overflow: 'visible' }} className="relative z-10 pointer-events-none">
             <polyline points={pts} fill="none" stroke={markerColor.stroke} strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" className={isActive ? "brightness-110 drop-shadow-md" : ""} />
             <polyline points={pts} fill="none" stroke="transparent" strokeWidth="16" strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" className="pointer-events-auto" />
           </svg>
+          {task.isLocked && <div className="absolute -top-2 -right-2 bg-gray-800 text-white rounded-full p-0.5 shadow-md z-40"><Lock size={10} /></div>}
           <TaskTooltip task={task} />
         </div>
       );
     };
 
-    const AreaMark = ({ task, isActive, onClick, onContextMenu }) => {
+    const AreaMark = ({ task, isActive, onClick, onContextMenu, onPointerDown, onPointerMove, onPointerUp, onPointerCancel }) => {
       const colorMap = { 'bg-brand-danger': '#f2572d', 'bg-brand-warning': '#efc028', 'bg-brand-success': '#008972' };
       const strokeColor = colorMap[STATUS_CONFIG[task.status]?.color] || '#0067a6';
       const pts = task.points.map(p => `${p.x},${p.y}`).join(' ');
       return (
-        <div className={`absolute cursor-pointer group ${isActive ? 'z-30' : 'z-10'}`} style={{ left: `${task.x}%`, top: `${task.y}%`, width: `${task.width}%`, height: `${task.height}%` }} onClick={(e) => { e.stopPropagation(); onClick(); }} onContextMenu={onContextMenu}>
+        <div className={`absolute group pointer-events-auto ${isActive ? 'z-30' : 'z-10'} ${task.isLocked ? 'cursor-pointer' : 'cursor-move'}`} 
+             style={{ left: `${task.x}%`, top: `${task.y}%`, width: `${task.width}%`, height: `${task.height}%` }} 
+             onClick={(e) => { e.stopPropagation(); onClick(); }} 
+             onContextMenu={onContextMenu}
+             onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={onPointerUp} onPointerCancel={onPointerCancel}
+        >
           {isActive && <span className={`absolute -inset-2 rounded opacity-20 animate-pulse ${STATUS_CONFIG[task.status]?.color}`}></span>}
           <svg viewBox={`0 0 ${task.width} ${task.height}`} preserveAspectRatio="none" width="100%" height="100%" style={{ overflow: 'visible' }} className="relative z-10 pointer-events-none">
             <polygon points={pts} fill={strokeColor} fillOpacity="0.2" stroke={strokeColor} strokeWidth="2" strokeDasharray="4,4" strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" className={isActive ? "brightness-110 drop-shadow-md" : ""} />
@@ -301,32 +325,45 @@
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none font-bold text-white text-[10px] drop-shadow-md bg-black/60 px-1.5 py-0.5 rounded whitespace-nowrap opacity-90">
             {task.area}
           </div>
+          {task.isLocked && <div className="absolute -top-2 -right-2 bg-gray-800 text-white rounded-full p-0.5 shadow-md z-40"><Lock size={10} /></div>}
           <TaskTooltip task={task} />
         </div>
       );
     };
 
-    const PinMark = ({ task, isActive, onClick, onContextMenu }) => {
+    const PinMark = ({ task, isActive, onClick, onContextMenu, onPointerDown, onPointerMove, onPointerUp, onPointerCancel }) => {
       const statusColor = STATUS_CONFIG[task.status]?.color || 'bg-gray-500';
       return (
-        <div className="absolute transform -translate-x-1/2 -translate-y-1/2 group pointer-events-auto" style={{ left: `${task.x}%`, top: `${task.y}%` }} onClick={(e) => { e.stopPropagation(); onClick(); }} onContextMenu={onContextMenu}>
-          <div className={`relative flex items-center justify-center cursor-pointer transition-transform duration-300 ${isActive ? 'scale-125 z-30' : 'scale-100 z-10 hover:scale-110'}`}>
+        <div className={`absolute transform -translate-x-1/2 -translate-y-1/2 group pointer-events-auto ${task.isLocked ? 'cursor-pointer' : 'cursor-move'}`} 
+             style={{ left: `${task.x}%`, top: `${task.y}%` }} 
+             onClick={(e) => { e.stopPropagation(); onClick(); }} 
+             onContextMenu={onContextMenu}
+             onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={onPointerUp} onPointerCancel={onPointerCancel}
+        >
+          <div className={`relative flex items-center justify-center transition-transform duration-300 ${isActive ? 'scale-125 z-30' : 'scale-100 z-10 hover:scale-110'}`}>
             {isActive && <span className={`absolute inline-flex h-full w-full rounded-full opacity-50 animate-ping ${statusColor}`}></span>}
             <div className={`relative flex items-center justify-center w-7 h-7 rounded-full shadow-sm text-white border-2 border-white ${statusColor}`}>
               <MapPin size={14} fill="currentColor" className="text-white/30" />
             </div>
+            {task.isLocked && <div className="absolute -top-2 -right-2 bg-gray-800 text-white rounded-full p-0.5 shadow-md z-40"><Lock size={10} /></div>}
             <TaskTooltip task={task} />
           </div>
         </div>
       );
     };
 
-    const StampMark = ({ task, isActive, onClick, onContextMenu }) => (
-      <div className="absolute transform -translate-x-1/2 -translate-y-1/2 group pointer-events-auto" style={{ left: `${task.x}%`, top: `${task.y}%` }} onClick={(e) => { e.stopPropagation(); onClick(); }} onContextMenu={onContextMenu}>
-        <div className={`relative flex items-center justify-center cursor-pointer transition-transform duration-300 ${isActive ? 'scale-110 z-30' : 'scale-100 z-10 hover:scale-105'}`}>
+    const StampMark = ({ task, isActive, onClick, onContextMenu, onPointerDown, onPointerMove, onPointerUp, onPointerCancel }) => (
+      <div className={`absolute transform -translate-x-1/2 -translate-y-1/2 group pointer-events-auto ${task.isLocked ? 'cursor-pointer' : 'cursor-move'}`} 
+           style={{ left: `${task.x}%`, top: `${task.y}%` }} 
+           onClick={(e) => { e.stopPropagation(); onClick(); }} 
+           onContextMenu={onContextMenu}
+           onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={onPointerUp} onPointerCancel={onPointerCancel}
+      >
+        <div className={`relative flex items-center justify-center transition-transform duration-300 ${isActive ? 'scale-110 z-30' : 'scale-100 z-10 hover:scale-105'}`}>
           <div className={`border-2 border-brand-danger text-brand-danger bg-white font-bold px-1.5 py-0.5 rounded-sm shadow-sm text-[11px] whitespace-nowrap tracking-wider ${isActive ? 'ring-2 ring-brand-danger/50 shadow-md' : ''}`}>
             [{task.stampCode}]
           </div>
+          {task.isLocked && <div className="absolute -top-2 -right-2 bg-gray-800 text-white rounded-full p-0.5 shadow-md z-40"><Lock size={10} /></div>}
           <TaskTooltip task={task} />
         </div>
       </div>
@@ -357,6 +394,10 @@
       const [drawStart, setDrawStart] = useState(null);
       const [drawCurrent, setDrawCurrent] = useState(null);
       const [drawPoints, setDrawPoints] = useState([]); 
+
+      // 新增：拖曳圖面標記狀態
+      const [draggingMarker, setDraggingMarker] = useState(null);
+      const markerDragInfo = useRef({ hasMoved: false });
 
       const [showTaskModal, setShowTaskModal] = useState(false);
       const [newTaskCoords, setNewTaskCoords] = useState(null);
@@ -403,7 +444,7 @@
 
       const [formData, setFormData] = useState({ 
         type: '', colorId: '', title: '', description: '', status: 'todo', startDate: getToday(), endDate: getToday(1), 
-        assigneeId: 'unassigned', stampCode: '', tagId: 'none', attachments: [], history: [], comments: [] 
+        assigneeId: 'unassigned', stampCode: '', tagId: 'none', attachments: [], history: [], comments: [], isLocked: false 
       });
       const [editingId, setEditingId] = useState(null);
       const [newStampForm, setNewStampForm] = useState({ code: '', title: '', description: '' });
@@ -710,6 +751,55 @@
         try { e.currentTarget.releasePointerCapture(e.pointerId); } catch(err){}
       };
 
+      // 新增：處理標記拖曳的函式
+      const handleMarkerDragStart = useCallback((e, task) => {
+        if (e.button !== 0 || isSpacePressed || isPanning || isReadOnly || task.isLocked) return;
+        e.stopPropagation();
+        e.currentTarget.setPointerCapture(e.pointerId);
+        markerDragInfo.current.hasMoved = false;
+        setDraggingMarker({
+          id: task.id,
+          startX: e.clientX,
+          startY: e.clientY,
+          initX: task.x,
+          initY: task.y,
+          curX: task.x,
+          curY: task.y
+        });
+      }, [isSpacePressed, isPanning, isReadOnly]);
+
+      const handleMarkerDragMove = useCallback((e) => {
+        if (!draggingMarker) return;
+        e.stopPropagation();
+        const dx = e.clientX - draggingMarker.startX;
+        const dy = e.clientY - draggingMarker.startY;
+
+        if (!markerDragInfo.current.hasMoved && Math.hypot(dx, dy) > 3) {
+          markerDragInfo.current.hasMoved = true;
+        }
+
+        const newX = Math.max(0, Math.min(100, draggingMarker.initX + (dx / scale / 1200) * 100));
+        const newY = Math.max(0, Math.min(100, draggingMarker.initY + (dy / scale / 840) * 100));
+        setDraggingMarker(prev => ({ ...prev, curX: newX, curY: newY }));
+      }, [draggingMarker, scale]);
+
+      const handleMarkerDragEnd = useCallback((e) => {
+        if (!draggingMarker) return;
+        e.stopPropagation();
+        try { e.currentTarget.releasePointerCapture(e.pointerId); } catch(err){}
+
+        if (markerDragInfo.current.hasMoved) {
+          const task = tasks.find(t => t.id === draggingMarker.id);
+          if (task) {
+              const newHistory = [...(task.history || []), { date: getNow(), message: `移動了標記位置` }];
+              updateTasks(tasks.map(t => t.id === draggingMarker.id ? { ...t, x: draggingMarker.curX, y: draggingMarker.curY, history: newHistory } : t));
+          }
+        }
+        setDraggingMarker(null);
+        setTimeout(() => { markerDragInfo.current.hasMoved = false; }, 0); // 延遲重設以讓 onClick 可以判斷
+      }, [draggingMarker, tasks, updateTasks]);
+
+
       useEffect(() => {
         if (window.pdfjsLib) { setPdfjsLoaded(true); return; }
         const script = document.createElement('script');
@@ -888,7 +978,7 @@
           y = Math.round(y / snapGrid) * snapGrid;
         }
 
-        const baseData = { type: addMode, colorId: activeColor.id, status: 'todo', startDate: getToday(), endDate: getToday(1), assigneeId: 'unassigned', tagId: 'none', attachments: [], history: [], comments: [] };
+        const baseData = { type: addMode, colorId: activeColor.id, status: 'todo', startDate: getToday(), endDate: getToday(1), assigneeId: 'unassigned', tagId: 'none', attachments: [], history: [], comments: [], isLocked: false };
 
         if (addMode === 'pin') {
           setNewTaskCoords({ type: 'pin', x, y, page: currentPage });
@@ -969,7 +1059,7 @@
         if (addMode === 'area') return; 
 
         setIsDrawing(false);
-        const baseData = { type: addMode, colorId: activeColor.id, title: '', description: '', status: 'todo', startDate: getToday(), endDate: getToday(1), assigneeId: 'unassigned', stampCode: '', tagId: 'none', attachments: [], history: [], comments: [] };
+        const baseData = { type: addMode, colorId: activeColor.id, title: '', description: '', status: 'todo', startDate: getToday(), endDate: getToday(1), assigneeId: 'unassigned', stampCode: '', tagId: 'none', attachments: [], history: [], comments: [], isLocked: false };
 
         if (addMode === 'cloud' && drawStart && drawCurrent) {
           const width = Math.abs(drawCurrent.x - drawStart.x), height = Math.abs(drawCurrent.y - drawStart.y);
@@ -1640,6 +1730,14 @@
                   />
                 ))}
               </div>
+              
+              {/* === 新增：右鍵選單鎖定位置按鈕 === */}
+              <button onClick={() => { 
+                  updateTasks(tasks.map(t => t.id === contextMenu.task.id ? { ...t, isLocked: !t.isLocked } : t)); 
+                  setContextMenu(null); 
+              }} className="w-full text-left px-3 py-1.5 hover:bg-gray-50 flex items-center gap-2 border-b border-gray-100">
+                  {contextMenu.task.isLocked ? <><Unlock size={14} className="text-gray-500" /> 解除鎖定位置</> : <><Lock size={14} className="text-brand-danger" /> 鎖定標記位置</>}
+              </button>
 
               <button onClick={() => { changeTaskStatus(contextMenu.task.id, 'todo'); }} className="w-full text-left px-3 py-1.5 hover:bg-gray-50 flex items-center gap-2"><div className="w-2 h-2 rounded-full bg-brand-danger"></div> 設為待辦</button>
               <button onClick={() => { changeTaskStatus(contextMenu.task.id, 'in-progress'); }} className="w-full text-left px-3 py-1.5 hover:bg-gray-50 flex items-center gap-2"><div className="w-2 h-2 rounded-full bg-brand-warning"></div> 設為進行中</button>
@@ -2804,7 +2902,24 @@
 
                       {/* 任務標記渲染 */}
                       {filteredTasks.filter(t => t.page === currentPage).map(task => {
-                        const props = { key: task.id, task, isActive: activeTaskId === task.id, onClick: () => { if (addMode === 'none') setActiveTaskId(task.id); }, onContextMenu: (e) => handleTaskContextMenu(e, task) };
+                        const isDragging = draggingMarker && draggingMarker.id === task.id;
+                        const displayTask = isDragging ? { ...task, x: draggingMarker.curX, y: draggingMarker.curY } : task;
+
+                        const props = { 
+                          key: task.id, 
+                          task: displayTask, 
+                          isActive: activeTaskId === task.id, 
+                          onClick: () => { 
+                            if (markerDragInfo.current.hasMoved) return; // 拖曳後不觸發點擊開啟詳情
+                            if (addMode === 'none') setActiveTaskId(task.id); 
+                          }, 
+                          onContextMenu: (e) => handleTaskContextMenu(e, task),
+                          onPointerDown: (e) => handleMarkerDragStart(e, task),
+                          onPointerMove: handleMarkerDragMove,
+                          onPointerUp: handleMarkerDragEnd,
+                          onPointerCancel: handleMarkerDragEnd
+                        };
+                        
                         if (task.type === 'cloud') return <CloudMark {...props} />;
                         if (task.type === 'area') return <AreaMark {...props} />;
                         if (task.type === 'highlight') return <HighlightMark {...props} />;
