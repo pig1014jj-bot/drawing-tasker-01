@@ -452,6 +452,27 @@
       const activePointers = useRef(new window.Map());
       const lastPinchDist = useRef(null);
       const lastPinchCenter = useRef(null);
+      
+      // 新增：左側邊欄滑動隱藏的狀態與事件
+      const sidebarTouchStartX = useRef(null);
+      const sidebarTouchStartY = useRef(null);
+
+      const handleSidebarTouchStart = useCallback((e) => {
+        sidebarTouchStartX.current = e.touches[0].clientX;
+        sidebarTouchStartY.current = e.touches[0].clientY;
+      }, []);
+
+      const handleSidebarTouchMove = useCallback((e) => {
+        if (sidebarTouchStartX.current === null) return;
+        const deltaX = e.touches[0].clientX - sidebarTouchStartX.current;
+        const deltaY = e.touches[0].clientY - sidebarTouchStartY.current;
+        
+        // 判斷向左滑動超過 40px，且垂直滑動幅度不超過 40px (確保使用者不是單純在上下捲動選單)
+        if (deltaX < -40 && Math.abs(deltaY) < 40) {
+          setIsSidebarVisible(false);
+          sidebarTouchStartX.current = null;
+        }
+      }, []);
 
       const isReadOnly = !!activeSnapshotId;
       const currentDisplayTasks = activeSnapshotId ? (snapshots.find(s => s.id === activeSnapshotId)?.tasks || tasks) : tasks;
@@ -626,6 +647,8 @@
         if (activePointers.current.has(e.pointerId)) activePointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
         
         if (activePointers.current.size >= 2) {
+          if (isSidebarVisible) setIsSidebarVisible(false); // 新增：平移或雙指縮放圖面時，自動隱藏左側選單
+          
           const pts = Array.from(activePointers.current.values());
           const dist = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
           const center = { x: (pts[0].x + pts[1].x) / 2, y: (pts[0].y + pts[1].y) / 2 };
@@ -645,7 +668,10 @@
           }
           lastPinchDist.current = dist; lastPinchCenter.current = center; return;
         }
-        if (isPanning && activePointers.current.size < 2) setPan({ x: e.clientX - panStart.x, y: e.clientY - panStart.y });
+        if (isPanning && activePointers.current.size < 2) {
+          if (isSidebarVisible) setIsSidebarVisible(false); // 新增：平移圖面時，自動隱藏左側選單
+          setPan({ x: e.clientX - panStart.x, y: e.clientY - panStart.y });
+        }
       };
 
       const handleViewportPointerUp = (e) => {
@@ -2425,7 +2451,11 @@
             {appView === 'blueprint' && (
               <>
                 {isSidebarVisible && (
-                  <div className="w-80 lg:w-96 bg-gray-50 border-r border-gray-200 flex flex-col z-10 shrink-0 shadow-xl">
+                  <div 
+                    className="w-80 lg:w-96 bg-gray-50 border-r border-gray-200 flex flex-col z-10 shrink-0 shadow-xl"
+                    onTouchStart={handleSidebarTouchStart}
+                    onTouchMove={handleSidebarTouchMove}
+                  >
                     <div className="p-4 border-b border-gray-200 flex justify-between items-center bg-white">
                       <span className="font-bold text-sm">圖面標記列表</span><span className="text-xs bg-gray-100 px-2 py-0.5 rounded-md font-bold border">可見 {filteredTasks.length} 件</span>
                     </div>
