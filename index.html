@@ -157,12 +157,12 @@
     ];
 
     const INITIAL_TASKS = [
-      { id: '1', type: 'pin', title: '主臥室管線確認', description: '冷氣排水管似乎與柱子干擾，請機電人員確認。', status: 'done', x: 35.5, y: 42.1, page: 1, startDate: getToday(-5), endDate: getToday(-2), assigneeId: 'u1', tagId: 'tg1', attachments: [], history: [{ date: '2026-03-25 09:00', message: '任務建立' }, { date: '2026-03-27 14:30', message: '狀態由「進行中」變更為「已完成」' }], comments: [{id: 'c1', userId: 'u2', text: '請問這個問題有確認了嗎 @王小明？', date: '2026-03-26 10:15'}, {id: 'c2', userId: 'u1', text: '已經確認並修改圖面囉。', date: '2026-03-27 14:25'}], isLocked: false },
+      { id: '1', type: 'pin', title: '主臥室管線確認', description: '冷氣排水管似乎與柱子干擾，請機電人員確認。', status: 'done', x: 35.5, y: 42.1, page: 1, startDate: getToday(-5), endDate: getToday(-2), assigneeId: 'u1', tagId: 'tg1', attachments: [], history: [{ date: '2026-03-25 09:00', message: '任務建立' }, { date: '2026-03-27 14:30', message: '狀態由「進行中」變更為「已完成」' }], comments: [{id: 'c1', userId: 'u2', text: '請問這個問題有確認了嗎 @王小明？', date: '2026-03-26 10:15'}, {id: 'c2', userId: 'u1', text: '已經確認並修改圖面囉。', date: '2026-03-27 14:25'}], isLocked: true },
       { id: '2', type: 'stamp', stampCode: 'W-01', title: '壁面漏水', description: '發現牆面有不正常水痕或滲漏狀況，請相關人員進行管線或防水層查驗。', status: 'in-progress', x: 65.2, y: 55.4, page: 1, startDate: getToday(-1), endDate: getToday(2), assigneeId: 'u2', tagId: 'tg2', attachments: [], history: [{ date: '2026-03-31 10:15', message: '任務建立' }, { date: '2026-04-01 08:20', message: '狀態由「待辦」變更為「進行中」' }], comments: [], isLocked: true },
-      { id: '3', type: 'cloud', title: '牆面裂縫修補', description: '此範圍內的牆面裂縫需要進行修補作業。', status: 'todo', x: 10, y: 65, width: 25, height: 18, page: 1, startDate: getToday(2), endDate: getToday(5), assigneeId: 'u3', tagId: 'tg2', attachments: [], isInverted: false, history: [{ date: getNow(), message: '任務建立' }], comments: [], isLocked: false },
-      { id: '4', type: 'highlight', colorId: 'warning', title: '確認弱電走線', description: '請再次確認這段走廊の弱電線槽配置，確認是否有足夠空間。', status: 'done', x: 45, y: 15, width: 35, height: 10, page: 1, points: [{x: 0, y: 5}, {x: 15, y: 0}, {x: 25, y: 8}, {x: 35, y: 10}], startDate: getToday(-3), endDate: getToday(0), assigneeId: 'u1', tagId: 'tg1', attachments: [], history: [{ date: getNow(), message: '任務建立' }], comments: [], isLocked: false },
-      { id: '5', type: 'pen', colorId: 'danger', title: '新增管線路徑', description: '建議以此路線重新配置消防管線。', status: 'todo', x: 20, y: 30, width: 20, height: 20, page: 1, points: [{x: 0, y: 0}, {x: 10, y: 5}, {x: 15, y: 15}, {x: 20, y: 20}], startDate: getToday(), endDate: getToday(2), assigneeId: 'u2', tagId: 'tg3', attachments: [], history: [{ date: getNow(), message: '任務建立' }], comments: [], isLocked: false },
-      { id: '6', type: 'pin', title: '油漆修補', description: '角落有掉漆現象。', status: 'todo', x: 15, y: 40, page: 1, startDate: getToday(1), endDate: getToday(3), assigneeId: 'unassigned', tagId: 'tg2', attachments: [], history: [], comments: [], isLocked: false }
+      { id: '3', type: 'cloud', title: '牆面裂縫修補', description: '此範圍內的牆面裂縫需要進行修補作業。', status: 'todo', x: 10, y: 65, width: 25, height: 18, page: 1, startDate: getToday(2), endDate: getToday(5), assigneeId: 'u3', tagId: 'tg2', attachments: [], isInverted: false, history: [{ date: getNow(), message: '任務建立' }], comments: [], isLocked: true },
+      { id: '4', type: 'highlight', colorId: 'warning', title: '確認弱電走線', description: '請再次確認這段走廊の弱電線槽配置，確認是否有足夠空間。', status: 'done', x: 45, y: 15, width: 35, height: 10, page: 1, points: [{x: 0, y: 5}, {x: 15, y: 0}, {x: 25, y: 8}, {x: 35, y: 10}], startDate: getToday(-3), endDate: getToday(0), assigneeId: 'u1', tagId: 'tg1', attachments: [], history: [{ date: getNow(), message: '任務建立' }], comments: [], isLocked: true },
+      { id: '5', type: 'pen', colorId: 'danger', title: '新增管線路徑', description: '建議以此路線重新配置消防管線。', status: 'todo', x: 20, y: 30, width: 20, height: 20, page: 1, points: [{x: 0, y: 0}, {x: 10, y: 5}, {x: 15, y: 15}, {x: 20, y: 20}], startDate: getToday(), endDate: getToday(2), assigneeId: 'u2', tagId: 'tg3', attachments: [], history: [{ date: getNow(), message: '任務建立' }], comments: [], isLocked: true },
+      { id: '6', type: 'pin', title: '油漆修補', description: '角落有掉漆現象。', status: 'todo', x: 15, y: 40, page: 1, startDate: getToday(1), endDate: getToday(3), assigneeId: 'unassigned', tagId: 'tg2', attachments: [], history: [], comments: [], isLocked: true }
     ];
 
     const INITIAL_SNAPSHOTS = [
@@ -222,7 +222,7 @@
       </div>
     );
 
-    const CloudMark = ({ task, isActive, onClick, onContextMenu, onPointerDown, onPointerMove, onPointerUp, onPointerCancel }) => {
+    const CloudMark = ({ task, isActive, onClick, onContextMenu, onPointerDown, onPointerMove, onPointerUp, onPointerCancel, showLockIcons }) => {
       const [size, setSize] = useState({ w: 0, h: 0 });
       const ref = useRef();
       useEffect(() => {
@@ -258,13 +258,13 @@
           <svg width="100%" height="100%" style={{ overflow: 'visible' }} className="relative z-10 pointer-events-none">
             <path d={getCloudPath(size.w, size.h, task.isInverted)} fill={isActive ? `${strokeColor}22` : 'transparent'} stroke={strokeColor} strokeWidth={isActive ? "4" : "2.5"} strokeLinecap="round" strokeLinejoin="round" className="transition-all duration-300 drop-shadow-sm" />
           </svg>
-          {task.isLocked && <div className="absolute -top-2 -right-2 bg-gray-800 text-white rounded-full p-0.5 shadow-md z-40"><Lock size={10} /></div>}
+          {task.isLocked && showLockIcons && <div className="absolute -top-2 -right-2 bg-gray-800 text-white rounded-full p-0.5 shadow-md z-40"><Lock size={10} /></div>}
           <TaskTooltip task={task} />
         </div>
       );
     };
 
-    const HighlightMark = ({ task, isActive, onClick, onContextMenu, onPointerDown, onPointerMove, onPointerUp, onPointerCancel }) => {
+    const HighlightMark = ({ task, isActive, onClick, onContextMenu, onPointerDown, onPointerMove, onPointerUp, onPointerCancel, showLockIcons }) => {
       const markerColor = MARKER_COLORS.find(c => c.id === task.colorId) || MARKER_COLORS[0];
       const pts = task.points.map(p => `${p.x},${p.y}`).join(' ');
       return (
@@ -279,13 +279,13 @@
             <polyline points={pts} fill="none" stroke={markerColor.stroke} strokeWidth="12" strokeLinecap="round" strokeLinejoin="round" opacity="0.6" vectorEffect="non-scaling-stroke" className={isActive ? "brightness-110 drop-shadow-md" : ""} />
             <polyline points={pts} fill="none" stroke="transparent" strokeWidth="24" strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" className="pointer-events-auto" />
           </svg>
-          {task.isLocked && <div className="absolute -top-2 -right-2 bg-gray-800 text-white rounded-full p-0.5 shadow-md z-40"><Lock size={10} /></div>}
+          {task.isLocked && showLockIcons && <div className="absolute -top-2 -right-2 bg-gray-800 text-white rounded-full p-0.5 shadow-md z-40"><Lock size={10} /></div>}
           <TaskTooltip task={task} />
         </div>
       );
     };
 
-    const PenMark = ({ task, isActive, onClick, onContextMenu, onPointerDown, onPointerMove, onPointerUp, onPointerCancel }) => {
+    const PenMark = ({ task, isActive, onClick, onContextMenu, onPointerDown, onPointerMove, onPointerUp, onPointerCancel, showLockIcons }) => {
       const markerColor = MARKER_COLORS.find(c => c.id === task.colorId) || MARKER_COLORS[0];
       const pts = task.points.map(p => `${p.x},${p.y}`).join(' ');
       return (
@@ -300,13 +300,13 @@
             <polyline points={pts} fill="none" stroke={markerColor.stroke} strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" className={isActive ? "brightness-110 drop-shadow-md" : ""} />
             <polyline points={pts} fill="none" stroke="transparent" strokeWidth="16" strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" className="pointer-events-auto" />
           </svg>
-          {task.isLocked && <div className="absolute -top-2 -right-2 bg-gray-800 text-white rounded-full p-0.5 shadow-md z-40"><Lock size={10} /></div>}
+          {task.isLocked && showLockIcons && <div className="absolute -top-2 -right-2 bg-gray-800 text-white rounded-full p-0.5 shadow-md z-40"><Lock size={10} /></div>}
           <TaskTooltip task={task} />
         </div>
       );
     };
 
-    const AreaMark = ({ task, isActive, onClick, onContextMenu, onPointerDown, onPointerMove, onPointerUp, onPointerCancel }) => {
+    const AreaMark = ({ task, isActive, onClick, onContextMenu, onPointerDown, onPointerMove, onPointerUp, onPointerCancel, showLockIcons }) => {
       const colorMap = { 'bg-brand-danger': '#f2572d', 'bg-brand-warning': '#efc028', 'bg-brand-success': '#008972' };
       const strokeColor = colorMap[STATUS_CONFIG[task.status]?.color] || '#0067a6';
       const pts = task.points.map(p => `${p.x},${p.y}`).join(' ');
@@ -325,13 +325,13 @@
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none font-bold text-white text-[10px] drop-shadow-md bg-black/60 px-1.5 py-0.5 rounded whitespace-nowrap opacity-90">
             {task.area}
           </div>
-          {task.isLocked && <div className="absolute -top-2 -right-2 bg-gray-800 text-white rounded-full p-0.5 shadow-md z-40"><Lock size={10} /></div>}
+          {task.isLocked && showLockIcons && <div className="absolute -top-2 -right-2 bg-gray-800 text-white rounded-full p-0.5 shadow-md z-40"><Lock size={10} /></div>}
           <TaskTooltip task={task} />
         </div>
       );
     };
 
-    const PinMark = ({ task, isActive, onClick, onContextMenu, onPointerDown, onPointerMove, onPointerUp, onPointerCancel }) => {
+    const PinMark = ({ task, isActive, onClick, onContextMenu, onPointerDown, onPointerMove, onPointerUp, onPointerCancel, showLockIcons }) => {
       const statusColor = STATUS_CONFIG[task.status]?.color || 'bg-gray-500';
       return (
         <div className={`absolute transform -translate-x-1/2 -translate-y-1/2 group pointer-events-auto ${task.isLocked ? 'cursor-pointer' : 'cursor-move'}`} 
@@ -345,14 +345,14 @@
             <div className={`relative flex items-center justify-center w-7 h-7 rounded-full shadow-sm text-white border-2 border-white ${statusColor}`}>
               <MapPin size={14} fill="currentColor" className="text-white/30" />
             </div>
-            {task.isLocked && <div className="absolute -top-2 -right-2 bg-gray-800 text-white rounded-full p-0.5 shadow-md z-40"><Lock size={10} /></div>}
+            {task.isLocked && showLockIcons && <div className="absolute -top-2 -right-2 bg-gray-800 text-white rounded-full p-0.5 shadow-md z-40"><Lock size={10} /></div>}
             <TaskTooltip task={task} />
           </div>
         </div>
       );
     };
 
-    const StampMark = ({ task, isActive, onClick, onContextMenu, onPointerDown, onPointerMove, onPointerUp, onPointerCancel }) => (
+    const StampMark = ({ task, isActive, onClick, onContextMenu, onPointerDown, onPointerMove, onPointerUp, onPointerCancel, showLockIcons }) => (
       <div className={`absolute transform -translate-x-1/2 -translate-y-1/2 group pointer-events-auto ${task.isLocked ? 'cursor-pointer' : 'cursor-move'}`} 
            style={{ left: `${task.x}%`, top: `${task.y}%` }} 
            onClick={(e) => { e.stopPropagation(); onClick(); }} 
@@ -363,7 +363,7 @@
           <div className={`border-2 border-brand-danger text-brand-danger bg-white font-bold px-1.5 py-0.5 rounded-sm shadow-sm text-[11px] whitespace-nowrap tracking-wider ${isActive ? 'ring-2 ring-brand-danger/50 shadow-md' : ''}`}>
             [{task.stampCode}]
           </div>
-          {task.isLocked && <div className="absolute -top-2 -right-2 bg-gray-800 text-white rounded-full p-0.5 shadow-md z-40"><Lock size={10} /></div>}
+          {task.isLocked && showLockIcons && <div className="absolute -top-2 -right-2 bg-gray-800 text-white rounded-full p-0.5 shadow-md z-40"><Lock size={10} /></div>}
           <TaskTooltip task={task} />
         </div>
       </div>
@@ -408,8 +408,11 @@
       const [layerVisibility, setLayerVisibility] = useState({
         statuses: { 'todo': true, 'in-progress': true, 'done': true },
         tags: {},
-        assignees: {} // 新增：負責人顯示狀態
+        assignees: {} 
       });
+      
+      // 新增：控制鎖定圖示是否顯示的狀態
+      const [showLockIcons, setShowLockIcons] = useState(true);
 
       const [scaleInfo, setScaleInfo] = useState({ ratio: 1, unit: 'mm', isCalibrated: false });
       const [showCalibrateModal, setShowCalibrateModal] = useState(false);
@@ -419,7 +422,6 @@
       const [manualRatio, setManualRatio] = useState(100);
       const [measureResult, setMeasureResult] = useState(null);
       
-      // 新增面積測量結果狀態
       const [areaResult, setAreaResult] = useState(null);
 
       const [showMinimap, setShowMinimap] = useState(true);
@@ -444,7 +446,7 @@
 
       const [formData, setFormData] = useState({ 
         type: '', colorId: '', title: '', description: '', status: 'todo', startDate: getToday(), endDate: getToday(1), 
-        assigneeId: 'unassigned', stampCode: '', tagId: 'none', attachments: [], history: [], comments: [], isLocked: false 
+        assigneeId: 'unassigned', stampCode: '', tagId: 'none', attachments: [], history: [], comments: [], isLocked: true 
       });
       const [editingId, setEditingId] = useState(null);
       const [newStampForm, setNewStampForm] = useState({ code: '', title: '', description: '' });
@@ -469,7 +471,7 @@
       });
 
       const [isSidebarVisible, setIsSidebarVisible] = useState(true);
-      const [isHeaderVisible, setIsHeaderVisible] = useState(true); // 新增：上方選單顯示狀態
+      const [isHeaderVisible, setIsHeaderVisible] = useState(true); 
       const [toolbarPos, setToolbarPos] = useState({ x: 0, y: 0 });
       const [isDraggingToolbar, setIsDraggingToolbar] = useState(false);
       const [toolbarDragStart, setToolbarDragStart] = useState({ x: 0, y: 0 });
@@ -496,7 +498,6 @@
       const lastPinchDist = useRef(null);
       const lastPinchCenter = useRef(null);
       
-      // 新增：左側邊欄滑動隱藏的狀態與事件
       const sidebarTouchStartX = useRef(null);
       const sidebarTouchStartY = useRef(null);
 
@@ -510,7 +511,6 @@
         const deltaX = e.touches[0].clientX - sidebarTouchStartX.current;
         const deltaY = e.touches[0].clientY - sidebarTouchStartY.current;
         
-        // 判斷向左滑動超過 40px，且垂直滑動幅度不超過 40px (確保使用者不是單純在上下捲動選單)
         if (deltaX < -40 && Math.abs(deltaY) < 40) {
           setIsSidebarVisible(false);
           sidebarTouchStartX.current = null;
@@ -649,7 +649,6 @@
         setPan({ x: - (pctX * 1200 - vW_logical / 2) * scale, y: - (pctY * 840 - vH_logical / 2) * scale });
       }, [scale, viewportSize]);
 
-      // Wheelイベントの修正：ステート更新の競合を防ぐために依存配列に scale, pan を追加
       useEffect(() => {
         const viewport = viewportRef.current;
         if (!viewport) return;
@@ -685,12 +684,11 @@
         }
       };
 
-      // PointerMoveの修正：setScaleコールバック内でsetPanを呼ぶアンチパターンを解消
       const handleViewportPointerMove = (e) => {
         if (activePointers.current.has(e.pointerId)) activePointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
         
         if (activePointers.current.size >= 2) {
-          if (isSidebarVisible) setIsSidebarVisible(false); // 新增：平移或雙指縮放圖面時，自動隱藏左側選單
+          if (isSidebarVisible) setIsSidebarVisible(false); 
           
           const pts = Array.from(activePointers.current.values());
           const dist = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
@@ -712,7 +710,7 @@
           lastPinchDist.current = dist; lastPinchCenter.current = center; return;
         }
         if (isPanning && activePointers.current.size < 2) {
-          if (isSidebarVisible) setIsSidebarVisible(false); // 新增：平移圖面時，自動隱藏左側選單
+          if (isSidebarVisible) setIsSidebarVisible(false); 
           setPan({ x: e.clientX - panStart.x, y: e.clientY - panStart.y });
         }
       };
@@ -751,7 +749,6 @@
         try { e.currentTarget.releasePointerCapture(e.pointerId); } catch(err){}
       };
 
-      // 新增：處理標記拖曳的函式
       const handleMarkerDragStart = useCallback((e, task) => {
         if (e.button !== 0 || isSpacePressed || isPanning || isReadOnly || task.isLocked) return;
         e.stopPropagation();
@@ -796,7 +793,7 @@
           }
         }
         setDraggingMarker(null);
-        setTimeout(() => { markerDragInfo.current.hasMoved = false; }, 0); // 延遲重設以讓 onClick 可以判斷
+        setTimeout(() => { markerDragInfo.current.hasMoved = false; }, 0); 
       }, [draggingMarker, tasks, updateTasks]);
 
 
@@ -900,7 +897,7 @@
           }
         };
         reader.readAsText(file);
-        e.target.value = null; // reset input
+        e.target.value = null; 
       };
 
       const exportToICal = () => {
@@ -957,7 +954,6 @@
       const toggleLayerStatus = (statusKey) => { setLayerVisibility(prev => ({ ...prev, statuses: { ...prev.statuses, [statusKey]: prev.statuses[statusKey] === false ? true : false } })); };
       const toggleLayerTag = (tagId) => { setLayerVisibility(prev => ({ ...prev, tags: { ...prev.tags, [tagId]: prev.tags[tagId] === false ? true : false } })); };
       
-      // 新增：切換負責人圖層顯示
       const toggleLayerAssignee = (assigneeId) => { setLayerVisibility(prev => ({ ...prev, assignees: { ...prev.assignees, [assigneeId]: prev.assignees[assigneeId] === false ? true : false } })); };
 
       const handleContentPointerDown = (e) => {
@@ -978,7 +974,7 @@
           y = Math.round(y / snapGrid) * snapGrid;
         }
 
-        const baseData = { type: addMode, colorId: activeColor.id, status: 'todo', startDate: getToday(), endDate: getToday(1), assigneeId: 'unassigned', tagId: 'none', attachments: [], history: [], comments: [], isLocked: false };
+        const baseData = { type: addMode, colorId: activeColor.id, status: 'todo', startDate: getToday(), endDate: getToday(1), assigneeId: 'unassigned', tagId: 'none', attachments: [], history: [], comments: [], isLocked: true };
 
         if (addMode === 'pin') {
           setNewTaskCoords({ type: 'pin', x, y, page: currentPage });
@@ -1059,7 +1055,7 @@
         if (addMode === 'area') return; 
 
         setIsDrawing(false);
-        const baseData = { type: addMode, colorId: activeColor.id, title: '', description: '', status: 'todo', startDate: getToday(), endDate: getToday(1), assigneeId: 'unassigned', stampCode: '', tagId: 'none', attachments: [], history: [], comments: [], isLocked: false };
+        const baseData = { type: addMode, colorId: activeColor.id, title: '', description: '', status: 'todo', startDate: getToday(), endDate: getToday(1), assigneeId: 'unassigned', stampCode: '', tagId: 'none', attachments: [], history: [], comments: [], isLocked: true };
 
         if (addMode === 'cloud' && drawStart && drawCurrent) {
           const width = Math.abs(drawCurrent.x - drawStart.x), height = Math.abs(drawCurrent.y - drawStart.y);
@@ -1203,7 +1199,7 @@
         setFormData({ 
           type: task.type, colorId: task.colorId || 'warning', title: task.title, description: task.description, status: task.status, 
           startDate: task.startDate || getToday(), endDate: task.endDate || getToday(1), assigneeId: task.assigneeId || 'unassigned', 
-          stampCode: task.stampCode || '', tagId: task.tagId || 'none', attachments: task.attachments || [], history: task.history || [], comments: task.comments || []
+          stampCode: task.stampCode || '', tagId: task.tagId || 'none', attachments: task.attachments || [], history: task.history || [], comments: task.comments || [], isLocked: task.isLocked !== undefined ? task.isLocked : true
         });
         setEditingId(task.id); setShowTaskModal(true);
         setCommentText('');
@@ -1353,7 +1349,7 @@
         const matchPage = filterPage === 'all' || task.page.toString() === filterPage;
         const matchStatus = layerVisibility.statuses[task.status] !== false;
         const matchTag = task.tagId ? layerVisibility.tags[task.tagId] !== false : layerVisibility.tags['none'] !== false;
-        const matchLayerAssignee = layerVisibility.assignees[task.assigneeId] !== false; // 新增：負責人顯示判斷
+        const matchLayerAssignee = layerVisibility.assignees[task.assigneeId] !== false; 
         return matchSearch && matchAssignee && matchPage && matchStatus && matchTag && matchLayerAssignee;
       }), [currentDisplayTasks, filterQuery, filterAssignees, filterPage, layerVisibility]);
 
@@ -1421,7 +1417,6 @@
         setContextMenu(null);
       };
 
-      // 導航按鈕 (純圖示)
       const NavButton = ({ view, icon: Icon, label }) => (
         <button 
           onClick={() => setAppView(view)} 
@@ -1475,7 +1470,6 @@
             </div>
           )}
 
-          {/* 新增專案確認 Modal */}
           {showConfirmNew && (
             <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/40 backdrop-blur-sm">
               <div className="bg-white rounded-xl shadow-2xl w-full max-w-sm border border-gray-200 overflow-hidden">
@@ -1527,11 +1521,9 @@
             </div>
           )}
 
-          {/* === 修改區塊：雙層選單設計 === */}
           {isHeaderVisible && (
             <header className="bg-white flex flex-col z-50 flex-shrink-0 shadow-sm relative print:hidden">
               
-              {/* 上方第一欄：標題、快照下拉、人員、搜尋過濾 */}
               <div className="px-6 py-3 flex justify-between items-center w-full border-b border-gray-200">
                 <div className="flex items-center gap-3">
                   <div className="bg-gradient-to-br from-brand-primary to-brand-secondary w-8 h-8 rounded text-white shadow-md flex items-center justify-center font-black tracking-tighter">DT</div>
@@ -1633,7 +1625,6 @@
                 </div>
               </div>
 
-              {/* 下方第二欄：導覽列 / 動作按鈕 */}
               <div className="px-6 py-2 bg-gray-50 border-b border-gray-200 flex items-center justify-start gap-2 overflow-x-auto min-h-[48px]">
                 <NavButton view="blueprint" icon={Crosshair} label="圖面" />
                 <NavButton view="board" icon={Kanban} label="看板" />
@@ -1688,7 +1679,6 @@
               </div>
             </header>
           )}
-          {/* === 修改區塊結束 === */}
 
           {isReadOnly && (
             <div className="bg-brand-warning text-[#4a3904] px-6 py-2 flex justify-between items-center z-40 shadow-sm font-bold text-sm shrink-0 border-b border-brand-warningDark">
@@ -1702,7 +1692,6 @@
             </div>
           )}
 
-          {/* Context Menu (右鍵選單) */}
           {contextMenu && !isReadOnly && (
             <div 
               className="fixed z-50 bg-white border border-gray-200 shadow-xl rounded-lg py-1.5 w-44 text-sm overflow-hidden"
@@ -1711,7 +1700,6 @@
             >
               <div className="px-3 py-1.5 text-xs font-bold text-gray-400 border-b border-gray-100 mb-1 truncate">{contextMenu.task.title}</div>
               
-              {/* === 新增：右鍵選單顏色選擇區 === */}
               <div className="px-3 py-1 flex flex-wrap gap-1.5 border-b border-gray-100 pb-2 mb-1">
                 <button 
                   onClick={() => { updateTasks(tasks.map(t => t.id === contextMenu.task.id ? { ...t, colorId: null } : t)); setContextMenu(null); }}
@@ -1731,7 +1719,6 @@
                 ))}
               </div>
               
-              {/* === 新增：右鍵選單鎖定位置按鈕 === */}
               <button onClick={() => { 
                   updateTasks(tasks.map(t => t.id === contextMenu.task.id ? { ...t, isLocked: !t.isLocked } : t)); 
                   setContextMenu(null); 
@@ -1747,10 +1734,8 @@
             </div>
           )}
 
-          {/* Main Content Area */}
           <div className="flex-1 flex overflow-hidden relative bg-white">
             
-            {/* ================= 快照管理ビュー (Snapshots View) ================= */}
             {appView === 'snapshots' && (
               <div className="flex-1 p-8 overflow-auto bg-gray-50">
                 <div className="max-w-4xl mx-auto space-y-6">
@@ -1812,7 +1797,6 @@
               </div>
             )}
 
-            {/* ================= 設定ビュー (Settings View) ================= */}
             {appView === 'settings' && (
               <div className="flex-1 p-8 overflow-auto">
                 <div className="max-w-4xl mx-auto space-y-6">
@@ -1890,7 +1874,6 @@
               </div>
             )}
 
-            {/* ================= PDF 報表匯出視圖 (Report Print View) ================= */}
             {appView === 'report' && (
               <div className="flex-1 bg-gray-200 overflow-auto print:bg-white flex flex-col relative w-full h-full">
                 <div className="bg-white border-b border-gray-300 px-8 py-4 flex justify-between items-center sticky top-0 z-50 print:hidden shadow-sm">
@@ -2047,7 +2030,6 @@
               </div>
             )}
 
-            {/* ================= カンバンビュー (Board View) ================= */}
             {appView === 'board' && (
               <div className="flex-1 flex gap-6 p-8 overflow-x-auto bg-gray-100">
                 {Object.entries(STATUS_CONFIG).map(([statusKey, config]) => (
@@ -2115,10 +2097,8 @@
               </div>
             )}
 
-            {/* ================= 行事曆ビュー (Calendar View) ================= */}
             {appView === 'calendar' && (
               <div className="flex-1 bg-gray-50 p-6 overflow-hidden flex flex-col">
-                {/* Calendar Header */}
                 <div className="flex justify-between items-center bg-white p-4 rounded-t-lg border border-gray-200 shadow-sm shrink-0">
                    <div className="flex items-center gap-4">
                      <h2 className="text-xl font-black text-gray-800 w-32">
@@ -2142,15 +2122,12 @@
                    </div>
                 </div>
 
-                {/* Calendar Grid */}
                 <div className="flex-1 flex flex-col border-x border-b border-gray-200 rounded-b-lg overflow-auto bg-gray-200 gap-px">
-                  {/* Days of week */}
                   <div className="grid grid-cols-7 gap-px shrink-0 bg-gray-200">
                     {['日', '一', '二', '三', '四', '五', '六'].map((day, i) => (
                       <div key={day} className={`bg-gray-100 text-center py-2 text-xs font-bold ${i === 0 || i === 6 ? 'text-gray-400' : 'text-gray-600'}`}>{day}</div>
                     ))}
                   </div>
-                  {/* Days cells */}
                   <div className="flex-1 grid grid-cols-7 auto-rows-fr gap-px bg-gray-200">
                     {(() => {
                        const year = calendarMonth.getFullYear();
@@ -2240,7 +2217,6 @@
               </div>
             )}
 
-            {/* ================= ガントチャート (Gantt View) ================= */}
             {appView === 'gantt' && (
               <div 
                 ref={ganttScrollRef} 
@@ -2275,7 +2251,6 @@
                           }
                         }
                       } else {
-                        // 如果沒有移動，視為點擊，開啟編輯模式
                         openEditModal(task);
                       }
                     }
@@ -2490,7 +2465,6 @@
                                   return <div key={i} className={`w-10 border-r border-gray-100 h-14 shrink-0 ${isToday ? 'bg-brand-warning/10' : [0,6].includes(d.getDay()) ? 'bg-gray-50/50' : ''}`} />
                                 })}
                                 
-                                {/* 任務條本體 */}
                                 <div 
                                    className={`absolute top-3 h-8 rounded shadow-sm flex items-center text-xs font-bold z-10 group/bar ${task.status === 'done' && !task.colorId ? 'opacity-60' : ''}`} 
                                    style={{ 
@@ -2553,7 +2527,6 @@
               </div>
             )}
 
-            {/* ================= ブループリントビュー (Blueprint View) ================= */}
             {appView === 'blueprint' && (
               <>
                 {isSidebarVisible && (
@@ -2639,7 +2612,6 @@
                   </div>
                 )}
 
-                {/* iPad ホワイトアウト対策: touch-action: none を明示し、ネイティブジェスチャーをブロック */}
                 <div 
                   ref={viewportRef} 
                   className={`flex-1 overflow-hidden relative bg-[#e5e7eb] touch-none ${isSpacePressed || isPanning ? 'cursor-grab active:cursor-grabbing' : ''}`} 
@@ -2652,7 +2624,6 @@
                   onContextMenu={e => e.preventDefault()}
                 >
                   
-                  {/* Toolbar */}
                   <div className="absolute z-20 flex flex-col items-center gap-2" style={{ top: '20px', left: '50%', transform: `translate(calc(-50% + ${toolbarPos.x}px), ${toolbarPos.y}px)` }}>
                     <div className="bg-white shadow-sm border border-gray-200 rounded-full px-2 py-1.5 flex items-center gap-1.5 pointer-events-auto">
                       <div className="cursor-grab text-gray-400 hover:text-black p-1 flex items-center" title="拖曳移動工具列" onPointerDown={(e) => { e.stopPropagation(); e.target.setPointerCapture(e.pointerId); setIsDraggingToolbar(true); setToolbarDragStart({ x: e.clientX - toolbarPos.x, y: e.clientY - toolbarPos.y }); }} onPointerMove={(e) => isDraggingToolbar && setToolbarPos({ x: e.clientX - toolbarDragStart.x, y: e.clientY - toolbarDragStart.y })} onPointerUp={() => setIsDraggingToolbar(false)}><GripVertical size={16} /></div>
@@ -2670,6 +2641,15 @@
 
                       <div className="w-px h-4 bg-gray-200" />
                       <button onClick={(e) => { e.stopPropagation(); setShowLayerMenu(!showLayerMenu); setAddMode('none'); }} className={`p-1.5 rounded-full transition-colors flex items-center justify-center ${showLayerMenu ? 'bg-black text-white shadow-md' : 'text-gray-600 hover:bg-gray-100 hover:text-black'}`} title="圖層選單 (一鍵隱藏狀態/工種/負責人)"><Layers size={16} /></button>
+                      
+                      {/* === 新增：隱藏鎖定圖示切換按鈕 === */}
+                      <button 
+                        onClick={(e) => { e.stopPropagation(); setShowLockIcons(!showLockIcons); }} 
+                        className={`p-1.5 rounded-full transition-colors flex items-center justify-center ${showLockIcons ? 'bg-gray-100 text-brand-primary shadow-inner' : 'text-gray-500 hover:bg-gray-100 hover:text-black'}`} 
+                        title={showLockIcons ? "隱藏圖面上的鎖定標示 (不影響鎖定功能)" : "顯示圖面上的鎖定標示"}
+                      >
+                        <Lock size={16} />
+                      </button>
 
                       {!isReadOnly && (
                         <>
@@ -2785,7 +2765,6 @@
                     )}
                   </div>
 
-                  {/* 視覺設定選單 (Image Filters) */}
                   <div className="absolute bottom-6 left-6 z-20 flex gap-2 pointer-events-auto">
                     <button 
                       onClick={() => setShowMinimap(!showMinimap)}
@@ -2839,7 +2818,6 @@
                     </div>
                   </div>
 
-                  {/* ミニマップ */}
                   {showMinimap && (
                     <div 
                       ref={minimapRef}
@@ -2890,17 +2868,14 @@
                     <button onClick={() => handleZoomStep(-0.2)} className="p-1.5 hover:bg-gray-100 rounded text-gray-700"><Minus size={16} /></button>
                   </div>
 
-                  {/* iPad ホワイトアウト対策: 2D transform -> 3D transform に変更し、GPUアクセラレーションを有効化 */}
                   <div className="absolute origin-top-left pointer-events-none" style={{ transform: `translate3d(${pan.x}px, ${pan.y}px, 0) scale(${scale})`, width: '1200px' }}>
                     <div className={`relative inline-block w-full bg-white ${scale > 1.5 ? 'shadow-sm' : 'shadow-2xl'} ${!isSpacePressed && !isPanning && addMode !== 'none' ? 'cursor-crosshair' : ''}`} style={{ pointerEvents: isSpacePressed || isPanning ? 'none' : 'auto' }} onPointerDown={!isSpacePressed ? handleContentPointerDown : undefined} onPointerMove={!isSpacePressed ? handleContentPointerMove : undefined} onPointerUp={!isSpacePressed ? handleContentPointerUp : undefined} onPointerLeave={!isSpacePressed ? handleContentPointerUp : undefined} onPointerCancel={!isSpacePressed ? handleContentPointerUp : undefined}>
                       
-                      {/* 圖面渲染，套用 Filters (ホワイトアウト対策: transition-all duration-200 を削除してズーム中の重い再計算を防止) */}
                       <div style={filterStyle} className="w-full">
                         {isRendering && viewMode === 'pdf' && <div className="absolute inset-0 z-40 bg-white/80 backdrop-blur-sm flex items-center justify-center"><Loader2 className="w-6 h-6 animate-spin mb-3 text-black" /></div>}
                         {viewMode === 'pdf' ? <canvas ref={canvasRef} className="w-full block bg-white" /> : backgroundImage ? <img src={backgroundImage} alt="BP" className="w-full block opacity-95 sepia hue-rotate-[190deg] saturate-200 contrast-125 brightness-90" draggable={false} /> : <div className="w-full bg-[#f8fafc]" style={{ height: '840px', backgroundImage: 'linear-gradient(to right, #e2e8f0 1px, transparent 1px), linear-gradient(to bottom, #e2e8f0 1px, transparent 1px)', backgroundSize: '40px 40px' }} />}
                       </div>
 
-                      {/* 任務標記渲染 */}
                       {filteredTasks.filter(t => t.page === currentPage).map(task => {
                         const isDragging = draggingMarker && draggingMarker.id === task.id;
                         const displayTask = isDragging ? { ...task, x: draggingMarker.curX, y: draggingMarker.curY } : task;
@@ -2910,14 +2885,15 @@
                           task: displayTask, 
                           isActive: activeTaskId === task.id, 
                           onClick: () => { 
-                            if (markerDragInfo.current.hasMoved) return; // 拖曳後不觸發點擊開啟詳情
+                            if (markerDragInfo.current.hasMoved) return; 
                             if (addMode === 'none') setActiveTaskId(task.id); 
                           }, 
                           onContextMenu: (e) => handleTaskContextMenu(e, task),
                           onPointerDown: (e) => handleMarkerDragStart(e, task),
                           onPointerMove: handleMarkerDragMove,
                           onPointerUp: handleMarkerDragEnd,
-                          onPointerCancel: handleMarkerDragEnd
+                          onPointerCancel: handleMarkerDragEnd,
+                          showLockIcons: showLockIcons 
                         };
                         
                         if (task.type === 'cloud') return <CloudMark {...props} />;
@@ -2928,7 +2904,6 @@
                         return <PinMark {...props} />;
                       })}
 
-                      {/* 繪製中預覽 */}
                       {isDrawing && addMode === 'cloud' && drawStart && drawCurrent && <div className="absolute border-2 border-gray-800 border-dashed bg-black/5 z-40 pointer-events-none" style={{ left: `${Math.min(drawStart.x, drawCurrent.x)}%`, top: `${Math.min(drawStart.y, drawCurrent.y)}%`, width: `${Math.abs(drawCurrent.x - drawStart.x)}%`, height: `${Math.abs(drawCurrent.y - drawStart.y)}%` }} />}
                       
                       {isDrawing && (addMode === 'highlight' || addMode === 'pen') && drawPoints.length > 0 && (
@@ -2937,7 +2912,6 @@
                         </svg>
                       )}
                       
-                      {/* 面積測量「點選成形」的預覽視覺 */}
                       {isDrawing && addMode === 'area' && drawPoints.length > 0 && (
                         <div className="absolute inset-0 pointer-events-none z-40">
                           <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-full" style={{ overflow: 'visible' }}>
@@ -2945,17 +2919,14 @@
                               points={[...drawPoints, drawCurrent].filter(Boolean).map(p => `${p.x},${p.y}`).join(' ')} 
                               fill="#0067a6" fillOpacity="0.2" stroke="#0067a6" strokeWidth="2" strokeDasharray="4,4" strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" 
                             />
-                            {/* 起點特別標示以提示如何閉合 */}
                             {drawPoints.length >= 3 && (
                                <circle cx={drawPoints[0].x} cy={drawPoints[0].y} r="0.8" fill="#f2572d" opacity="0.8" className="animate-pulse" vectorEffect="non-scaling-stroke" />
                             )}
-                            {/* 其他端點圓點 */}
                             {drawPoints.map((p, i) => (
                                <circle key={i} cx={p.x} cy={p.y} r="0.4" fill="#0067a6" vectorEffect="non-scaling-stroke" />
                             ))}
                           </svg>
                           
-                          {/* 動態顯示目前面積 */}
                           {drawPoints.length >= 2 && drawCurrent && (
                             <div 
                               className="absolute bg-brand-primary text-white text-[11px] font-bold px-2 py-1 rounded shadow-md transform -translate-x-1/2 -translate-y-full flex items-center gap-1 whitespace-nowrap"
@@ -2980,7 +2951,6 @@
                         </div>
                       )}
 
-                      {/* 面積測量結果顯示 (不新增任務) */}
                       {areaResult && !isDrawing && (
                         <div className="absolute inset-0 pointer-events-none z-40">
                           <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-full" style={{ overflow: 'visible' }}>
@@ -3042,7 +3012,6 @@
 
           </div>
 
-          {/* --- 校正比例尺用モーダル (Calibrate Scale Modal) --- */}
           {showCalibrateModal && (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
               <div className="bg-white rounded-xl shadow-2xl w-full max-w-md border border-gray-200 overflow-hidden">
@@ -3127,7 +3096,6 @@
             </div>
           )}
 
-          {/* Task Modal */}
           {showTaskModal && (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
               <div className="bg-white rounded-xl shadow-2xl w-full max-w-lg border border-gray-200 flex flex-col" style={{ maxHeight: '90vh' }}>
@@ -3191,7 +3159,6 @@
                     </FormField>
                   </div>
 
-                  {/* 現場照片與附件上傳區 */}
                   <div className="pt-2 border-t border-gray-200">
                     <label className="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider flex items-center gap-1.5"><Camera size={14} />現場照片 / 附件</label>
                     <div className="flex flex-wrap gap-2">
@@ -3219,11 +3186,9 @@
                     </div>
                   </div>
 
-                  {/* === 留言板 (聊天氣泡設計) === */}
                   <div className="pt-4 border-t border-gray-200">
                     <label className="block text-xs font-bold text-gray-500 mb-3 uppercase tracking-wider flex items-center gap-1.5"><MessageSquare size={14} /> 討論區</label>
                     
-                    {/* コメント一覧 */}
                     <div className="space-y-4 mb-4 max-h-64 overflow-y-auto pr-2 bg-white/50 p-3 rounded-lg border border-gray-100 shadow-inner">
                       {(formData.comments || []).map(c => {
                         const user = users.find(u => u.id === c.userId);
@@ -3246,7 +3211,6 @@
                       {!(formData.comments || []).length && <div className="text-xs text-gray-400 text-center py-6 border border-dashed border-gray-200 rounded-lg">目前沒有留言，輸入 @ 可標記相關人員。</div>}
                     </div>
 
-                    {/* コメント入力部 */}
                     {!isReadOnly && (
                       <div className="relative flex items-end gap-2 bg-gray-100 p-2.5 rounded-xl border border-gray-200 shadow-sm">
                         <div className="relative flex-1">
@@ -3258,7 +3222,6 @@
                             className="w-full border-none bg-transparent px-2 py-1.5 text-sm focus:ring-0 outline-none resize-none min-h-[40px] max-h-24 leading-snug transition-colors placeholder-gray-400"
                             rows="1"
                           />
-                          {/* Mention Popup */}
                           {showMentionPopup && (
                             <div className="absolute bottom-full left-0 mb-2 w-48 bg-white border border-gray-200 shadow-2xl rounded-lg overflow-hidden z-50">
                               <div className="px-2 py-1.5 bg-gray-50 border-b border-gray-100 text-[10px] font-bold text-gray-500 uppercase tracking-wider">標記人員</div>
@@ -3292,7 +3255,6 @@
                     )}
                   </div>
 
-                  {/* === 活動紀錄區 (Activity History) === */}
                   <div className="pt-3 border-t border-gray-200">
                     <label className="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider flex items-center gap-1.5"><History size={14} />系統活動紀錄</label>
                     <div className="space-y-2 max-h-24 overflow-y-auto bg-white rounded border border-gray-200 p-2 shadow-sm">
