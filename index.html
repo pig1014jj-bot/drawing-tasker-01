@@ -2503,7 +2503,8 @@
                   </div>
                 )}
 
-                <div ref={viewportRef} className={`flex-1 overflow-hidden relative bg-[#e5e7eb] touch-none ${isSpacePressed || isPanning ? 'cursor-grab active:cursor-grabbing' : ''}`} onPointerDown={(e)=>{ if(e.button!==2) handleViewportPointerDown(e); }} onPointerMove={handleViewportPointerMove} onPointerUp={handleViewportPointerUp} onPointerLeave={handleViewportPointerUp} onContextMenu={e => e.preventDefault()}>
+                {/* iOS ホワイトアウト対策追加: onPointerCancel によるタッチ状態のリセット */}
+                <div ref={viewportRef} className={`flex-1 overflow-hidden relative bg-[#e5e7eb] touch-none ${isSpacePressed || isPanning ? 'cursor-grab active:cursor-grabbing' : ''}`} onPointerDown={(e)=>{ if(e.button!==2) handleViewportPointerDown(e); }} onPointerMove={handleViewportPointerMove} onPointerUp={handleViewportPointerUp} onPointerLeave={handleViewportPointerUp} onPointerCancel={handleViewportPointerUp} onContextMenu={e => e.preventDefault()}>
                   
                   {/* Toolbar */}
                   <div className="absolute z-20 flex flex-col items-center gap-2" style={{ top: '20px', left: '50%', transform: `translate(calc(-50% + ${toolbarPos.x}px), ${toolbarPos.y}px)` }}>
@@ -2720,9 +2721,9 @@
                     <button onClick={() => handleZoomStep(-0.2)} className="p-1.5 hover:bg-gray-100 rounded text-gray-700"><Minus size={16} /></button>
                   </div>
 
-                  {/* iPad ホワイトアウト対策: translate3d + will-change を付与し最大スケールを抑制 */}
-                  <div className="absolute origin-top-left pointer-events-none" style={{ transform: `translate3d(${pan.x}px, ${pan.y}px, 0) scale(${scale})`, width: '1200px', willChange: 'transform' }}>
-                    <div className={`relative inline-block w-full bg-white shadow-2xl ${!isSpacePressed && !isPanning && addMode !== 'none' ? 'cursor-crosshair' : ''}`} style={{ pointerEvents: isSpacePressed || isPanning ? 'none' : 'auto' }} onPointerDown={!isSpacePressed ? handleContentPointerDown : undefined} onPointerMove={!isSpacePressed ? handleContentPointerMove : undefined} onPointerUp={!isSpacePressed ? handleContentPointerUp : undefined} onPointerLeave={!isSpacePressed ? handleContentPointerUp : undefined}>
+                  {/* iPad ホワイトアウト対策: will-change は GPU メモリを大量消費し白画面の原因になるため削除。2D transform に変更 */}
+                  <div className="absolute origin-top-left pointer-events-none" style={{ transform: `translate(${pan.x}px, ${pan.y}px) scale(${scale})`, width: '1200px' }}>
+                    <div className={`relative inline-block w-full bg-white ${scale > 1.5 ? 'shadow-sm' : 'shadow-2xl'} ${!isSpacePressed && !isPanning && addMode !== 'none' ? 'cursor-crosshair' : ''}`} style={{ pointerEvents: isSpacePressed || isPanning ? 'none' : 'auto' }} onPointerDown={!isSpacePressed ? handleContentPointerDown : undefined} onPointerMove={!isSpacePressed ? handleContentPointerMove : undefined} onPointerUp={!isSpacePressed ? handleContentPointerUp : undefined} onPointerLeave={!isSpacePressed ? handleContentPointerUp : undefined} onPointerCancel={!isSpacePressed ? handleContentPointerUp : undefined}>
                       
                       {/* 圖面渲染，套用 Filters */}
                       <div style={filterStyle} className="w-full transition-all duration-200">
