@@ -366,7 +366,8 @@
       const [showLayerMenu, setShowLayerMenu] = useState(false);
       const [layerVisibility, setLayerVisibility] = useState({
         statuses: { 'todo': true, 'in-progress': true, 'done': true },
-        tags: {} 
+        tags: {},
+        assignees: {} // 新增：負責人顯示狀態
       });
 
       const [scaleInfo, setScaleInfo] = useState({ ratio: 1, unit: 'mm', isCalibrated: false });
@@ -865,6 +866,9 @@
 
       const toggleLayerStatus = (statusKey) => { setLayerVisibility(prev => ({ ...prev, statuses: { ...prev.statuses, [statusKey]: prev.statuses[statusKey] === false ? true : false } })); };
       const toggleLayerTag = (tagId) => { setLayerVisibility(prev => ({ ...prev, tags: { ...prev.tags, [tagId]: prev.tags[tagId] === false ? true : false } })); };
+      
+      // 新增：切換負責人圖層顯示
+      const toggleLayerAssignee = (assigneeId) => { setLayerVisibility(prev => ({ ...prev, assignees: { ...prev.assignees, [assigneeId]: prev.assignees[assigneeId] === false ? true : false } })); };
 
       const handleContentPointerDown = (e) => {
         if (activePointers.current.size >= 2 || isSpacePressed || isPanning || e.button === 1 || e.button === 2) return;
@@ -1259,7 +1263,8 @@
         const matchPage = filterPage === 'all' || task.page.toString() === filterPage;
         const matchStatus = layerVisibility.statuses[task.status] !== false;
         const matchTag = task.tagId ? layerVisibility.tags[task.tagId] !== false : layerVisibility.tags['none'] !== false;
-        return matchSearch && matchAssignee && matchPage && matchStatus && matchTag;
+        const matchLayerAssignee = layerVisibility.assignees[task.assigneeId] !== false; // 新增：負責人顯示判斷
+        return matchSearch && matchAssignee && matchPage && matchStatus && matchTag && matchLayerAssignee;
       }), [currentDisplayTasks, filterQuery, filterAssignees, filterPage, layerVisibility]);
 
       const ganttTasksByAssignee = useMemo(() => {
@@ -2566,7 +2571,7 @@
                       )}
 
                       <div className="w-px h-4 bg-gray-200" />
-                      <button onClick={(e) => { e.stopPropagation(); setShowLayerMenu(!showLayerMenu); setAddMode('none'); }} className={`p-1.5 rounded-full transition-colors flex items-center justify-center ${showLayerMenu ? 'bg-black text-white shadow-md' : 'text-gray-600 hover:bg-gray-100 hover:text-black'}`} title="圖層選單 (一鍵隱藏狀態/工種)"><Layers size={16} /></button>
+                      <button onClick={(e) => { e.stopPropagation(); setShowLayerMenu(!showLayerMenu); setAddMode('none'); }} className={`p-1.5 rounded-full transition-colors flex items-center justify-center ${showLayerMenu ? 'bg-black text-white shadow-md' : 'text-gray-600 hover:bg-gray-100 hover:text-black'}`} title="圖層選單 (一鍵隱藏狀態/工種/負責人)"><Layers size={16} /></button>
 
                       {!isReadOnly && (
                         <>
@@ -2652,6 +2657,28 @@
                                      <span className="text-xs font-bold text-gray-700">{t.name}</span>
                                   </div>
                                   {layerVisibility.tags[t.id] !== false ? <Eye size={16} className="text-gray-500" /> : <EyeOff size={16} className="text-gray-300" />}
+                               </div>
+                            ))}
+                          </div>
+                          <div className="w-full h-px bg-gray-100"></div>
+                          <div>
+                            <div className="text-[10px] font-bold text-gray-400 mb-1.5 uppercase tracking-wider px-1 flex items-center justify-between">
+                              <span>依負責人顯示</span>
+                            </div>
+                            <div className="flex items-center justify-between py-1.5 cursor-pointer hover:bg-gray-50 rounded px-1.5 transition-colors" onClick={() => toggleLayerAssignee('unassigned')}>
+                               <div className="flex items-center gap-2">
+                                  <div className="w-4 h-4 rounded-full bg-gray-200 flex items-center justify-center text-gray-500"><User size={10}/></div>
+                                  <span className="text-xs font-bold text-gray-700">未指派</span>
+                               </div>
+                               {layerVisibility.assignees['unassigned'] !== false ? <Eye size={16} className="text-gray-500" /> : <EyeOff size={16} className="text-gray-300" />}
+                            </div>
+                            {users.map(u => (
+                               <div key={u.id} className="flex items-center justify-between py-1.5 cursor-pointer hover:bg-gray-50 rounded px-1.5 transition-colors" onClick={() => toggleLayerAssignee(u.id)}>
+                                  <div className="flex items-center gap-2">
+                                     <UserAvatar user={u} size="w-4 h-4" iconSize={10} />
+                                     <span className="text-xs font-bold text-gray-700">{u.name}</span>
+                                  </div>
+                                  {layerVisibility.assignees[u.id] !== false ? <Eye size={16} className="text-gray-500" /> : <EyeOff size={16} className="text-gray-300" />}
                                </div>
                             ))}
                           </div>
