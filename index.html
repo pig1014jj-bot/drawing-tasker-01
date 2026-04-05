@@ -40,6 +40,8 @@
   
   <!-- 新增：ExcelJS (用於匯出具備底色與格式的進度表 Excel) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
+  <!-- 新增：JSZip (用於 BCF 匯入匯出) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
   <script>
     const _originalRequire = window.require;
@@ -54,6 +56,10 @@
   
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide-react@0.330.0/dist/umd/lucide-react.min.js"></script>
+  <!-- Three.js for DXF WebGL rendering -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r158/three.min.js"></script>
+  <!-- DXF Parser for CAD entity解析 -->
+  <script src="https://unpkg.com/dxf-parser@1.1.2/dist/dxf-parser.js"></script>
 
   <style>
     @media print {
@@ -83,7 +89,7 @@
       Cloud, User, Stamp, Settings, Highlighter, PanelLeftClose, PanelLeft, PanelTopClose, PanelTop,
       Minus, Download, ChevronDown, Undo, Redo, Ruler, Maximize, Hexagon,
       Printer, Layers, Eye, EyeOff, Tag, Camera, Save, AlertTriangle, Image: ImageIcon,
-      Map: MapIcon, PenLine, PenTool, History, MessageSquare, Send,
+      Map: MapIcon, PenLine, PenTool, History, MessageSquare, Send, HelpCircle,
       FolderUp, FolderDown, Sun, SlidersHorizontal, MousePointerClick, MoreVertical,
       FilePlus, CalendarDays, FileSpreadsheet, CalendarPlus, RefreshCw,
       Lock, Unlock
@@ -120,6 +126,44 @@
     };
 
     const INPUT_CLASS = "w-full px-3 py-2 border border-gray-300 rounded-md focus:border-black focus:ring-1 focus:ring-black outline-none text-sm transition-all bg-white font-medium";
+
+    const DB_NAME = 'drawing-tasker-pro';
+    const DB_VERSION = 1;
+    const DB_STORE = 'persist';
+
+    const openDatabase = () => new Promise((resolve, reject) => {
+      const request = window.indexedDB.open(DB_NAME, DB_VERSION);
+      request.onupgradeneeded = () => {
+        const db = request.result;
+        if (!db.objectStoreNames.contains(DB_STORE)) {
+          db.createObjectStore(DB_STORE, { keyPath: 'key' });
+        }
+      };
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+
+    const getPersistedData = async (key) => {
+      const db = await openDatabase();
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(DB_STORE, 'readonly');
+        const store = tx.objectStore(DB_STORE);
+        const req = store.get(key);
+        req.onsuccess = () => resolve(req.result ? req.result.value : undefined);
+        req.onerror = () => reject(req.error);
+      });
+    };
+
+    const setPersistedData = async (key, value) => {
+      const db = await openDatabase();
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(DB_STORE, 'readwrite');
+        const store = tx.objectStore(DB_STORE);
+        const req = store.put({ key, value });
+        req.onsuccess = () => resolve();
+        req.onerror = () => reject(req.error);
+      });
+    };
 
     const MARKER_COLORS = [
       { id: 'primary', stroke: '#0067a6', name: '深藍' },
@@ -158,12 +202,129 @@
 
     const INITIAL_TASKS = [
       { id: '1', type: 'pin', title: '主臥室管線確認', description: '冷氣排水管似乎與柱子干擾，請機電人員確認。', status: 'done', x: 35.5, y: 42.1, page: 1, startDate: getToday(-5), endDate: getToday(-2), assigneeId: 'u1', tagId: 'tg1', attachments: [], history: [{ date: '2026-03-25 09:00', message: '任務建立' }, { date: '2026-03-27 14:30', message: '狀態由「進行中」變更為「已完成」' }], comments: [{id: 'c1', userId: 'u2', text: '請問這個問題有確認了嗎 @王小明？', date: '2026-03-26 10:15'}, {id: 'c2', userId: 'u1', text: '已經確認並修改圖面囉。', date: '2026-03-27 14:25'}], isLocked: true },
-      { id: '2', type: 'stamp', stampCode: 'W-01', title: '壁面漏水', description: '發現牆面有不正常水痕或滲漏狀況，請相關人員進行管線或防水層查驗。', status: 'in-progress', x: 65.2, y: 55.4, page: 1, startDate: getToday(-1), endDate: getToday(2), assigneeId: 'u2', tagId: 'tg2', attachments: [], history: [{ date: '2026-03-31 10:15', message: '任務建立' }, { date: '2026-04-01 08:20', message: '狀態由「待辦」變更為「進行中」' }], comments: [], isLocked: true },
-      { id: '3', type: 'cloud', title: '牆面裂縫修補', description: '此範圍內的牆面裂縫需要進行修補作業。', status: 'todo', x: 10, y: 65, width: 25, height: 18, page: 1, startDate: getToday(2), endDate: getToday(5), assigneeId: 'u3', tagId: 'tg2', attachments: [], isInverted: false, history: [{ date: getNow(), message: '任務建立' }], comments: [], isLocked: true },
+      { id: '2', type: 'stamp', stampCode: 'W-01', title: '壁面漏水', description: '發現牆面有不正常水痕或滲漏狀況，請相關人員進行管線或防水層查驗。', status: 'in-progress', x: 65.2, y: 55.4, page: 1, startDate: getToday(-1), endDate: getToday(2), assigneeId: 'u2', tagId: 'tg2', attachments: [], history: [{ date: '2026-03-31 10:15', message: '任務建立' }, { date: '2026-04-01 08:20', message: '狀態由「待辦」變更為「進行中」' }], comments: [], dependencies: ['1'], isLocked: true },
+      { id: '3', type: 'cloud', title: '牆面裂縫修補', description: '此範圍內的牆面裂縫需要進行修補作業。', status: 'todo', x: 10, y: 65, width: 25, height: 18, page: 1, startDate: getToday(2), endDate: getToday(5), assigneeId: 'u3', tagId: 'tg2', attachments: [], dependencies: ['2'], isInverted: false, history: [{ date: getNow(), message: '任務建立' }], comments: [], isLocked: true },
       { id: '4', type: 'highlight', colorId: 'warning', title: '確認弱電走線', description: '請再次確認這段走廊の弱電線槽配置，確認是否有足夠空間。', status: 'done', x: 45, y: 15, width: 35, height: 10, page: 1, points: [{x: 0, y: 5}, {x: 15, y: 0}, {x: 25, y: 8}, {x: 35, y: 10}], startDate: getToday(-3), endDate: getToday(0), assigneeId: 'u1', tagId: 'tg1', attachments: [], history: [{ date: getNow(), message: '任務建立' }], comments: [], isLocked: true },
-      { id: '5', type: 'pen', colorId: 'danger', title: '新增管線路徑', description: '建議以此路線重新配置消防管線。', status: 'todo', x: 20, y: 30, width: 20, height: 20, page: 1, points: [{x: 0, y: 0}, {x: 10, y: 5}, {x: 15, y: 15}, {x: 20, y: 20}], startDate: getToday(), endDate: getToday(2), assigneeId: 'u2', tagId: 'tg3', attachments: [], history: [{ date: getNow(), message: '任務建立' }], comments: [], isLocked: true },
+      { id: '5', type: 'pen', colorId: 'danger', title: '新增管線路徑', description: '建議以此路線重新配置消防管線。', status: 'todo', x: 20, y: 30, width: 20, height: 20, page: 1, points: [{x: 0, y: 0}, {x: 10, y: 5}, {x: 15, y: 15}, {x: 20, y: 20}], startDate: getToday(), endDate: getToday(2), assigneeId: 'u2', tagId: 'tg3', attachments: [], dependencies: ['4'], history: [{ date: getNow(), message: '任務建立' }], comments: [], isLocked: true },
       { id: '6', type: 'pin', title: '油漆修補', description: '角落有掉漆現象。', status: 'todo', x: 15, y: 40, page: 1, startDate: getToday(1), endDate: getToday(3), assigneeId: 'unassigned', tagId: 'tg2', attachments: [], history: [], comments: [], isLocked: true }
     ];
+
+    const LANGUAGES = {
+      zh: {
+        appTitle: '圖面管理',
+        navBlueprint: '圖面',
+        navBoard: '看板',
+        navCalendar: '日曆',
+        navGantt: '進度表',
+        navSnapshots: '快照',
+        navSettings: '設定',
+        exportPDF: '產生 PDF',
+        exportCSV: '匯出 Excel',
+        exportBCF: '匯出 BCF',
+        importBCF: '匯入 BCF',
+        newProject: '開啟新專案',
+        resetTemplate: '重置回範本',
+        backupProject: '備份專案',
+        importProject: '讀取專案',
+        confirmNewTitle: '警告：開啟新專案',
+        confirmNewMessage: '您確定要開啟一個全新的專案嗎？目前所有未備份的圖面、標記與設定都將被清除且無法復原！建議您先點擊「備份專案」將目前進度下載儲存。',
+        confirmTemplateTitle: '警告：重置回範本',
+        confirmTemplateMessage: '您確定要重置為系統預設範本嗎？目前所有未備份的變更都將被覆蓋且無法復原！',
+        cancel: '取消',
+        confirm: '確定',
+        confirmNew: '確定捨棄並開啟新專案',
+        confirmTemplate: '確定重置回範本',
+        sopTitle: '系統操作 SOP',
+        helpTitle: '甘特圖操作說明',
+        touchHelp: 'iPad / 觸控操作',
+        desktopHelp: '電腦版快捷鍵',
+        scaleLabel: '比例尺',
+        scaleNotCalibrated: '尚未校正 (1:1)',
+        guide: '指南',
+        sop: 'SOP',
+        highlightTitle: '繪製螢光筆 (可選色) (快捷鍵 3)',
+        penTitle: '色筆一線標記 (可選色) (快捷鍵 4)',
+        highlightMode: '螢光筆: ',
+        penMode: '色筆: ',
+        selectTitle: '點選模式 (快捷鍵 0)'
+      },
+      ja: {
+        appTitle: '図面管理',
+        navBlueprint: '図面',
+        navBoard: 'ボード',
+        navCalendar: 'カレンダー',
+        navGantt: 'ガントチャート',
+        navSnapshots: 'スナップショット',
+        navSettings: '設定',
+        exportPDF: 'PDF生成',
+        exportCSV: 'Excelエクスポート',
+        exportBCF: 'BCFエクスポート',
+        importBCF: 'BCFインポート',
+        newProject: '新規プロジェクト',
+        resetTemplate: 'テンプレートに戻す',
+        backupProject: 'プロジェクトバックアップ',
+        importProject: 'プロジェクト読み込み',
+        confirmNewTitle: '警告：新規プロジェクト',
+        confirmNewMessage: '新規プロジェクトを開始しますか？現在の図面、マーキング、設定がすべて削除され、復元できません！まず「プロジェクトバックアップ」をクリックして現在の進捗をダウンロードしてください。',
+        confirmTemplateTitle: '警告：テンプレートに戻す',
+        confirmTemplateMessage: 'システムデフォルトテンプレートにリセットしますか？バックアップされていない変更はすべて上書きされ、復元できません！',
+        cancel: 'キャンセル',
+        confirm: '確定',
+        confirmNew: '破棄して新規プロジェクトを開始',
+        confirmTemplate: 'テンプレートに戻す',
+        sopTitle: 'システム操作 SOP',
+        helpTitle: 'ガントチャート操作説明',
+        touchHelp: 'iPad / タッチ操作',
+        desktopHelp: 'PC版ショートカットキー',
+        scaleLabel: 'スケール',
+        scaleNotCalibrated: '未校正 (1:1)',
+        guide: 'ガイド',
+        sop: 'SOP',
+        highlightTitle: '蛍光ペンで描画 (色選択可) (ショートカット 3)',
+        penTitle: 'ペンで線を描画 (色選択可) (ショートカット 4)',
+        highlightMode: '蛍光ペン: ',
+        penMode: '色ペン: ',
+        selectTitle: '選択モード (ショートカット 0)'
+      },
+      en: {
+        appTitle: 'Blueprint Manager',
+        navBlueprint: 'Blueprint',
+        navBoard: 'Board',
+        navCalendar: 'Calendar',
+        navGantt: 'Gantt Chart',
+        navSnapshots: 'Snapshots',
+        navSettings: 'Settings',
+        exportPDF: 'Generate PDF',
+        exportCSV: 'Export Excel',
+        exportBCF: 'Export BCF',
+        importBCF: 'Import BCF',
+        newProject: 'New Project',
+        resetTemplate: 'Reset to Template',
+        backupProject: 'Backup Project',
+        importProject: 'Import Project',
+        confirmNewTitle: 'Warning: New Project',
+        confirmNewMessage: 'Are you sure you want to start a new project? All current blueprints, markings, and settings will be cleared and cannot be restored! Please click "Backup Project" first to download your current progress.',
+        confirmTemplateTitle: 'Warning: Reset to Template',
+        confirmTemplateMessage: 'Are you sure you want to reset to the system default template? All unbacked changes will be overwritten and cannot be restored!',
+        cancel: 'Cancel',
+        confirm: 'Confirm',
+        confirmNew: 'Discard and Start New Project',
+        confirmTemplate: 'Reset to Template',
+        sopTitle: 'System Operation SOP',
+        helpTitle: 'Gantt Chart Operation Guide',
+        touchHelp: 'iPad / Touch Operation',
+        desktopHelp: 'Desktop Shortcuts',
+        scaleLabel: 'Scale',
+        scaleNotCalibrated: 'Not calibrated (1:1)',
+        guide: 'Guide',
+        sop: 'SOP',
+        highlightTitle: 'Draw with highlighter (color selectable) (Shortcut 3)',
+        penTitle: 'Draw line with pen (color selectable) (Shortcut 4)',
+        highlightMode: 'Highlighter: ',
+        penMode: 'Pen: ',
+        selectTitle: 'Select mode (Shortcut 0)'
+      }
+    };
 
     const INITIAL_SNAPSHOTS = [
       {
@@ -385,10 +546,17 @@
       const [users, setUsers] = useState(INITIAL_USERS); 
       const [tags, setTags] = useState(INITIAL_TAGS);
       const [activeTaskId, setActiveTaskId] = useState(null);
+      const [isOffline, setIsOffline] = useState(() => typeof navigator !== 'undefined' ? !navigator.onLine : false);
       
       const [currentUserId, setCurrentUserId] = useState(INITIAL_USERS[0].id);
       const [addMode, setAddMode] = useState('none'); 
       const [activeColor, setActiveColor] = useState(MARKER_COLORS[0]);
+
+      const [language, setLanguage] = useState('ja'); // zh, ja, en
+
+      useEffect(() => {
+        document.documentElement.lang = language;
+      }, [language]);
 
       const [isDrawing, setIsDrawing] = useState(false);
       const [drawStart, setDrawStart] = useState(null);
@@ -438,11 +606,16 @@
       
       const [pdfjsLoaded, setPdfjsLoaded] = useState(false);
       const [viewMode, setViewMode] = useState('image');
+      const [compareMode, setCompareMode] = useState(false);
       const [backgroundImage, setBackgroundImage] = useState(null); 
       const [pdfDocument, setPdfDocument] = useState(null);
+      const [oldPdfDocument, setOldPdfDocument] = useState(null);
       const [currentPage, setCurrentPage] = useState(1);
+      const [oldCurrentPage, setOldCurrentPage] = useState(1);
       const [totalPages, setTotalPages] = useState(1);
+      const [oldTotalPages, setOldTotalPages] = useState(1);
       const [isRendering, setIsRendering] = useState(false);
+      const [dxfModel, setDxfModel] = useState(null);
 
       const [formData, setFormData] = useState({ 
         type: '', colorId: '', title: '', description: '', status: 'todo', startDate: getToday(), endDate: getToday(1), 
@@ -461,8 +634,14 @@
       const [contextMenu, setContextMenu] = useState(null);
 
       const [showConfirmNew, setShowConfirmNew] = useState(false);
+      const [showConfirmTemplate, setShowConfirmTemplate] = useState(false);
+      const [showHelpGuide, setShowHelpGuide] = useState(false);
+      const [showSopGuide, setShowSopGuide] = useState(false);
+      const [showLanguageMenu, setShowLanguageMenu] = useState(false);
+      const [isTouchDevice, setIsTouchDevice] = useState(false);
 
       const [ganttInteraction, setGanttInteraction] = useState({ active: false, type: null, taskId: null, startX: 0, currentX: 0, originalStart: null, originalEnd: null });
+      const [ganttLinkSourceTaskId, setGanttLinkSourceTaskId] = useState(null);
 
       const [calendarMonth, setCalendarMonth] = useState(() => {
         const d = new Date();
@@ -486,13 +665,22 @@
       const [showMentionPopup, setShowMentionPopup] = useState(false);
       const [mentionFilter, setMentionFilter] = useState('');
       const commentInputRef = useRef(null);
+      const dxfContainerRef = useRef(null);
+      const dxfRendererRef = useRef(null);
+      const dxfSceneRef = useRef(null);
+      const dxfCameraRef = useRef(null);
 
       const canvasRef = useRef(null);
+      const oldCanvasRef = useRef(null);
       const fileInputRef = useRef(null);
+      const oldFileInputRef = useRef(null);
       const projectInputRef = useRef(null);
       const viewportRef = useRef(null);
       
       const ganttScrollRef = useRef(null);
+      const ganttContainerRef = useRef(null);
+      const ganttTaskBarRefs = useRef({});
+      const [ganttDependencyLines, setGanttDependencyLines] = useState([]);
       
       const activePointers = useRef(new window.Map());
       const lastPinchDist = useRef(null);
@@ -524,10 +712,183 @@
         const closeMenu = () => {
            setContextMenu(null);
            setShowAssigneeFilter(false);
+           setShowLanguageMenu(false);
         };
         window.addEventListener('click', closeMenu);
         return () => window.removeEventListener('click', closeMenu);
       }, []);
+
+      useEffect(() => {
+        const handleOnline = () => setIsOffline(false);
+        const handleOffline = () => setIsOffline(true);
+        window.addEventListener('online', handleOnline);
+        window.addEventListener('offline', handleOffline);
+
+        const touchSupport = typeof navigator !== 'undefined' && (
+          (navigator.maxTouchPoints && navigator.maxTouchPoints > 0) ||
+          ('ontouchstart' in window) ||
+          (navigator.userAgent && /iPad|iPhone|Android/.test(navigator.userAgent))
+        );
+        setIsTouchDevice(!!touchSupport);
+
+        return () => {
+          window.removeEventListener('online', handleOnline);
+          window.removeEventListener('offline', handleOffline);
+        };
+      }, []);
+
+      useEffect(() => {
+        const handleKeyDown = (event) => {
+          if (event.target && ['INPUT', 'TEXTAREA', 'SELECT'].includes(event.target.tagName)) return;
+          if (event.key === '?' || event.key === 'F1') {
+            event.preventDefault();
+            setShowHelpGuide(prev => {
+              setShowSopGuide(false);
+              return !prev;
+            });
+          }
+          if (event.key === 'Escape') {
+            setShowHelpGuide(false);
+            setShowSopGuide(false);
+          }
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+      }, [showHelpGuide]);
+
+      useEffect(() => {
+        let isMounted = true;
+        const loadPersistedState = async () => {
+          try {
+            const storedTasks = await getPersistedData('tasks');
+            const storedSnapshots = await getPersistedData('snapshots');
+            const storedUsers = await getPersistedData('users');
+            const storedTags = await getPersistedData('tags');
+            const storedStamps = await getPersistedData('stamps');
+            if (!isMounted) return;
+            if (storedTasks) setTasks(storedTasks);
+            if (storedSnapshots) setSnapshots(storedSnapshots);
+            if (storedUsers) setUsers(storedUsers);
+            if (storedTags) setTags(storedTags);
+            if (storedStamps) setStamps(storedStamps);
+          } catch (error) {
+            console.warn('IndexedDB 載入失敗', error);
+          }
+        };
+        loadPersistedState();
+        return () => { isMounted = false; };
+      }, []);
+
+      useEffect(() => {
+        setPersistedData('tasks', tasks).catch((err) => console.warn('IndexedDB 儲存 tasks 失敗', err));
+      }, [tasks]);
+
+      useEffect(() => {
+        setPersistedData('snapshots', snapshots).catch((err) => console.warn('IndexedDB 儲存 snapshots 失敗', err));
+      }, [snapshots]);
+
+      useEffect(() => {
+        setPersistedData('users', users).catch((err) => console.warn('IndexedDB 儲存 users 失敗', err));
+      }, [users]);
+
+      useEffect(() => {
+        setPersistedData('tags', tags).catch((err) => console.warn('IndexedDB 儲存 tags 失敗', err));
+      }, [tags]);
+
+      useEffect(() => {
+        setPersistedData('stamps', stamps).catch((err) => console.warn('IndexedDB 儲存 stamps 失敗', err));
+      }, [stamps]);
+
+      const measureGanttDependencyLines = useCallback(() => {
+        if (!ganttContainerRef.current) return;
+        const containerRect = ganttContainerRef.current.getBoundingClientRect();
+        const lines = [];
+
+        filteredTasks.forEach(task => {
+          (task.dependencies || []).forEach(depId => {
+            const fromBar = ganttTaskBarRefs.current[depId];
+            const toBar = ganttTaskBarRefs.current[task.id];
+            if (!fromBar || !toBar) return;
+            const fromRect = fromBar.getBoundingClientRect();
+            const toRect = toBar.getBoundingClientRect();
+            const fromX = fromRect.right - containerRect.left;
+            const fromY = fromRect.top - containerRect.top + fromRect.height / 2;
+            const toX = toRect.left - containerRect.left;
+            const toY = toRect.top - containerRect.top + toRect.height / 2;
+            const ctrlOffset = Math.max(20, Math.min(80, Math.abs(toX - fromX) * 0.3));
+            const path = `M ${fromX} ${fromY} C ${fromX + ctrlOffset} ${fromY} ${toX - ctrlOffset} ${toY} ${toX} ${toY}`;
+            lines.push({ id: `${depId}->${task.id}`, path, fromX, fromY, toX, toY });
+          });
+        });
+
+        setGanttDependencyLines(lines);
+      }, [filteredTasks]);
+
+      const addDays = (dateStr, days) => {
+        const date = new Date(dateStr + 'T00:00:00');
+        date.setDate(date.getDate() + days);
+        const pad = n => n.toString().padStart(2, '0');
+        return `${date.getFullYear()}-${pad(date.getMonth()+1)}-${pad(date.getDate())}`;
+      };
+
+      const syncFinishToStartDependencies = (taskList) => {
+        const taskMap = taskList.reduce((map, task) => { map[task.id] = { ...task }; return map; }, {});
+        let updated = true;
+        while (updated) {
+          updated = false;
+          taskList.forEach(task => {
+            const currentTask = taskMap[task.id];
+            if (!currentTask.dependencies || currentTask.dependencies.length === 0) return;
+            const maxPredEnd = currentTask.dependencies.reduce((maxDate, depId) => {
+              const depTask = taskMap[depId];
+              if (!depTask) return maxDate;
+              return depTask.endDate > maxDate ? depTask.endDate : maxDate;
+            }, '0000-00-00');
+            if (maxPredEnd === '0000-00-00') return;
+            const desiredStart = addDays(maxPredEnd, 1);
+            if (currentTask.startDate !== desiredStart) {
+              const oldStart = new Date(currentTask.startDate + 'T00:00:00');
+              const oldEnd = new Date(currentTask.endDate + 'T00:00:00');
+              const duration = Math.round((oldEnd - oldStart) / 86400000) + 1;
+              const newStart = new Date(desiredStart + 'T00:00:00');
+              const newEnd = new Date(newStart.getTime() + (duration - 1) * 86400000);
+              currentTask.startDate = desiredStart;
+              currentTask.endDate = `${newEnd.getFullYear()}-${('0' + (newEnd.getMonth() + 1)).slice(-2)}-${('0' + newEnd.getDate()).slice(-2)}`;
+              taskMap[task.id] = currentTask;
+              updated = true;
+            }
+          });
+          taskList = taskList.map(task => ({ ...taskMap[task.id] }));
+        }
+        return taskList;
+      };
+
+      const connectGanttTasks = (sourceId, targetId) => {
+        if (sourceId === targetId) return;
+        updateTasks(current => {
+          const nextTasks = current.map(task => {
+            if (task.id !== targetId) return task;
+            const deps = task.dependencies ? [...new Set([...task.dependencies, sourceId])] : [sourceId];
+            return { ...task, dependencies: deps };
+          });
+          return syncFinishToStartDependencies(nextTasks);
+        });
+        setGanttLinkSourceTaskId(null);
+      };
+
+      useEffect(() => {
+        if (appView !== 'gantt') return;
+        measureGanttDependencyLines();
+      }, [appView, filteredTasks, ganttInteraction, ganttData, measureGanttDependencyLines]);
+
+      useEffect(() => {
+        const handleResize = () => {
+          if (appView !== 'gantt') return;
+          measureGanttDependencyLines();
+        };
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+      }, [appView, measureGanttDependencyLines]);
 
       const updateTasks = useCallback((newTasksOrUpdater) => {
         if (isReadOnly) return;
@@ -571,6 +932,7 @@
           if (e.code === 'Space') { e.preventDefault(); setIsSpacePressed(true); }
           
           if (!isReadOnly && !activeStatesRef.current.isDrawing && !activeStatesRef.current.showTaskModal) {
+            if (e.key === '0') setAddMode('none');
             if (e.key === '1') setAddMode(prev => prev === 'pin' ? 'none' : 'pin');
             if (e.key === '2') setAddMode(prev => prev === 'cloud' ? 'none' : 'cloud');
             if (e.key === '3') setAddMode(prev => prev === 'highlight' ? 'none' : 'highlight');
@@ -806,11 +1168,10 @@
       }, []);
 
       useEffect(() => {
-        const renderPage = async () => {
-          if (viewMode !== 'pdf' || !pdfDocument || !canvasRef.current || (appView !== 'blueprint' && appView !== 'report')) return;
-          setIsRendering(true);
+        const renderPdfPage = async (pdf, pageNumber, canvas) => {
+          if (!pdf || !canvas || (appView !== 'blueprint' && appView !== 'report')) return;
           try {
-            const page = await pdfDocument.getPage(currentPage);
+            const page = await pdf.getPage(pageNumber);
             let renderScale = 2.0;
             const unscaledViewport = page.getViewport({ scale: 1.0 });
             const maxArea = 16777000;
@@ -819,23 +1180,164 @@
                renderScale = Math.floor(Math.sqrt(maxArea / (unscaledViewport.width * unscaledViewport.height)) * 10) / 10;
             }
             const viewport = page.getViewport({ scale: renderScale });
-            const canvas = canvasRef.current, ctx = canvas.getContext('2d');
-            canvas.width = viewport.width; canvas.height = viewport.height;
+            const ctx = canvas.getContext('2d');
+            canvas.width = viewport.width;
+            canvas.height = viewport.height;
             await page.render({ canvasContext: ctx, viewport }).promise;
-          } catch (err) { console.error(err); } finally { setIsRendering(false); }
+          } catch (err) {
+            console.error(err);
+          }
+        };
+
+        const renderPage = async () => {
+          if (!window.pdfjsLib) return;
+          setIsRendering(true);
+          try {
+            if (compareMode && oldPdfDocument && pdfDocument) {
+              await renderPdfPage(oldPdfDocument, oldCurrentPage, oldCanvasRef.current);
+              await renderPdfPage(pdfDocument, currentPage, canvasRef.current);
+            } else if (viewMode === 'pdf' && pdfDocument) {
+              await renderPdfPage(pdfDocument, currentPage, canvasRef.current);
+            }
+          } finally {
+            setIsRendering(false);
+          }
         };
         renderPage();
-      }, [pdfDocument, currentPage, viewMode, appView]);
+      }, [pdfDocument, currentPage, viewMode, appView, compareMode, oldPdfDocument, oldCurrentPage]);
+
+      useEffect(() => {
+        if (viewMode !== 'dxf' || !dxfModel || !dxfContainerRef.current || !window.THREE) return;
+        const THREE = window.THREE;
+        const { WebGLRenderer, Scene, OrthographicCamera, BufferGeometry, LineBasicMaterial, LineSegments, Box3, Vector3, Float32BufferAttribute } = THREE;
+        const container = dxfContainerRef.current;
+
+        if (dxfRendererRef.current) {
+          dxfRendererRef.current.dispose();
+          container.innerHTML = '';
+        }
+
+        const renderer = new WebGLRenderer({ alpha: true, antialias: true });
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        const rect = container.getBoundingClientRect();
+        renderer.setSize(rect.width, rect.height, false);
+        renderer.domElement.style.width = '100%';
+        renderer.domElement.style.height = '100%';
+        container.appendChild(renderer.domElement);
+
+        const scene = new Scene();
+        scene.background = null;
+
+        const positions = [];
+        const pushLine = (x1, y1, x2, y2) => {
+          positions.push(x1, y1, 0, x2, y2, 0);
+        };
+
+        dxfModel.entities.forEach(entity => {
+          if (!entity || !entity.type) return;
+          if (entity.type === 'LINE') {
+            const pts = entity.vertices && entity.vertices.length === 2 ? entity.vertices : [entity.start, entity.end];
+            if (pts && pts[0] && pts[1]) {
+              pushLine(pts[0].x, pts[0].y, pts[1].x, pts[1].y);
+            }
+          } else if (entity.type === 'LWPOLYLINE' || entity.type === 'POLYLINE') {
+            const vertices = entity.vertices || entity.vertices || [];
+            for (let i = 1; i < vertices.length; i++) {
+              const prev = vertices[i - 1];
+              const curr = vertices[i];
+              pushLine(prev.x, prev.y, curr.x, curr.y);
+            }
+            if (entity.shape || entity.closed) {
+              const first = vertices[0];
+              const last = vertices[vertices.length - 1];
+              if (first && last) pushLine(last.x, last.y, first.x, first.y);
+            }
+          } else if (entity.type === 'POLYLINE' && entity.vertices) {
+            const vertices = entity.vertices;
+            for (let i = 1; i < vertices.length; i++) {
+              const prev = vertices[i - 1];
+              const curr = vertices[i];
+              pushLine(prev.x, prev.y, curr.x, curr.y);
+            }
+            if (entity.closed) {
+              const first = vertices[0];
+              const last = vertices[vertices.length - 1];
+              if (first && last) pushLine(last.x, last.y, first.x, first.y);
+            }
+          }
+        });
+
+        const geometry = new BufferGeometry();
+        geometry.setAttribute('position', new Float32BufferAttribute(positions, 3));
+        const material = new LineBasicMaterial({ color: 0x111111, linewidth: 1 });
+        const lines = new LineSegments(geometry, material);
+        scene.add(lines);
+
+        const bbox = new Box3().setFromObject(lines);
+        const size = bbox.getSize(new Vector3());
+        const center = bbox.getCenter(new Vector3());
+        const margin = 1.25;
+        const aspect = rect.width / rect.height || 1;
+        const maxDim = Math.max(size.x, size.y) || 1;
+        const halfHeight = (maxDim * margin) / 2;
+        const halfWidth = halfHeight * aspect;
+
+        const camera = new OrthographicCamera(-halfWidth, halfWidth, halfHeight, -halfHeight, 0.1, 1000);
+        camera.position.set(center.x, center.y, 100);
+        camera.lookAt(center);
+        camera.updateProjectionMatrix();
+
+        const renderScene = () => renderer.render(scene, camera);
+        renderScene();
+
+        const handleResize = () => {
+          const bounds = container.getBoundingClientRect();
+          renderer.setSize(bounds.width, bounds.height, false);
+          const newAspect = bounds.width / bounds.height || 1;
+          const newHalfWidth = halfHeight * newAspect;
+          camera.left = -newHalfWidth;
+          camera.right = newHalfWidth;
+          camera.top = halfHeight;
+          camera.bottom = -halfHeight;
+          camera.updateProjectionMatrix();
+          renderScene();
+        };
+
+        window.addEventListener('resize', handleResize);
+        dxfRendererRef.current = renderer;
+        dxfSceneRef.current = scene;
+        dxfCameraRef.current = camera;
+
+        return () => {
+          window.removeEventListener('resize', handleResize);
+          renderer.dispose();
+          container.innerHTML = '';
+        };
+      }, [viewMode, dxfModel]);
 
       const handleFileUpload = (e) => {
         const file = e.target.files[0];
         if (!file) return;
         if (file.name.toLowerCase().endsWith('.dxf')) {
-          alert("系統提示：已偵測到 DXF 圖檔！目前版本已為 DXF 格式預留介面，即將串接向量解析引擎。本系統已為您載入空白網格圖紙，您可以按住 Shift 鍵直接測試「智慧鎖點機制」的強大功能！");
-          setBackgroundImage(null);
-          setPdfDocument(null);
-          setViewMode('image'); 
-          resetAppState();
+          if (!window.DxfParser || !window.THREE) return alert('DXF 解析引擎尚未載入，請稍後再試。');
+          const reader = new FileReader();
+          reader.onload = async (ev) => {
+            try {
+              const parser = new window.DxfParser();
+              const dxf = parser.parseSync(new TextDecoder().decode(new Uint8Array(ev.target.result)));
+              setDxfModel(dxf);
+              setBackgroundImage(null);
+              setPdfDocument(null);
+              setViewMode('dxf');
+              setTotalPages(1);
+              setCurrentPage(1);
+              resetAppState();
+            } catch (err) {
+              console.error(err);
+              alert('DXF 解析失敗，請確認檔案是否為有效 DXF。');
+            }
+          };
+          reader.readAsArrayBuffer(file);
           return;
         }
 
@@ -854,6 +1356,30 @@
           setBackgroundImage(URL.createObjectURL(file)); setViewMode('image'); setTotalPages(1); setCurrentPage(1);
           resetAppState();
         }
+      };
+
+      const handleOldFileUpload = (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        if (file.type !== 'application/pdf') return alert('請上傳 PDF 檔案作為舊版圖面。');
+        if (!window.pdfjsLib) return alert("PDF引擎讀取中，請稍後再試。");
+        const reader = new FileReader();
+        reader.onload = async (ev) => {
+          try {
+            const pdf = await window.pdfjsLib.getDocument({ data: new Uint8Array(ev.target.result) }).promise;
+            setOldPdfDocument(pdf);
+            setOldTotalPages(pdf.numPages);
+            setOldCurrentPage(1);
+            if (pdfDocument) {
+              setCompareMode(true);
+            } else {
+              alert('已載入舊版 PDF，請再載入新版 PDF 以啟動比對模式。');
+            }
+          } catch (err) {
+            alert("舊版 PDF 讀取失敗，請確認檔案格式。");
+          }
+        };
+        reader.readAsArrayBuffer(file);
       };
 
       const handleExportProject = () => {
@@ -949,6 +1475,32 @@
         setScaleInfo({ ratio: 1, unit: 'mm', isCalibrated: false });
         setActiveSnapshotId(null);
         setImageFilters({ brightness: 100, contrast: 100, invert: false, grayscale: false });
+      };
+
+      const resetToTemplate = () => {
+        updateTasks(INITIAL_TASKS.map(t => ({ ...t })));
+        setSnapshots([]);
+        setPastTasks([]);
+        setFutureTasks([]);
+        setActiveTaskId(null);
+        setMeasureResult(null);
+        setAreaResult(null);
+        setScaleInfo({ ratio: 1, unit: 'mm', isCalibrated: false });
+        setActiveSnapshotId(null);
+        setImageFilters({ brightness: 100, contrast: 100, invert: false, grayscale: false });
+        setBackgroundImage(null);
+        setPdfDocument(null);
+        setViewMode('image');
+        setProjectStartDate(getToday(-7));
+        setProjectEndDate(getToday(30));
+        setTags(INITIAL_TAGS);
+        setUsers(INITIAL_USERS);
+        setStamps(INITIAL_STAMPS);
+        setCurrentPage(1);
+        setTotalPages(1);
+        setAppView('blueprint');
+        resetView();
+        setShowConfirmTemplate(false);
       };
 
       const toggleLayerStatus = (statusKey) => { setLayerVisibility(prev => ({ ...prev, statuses: { ...prev.statuses, [statusKey]: prev.statuses[statusKey] === false ? true : false } })); };
@@ -1086,7 +1638,7 @@
 
           const newTask = { id: Date.now().toString(), type: addMode, x: minX, y: minY, width: safeWidth, height: safeHeight, points: relativePoints, page: currentPage, colorId: activeColor.id, ...baseData, title: addMode === 'highlight' ? '螢光筆標記' : '色筆標記', history: [{ date: getNow(), message: '任務建立' }] };
           updateTasks([...tasks, newTask]); setActiveTaskId(newTask.id);
-          setEditingId(null); setAddMode('none'); setDrawPoints([]);
+          setEditingId(null); setDrawPoints([]);
         }
       };
 
@@ -1220,6 +1772,143 @@
         const link = document.createElement('a');
         link.href = URL.createObjectURL(new Blob(['\uFEFF' + [headers.join(','), ...rows].join('\n')], { type: 'text/csv;charset=utf-8;' }));
         link.download = `巡檢缺失報表_${getToday()}.csv`; link.click();
+      };
+
+      const handleExportBCF = async () => {
+        if (!window.JSZip) {
+          alert("BCF 引擎載入中，請稍後再試。");
+          return;
+        }
+        if (filteredTasks.length === 0) {
+          alert("目前沒有任務可匯出 BCF！");
+          return;
+        }
+
+        const zip = new window.JSZip();
+        
+        // BCF version file
+        zip.file('bcf.version', '2.1');
+
+        // Process each task as a BCF issue
+        filteredTasks.forEach(task => {
+          const issueId = task.id;
+          const issueFolder = zip.folder(issueId);
+          
+          // markup.bcf - Main issue data
+          const markupXml = `<?xml version="1.0" encoding="UTF-8"?>
+<Markup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Topic Guid="${issueId}" TopicType="Issue" TopicStatus="${task.status === 'done' ? 'Closed' : task.status === 'in-progress' ? 'Active' : 'Open'}">
+    <Title>${task.title}</Title>
+    <Description>${task.description || ''}</Description>
+    <CreationDate>${new Date().toISOString()}</CreationDate>
+    <ModifiedDate>${new Date().toISOString()}</ModifiedDate>
+    <AssignedTo>${users.find(u => u.id === task.assigneeId)?.name || ''}</AssignedTo>
+  </Topic>
+</Markup>`;
+          
+          issueFolder.file('markup.bcf', markupXml);
+          
+          // viewpoint.bcf - Viewpoint data
+          const viewpointXml = `<?xml version="1.0" encoding="UTF-8"?>
+<ViewPoint xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <ViewPoint>
+    <FieldOfView>45.0</FieldOfView>
+  </ViewPoint>
+  <Components>
+    <Component>
+      <OriginatingSystem>Blueprint Manager</OriginatingSystem>
+    </Component>
+  </Components>
+</ViewPoint>`;
+          
+          issueFolder.file('viewpoint.bcf', viewpointXml);
+        });
+
+        // Generate and download ZIP file
+        const content = await zip.generateAsync({ type: 'blob' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(content);
+        link.download = `project_issues_${getToday()}.bcfzip`;
+        link.click();
+      };
+
+      const handleImportBCF = async (event) => {
+        const file = event.target.files[0];
+        if (!file || !file.name.toLowerCase().endsWith('.bcfzip')) {
+          alert("請選擇有效的 BCF 檔案 (.bcfzip)！");
+          return;
+        }
+
+        if (!window.JSZip) {
+          alert("BCF 引擎載入中，請稍後再試。");
+          return;
+        }
+
+        try {
+          const zip = await window.JSZip.loadAsync(file);
+          const importedTasks = [];
+
+          // Process each issue folder
+          for (const [path, zipEntry] of Object.entries(zip.files)) {
+            if (zipEntry.dir && !path.includes('/')) {
+              const issueId = path.replace('/', '');
+              const issueFolder = zip.folder(path);
+              
+              // Read markup.bcf
+              const markupFile = issueFolder.file('markup.bcf');
+              if (markupFile) {
+                const markupXml = await markupFile.async('text');
+                const parser = new DOMParser();
+                const xmlDoc = parser.parseFromString(markupXml, 'text/xml');
+                
+                const topic = xmlDoc.querySelector('Topic');
+                if (topic) {
+                  const title = topic.querySelector('Title')?.textContent || 'Imported Issue';
+                  const description = topic.querySelector('Description')?.textContent || '';
+                  const status = topic.querySelector('TopicStatus')?.textContent;
+                  
+                  let taskStatus = 'todo';
+                  if (status === 'Closed') taskStatus = 'done';
+                  else if (status === 'Active') taskStatus = 'in-progress';
+                  
+                  const newTask = {
+                    id: issueId,
+                    type: 'pin',
+                    title: title,
+                    description: description,
+                    status: taskStatus,
+                    x: Math.random() * 50 + 25,
+                    y: Math.random() * 50 + 25,
+                    page: currentPage,
+                    startDate: getToday(),
+                    endDate: getToday(1),
+                    assigneeId: 'unassigned',
+                    tagId: 'none',
+                    attachments: [],
+                    history: [{ date: getNow(), message: '從 BCF 匯入' }],
+                    comments: [],
+                    isLocked: true
+                  };
+                  
+                  importedTasks.push(newTask);
+                }
+              }
+            }
+          }
+
+          if (importedTasks.length > 0) {
+            updateTasks([...tasks, ...importedTasks]);
+            alert(`成功匯入 ${importedTasks.length} 個任務！`);
+          } else {
+            alert("未找到有效的任務資料！");
+          }
+        } catch (error) {
+          console.error('BCF import error:', error);
+          alert("BCF 檔案匯入失敗：" + error.message);
+        }
+        
+        // Reset file input
+        event.target.value = '';
       };
 
       const handleExportGanttExcel = async () => {
@@ -1428,7 +2117,7 @@
       );
 
       const ToolbarBtn = ({ mode, icon: Icon, title, onClick }) => (
-        <button onClick={onClick || (() => setAddMode(addMode === mode ? 'none' : mode))} className={`flex items-center justify-center p-2 rounded-full transition-colors ${addMode === mode ? 'bg-black text-white shadow-md' : 'text-gray-600 hover:bg-gray-100 hover:text-black'}`} title={title}><Icon size={16} /></button>
+        <button onClick={onClick || (() => setAddMode(addMode === mode ? 'none' : mode))} className={`flex items-center justify-center p-2 rounded-full transition-colors ${(mode === 'select' ? addMode === 'none' : addMode === mode) ? 'bg-black text-white shadow-md' : 'text-gray-600 hover:bg-gray-100 hover:text-black'}`} title={title}><Icon size={16} /></button>
       );
 
       useEffect(() => {
@@ -1475,16 +2164,14 @@
               <div className="bg-white rounded-xl shadow-2xl w-full max-w-sm border border-gray-200 overflow-hidden">
                 <div className="p-6">
                   <h3 className="text-lg font-black flex items-center gap-2 text-brand-danger mb-3">
-                    <AlertTriangle size={20} /> 警告：開啟新專案
+                    <AlertTriangle size={20} /> {LANGUAGES[language].confirmNewTitle}
                   </h3>
                   <p className="text-sm text-gray-600 mb-6 leading-relaxed">
-                    您確定要開啟一個全新的專案嗎？<br/>
-                    <span className="font-bold text-red-500">目前所有未備份的圖面、標記與設定都將被清除且無法復原！</span><br/><br/>
-                    建議您先點擊「備份專案」將目前進度下載儲存。
+                    {LANGUAGES[language].confirmNewMessage}
                   </p>
                   <div className="flex justify-end gap-3">
                     <button onClick={() => setShowConfirmNew(false)} className="px-4 py-2 text-sm font-bold text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors">
-                      取消
+                      {LANGUAGES[language].cancel}
                     </button>
                     <button 
                       onClick={() => {
@@ -1513,7 +2200,7 @@
                       }} 
                       className="px-4 py-2 text-sm font-bold text-white bg-brand-danger rounded-md hover:bg-brand-danger/90 transition-colors shadow-sm"
                     >
-                      確定捨棄並開啟新專案
+                      {LANGUAGES[language].confirmNew}
                     </button>
                   </div>
                 </div>
@@ -1551,6 +2238,41 @@
                 </div>
 
                 <div className="flex items-center gap-4 ml-auto">
+                  <div className="relative">
+                    <button
+                      onClick={(e) => { e.stopPropagation(); setShowLanguageMenu(!showLanguageMenu); }}
+                      className="flex items-center gap-1 px-3 py-1.5 bg-gray-100 border border-gray-200 rounded-lg text-sm font-bold text-gray-700 hover:bg-gray-200 transition-colors"
+                    >
+                      <span>
+                        {language === 'zh' ? '中文' : language === 'ja' ? '日本語' : 'EN'}
+                      </span>
+                      <ChevronDown size={14} className={`transition-transform ${showLanguageMenu ? 'rotate-180' : ''}`} />
+                    </button>
+
+                    {showLanguageMenu && (
+                      <div className="absolute top-full right-0 mt-1 w-24 bg-white border border-gray-200 shadow-lg rounded-lg py-1 z-50">
+                        <button
+                          onClick={(e) => { e.stopPropagation(); setLanguage('zh'); setShowLanguageMenu(false); }}
+                          className={`w-full text-left px-3 py-2 text-sm hover:bg-gray-100 transition-colors ${language === 'zh' ? 'bg-brand-primary/10 text-brand-primary font-bold' : 'text-gray-700'}`}
+                        >
+                          中文
+                        </button>
+                        <button
+                          onClick={(e) => { e.stopPropagation(); setLanguage('ja'); setShowLanguageMenu(false); }}
+                          className={`w-full text-left px-3 py-2 text-sm hover:bg-gray-100 transition-colors ${language === 'ja' ? 'bg-brand-primary/10 text-brand-primary font-bold' : 'text-gray-700'}`}
+                        >
+                          日本語
+                        </button>
+                        <button
+                          onClick={(e) => { e.stopPropagation(); setLanguage('en'); setShowLanguageMenu(false); }}
+                          className={`w-full text-left px-3 py-2 text-sm hover:bg-gray-100 transition-colors ${language === 'en' ? 'bg-brand-primary/10 text-brand-primary font-bold' : 'text-gray-700'}`}
+                        >
+                          EN
+                        </button>
+                      </div>
+                    )}
+                  </div>
+
                   {appView !== 'settings' && appView !== 'snapshots' && appView !== 'report' && (
                     <div className="flex items-center gap-2">
                       <div className="relative w-40">
@@ -1626,44 +2348,56 @@
               </div>
 
               <div className="px-6 py-2 bg-gray-50 border-b border-gray-200 flex items-center justify-start gap-2 overflow-x-auto min-h-[48px]">
-                <NavButton view="blueprint" icon={Crosshair} label="圖面" />
-                <NavButton view="board" icon={Kanban} label="看板" />
-                <NavButton view="calendar" icon={CalendarDays} label="日曆" />
-                <NavButton view="gantt" icon={BarChartHorizontal} label="進度表" />
-                <NavButton view="snapshots" icon={Camera} label="快照" />
-                <NavButton view="settings" icon={Settings} label="設定" />
+                <NavButton view="blueprint" icon={Crosshair} label={LANGUAGES[language].navBlueprint} />
+                <NavButton view="board" icon={Kanban} label={LANGUAGES[language].navBoard} />
+                <NavButton view="calendar" icon={CalendarDays} label={LANGUAGES[language].navCalendar} />
+                <NavButton view="gantt" icon={BarChartHorizontal} label={LANGUAGES[language].navGantt} />
+                <NavButton view="snapshots" icon={Camera} label={LANGUAGES[language].navSnapshots} />
+                <NavButton view="settings" icon={Settings} label={LANGUAGES[language].navSettings} />
                 
                 <div className="w-px h-5 bg-gray-300 mx-2 flex-shrink-0" />
                 
                 <button 
                   onClick={() => { setAppView('report'); setAddMode('none'); setShowLayerMenu(false); }} 
                   className={`p-2 rounded-lg transition-all flex items-center justify-center ${appView === 'report' ? 'bg-brand-primary/10 text-brand-primary shadow-inner border border-brand-primary/20' : 'text-brand-primary hover:bg-brand-primary/10 border border-transparent'}`} 
-                  title="產生 PDF"
+                  title={LANGUAGES[language].exportPDF}
                 >
                   <Printer size={20} />
                 </button>
                 <button 
                   onClick={handleExportCSV} 
                   className="p-2 rounded-lg transition-all flex items-center justify-center text-gray-600 hover:text-black hover:bg-gray-200/50 border border-transparent" 
-                  title="匯出 Excel 相容的 CSV"
+                  title={LANGUAGES[language].exportCSV}
                 >
                   <Download size={20} />
+                </button>
+                <button 
+                  onClick={handleExportBCF} 
+                  className="p-2 rounded-lg transition-all flex items-center justify-center text-gray-600 hover:text-black hover:bg-gray-200/50 border border-transparent" 
+                  title={LANGUAGES[language].exportBCF}
+                >
+                  <FileText size={20} />
                 </button>
                 
                 <div className="w-px h-5 bg-gray-300 mx-2 flex-shrink-0" />
                 
+                <label className="p-2 rounded-lg transition-all flex items-center justify-center text-gray-600 hover:text-black hover:bg-gray-200/50 border border-transparent cursor-pointer" title={LANGUAGES[language].importBCF}>
+                  <Upload size={20} />
+                  <input type="file" accept=".bcfzip" onChange={handleImportBCF} className="hidden" />
+                </label>
+
                 <button 
-                  onClick={() => setShowConfirmNew(true)} 
-                  className="p-2 rounded-lg transition-all flex items-center justify-center text-gray-600 hover:text-brand-danger hover:bg-red-50 border border-transparent" 
-                  title="開啟新專案 (清除目前所有資料)"
+                  onClick={() => setShowConfirmTemplate(true)} 
+                  className="p-2 rounded-lg transition-all flex items-center justify-center text-gray-600 hover:text-black hover:bg-gray-200/50 border border-transparent" 
+                  title={LANGUAGES[language].resetTemplate}
                 >
-                  <FilePlus size={20} />
+                  <RefreshCw size={20} />
                 </button>
                 
                 <button 
                   onClick={handleExportProject} 
                   className="p-2 rounded-lg transition-all flex items-center justify-center text-brand-secondary bg-brand-secondary/10 hover:bg-brand-secondary/20 border border-brand-secondary/20 shadow-sm ml-1" 
-                  title="備份專案 (將專案所有資料匯出成 JSON)"
+                  title={LANGUAGES[language].backupProject}
                 >
                   <FolderDown size={20} />
                 </button>
@@ -1672,7 +2406,7 @@
                 <button 
                   onClick={() => projectInputRef.current?.click()} 
                   className="p-2 rounded-lg transition-all flex items-center justify-center text-gray-600 hover:text-black hover:bg-gray-200/50 border border-transparent" 
-                  title="讀取專案 (讀取先前儲存的 JSON 專案)"
+                  title={LANGUAGES[language].importProject}
                 >
                   <FolderUp size={20} />
                 </button>
@@ -2271,10 +3005,22 @@
                         <span className="text-gray-500 font-bold">~</span>
                         <input type="date" value={projectEndDate} onChange={e => setProjectEndDate(e.target.value)} className="px-3 py-1.5 border border-gray-300 rounded focus:border-brand-primary focus:ring-1 focus:ring-brand-primary outline-none text-sm font-medium transition-all" />
                      </div>
+                     <div className="flex flex-col gap-2">
                      <div className="text-xs text-gray-500 flex items-center gap-1.5">
                         <AlertTriangle size={14} className="text-brand-warning" />
                         若任務時間超出此設定範圍，圖表將自動向外延伸以確保所有任務可見。
                      </div>
+                     <div className="text-xs text-blue-700 font-semibold flex items-center gap-2">
+                        <span className="inline-flex w-2 h-2 rounded-full bg-blue-600" />
+                        依賴線已顯示於任務條上方，從前置任務右側連到後置任務左側。
+                     </div>
+                     {ganttLinkSourceTaskId && (
+                       <div className="text-xs text-blue-700 flex items-center gap-2">
+                         <span className="inline-flex w-2 h-2 rounded-full bg-blue-600" />
+                         已選擇前置任務 {ganttLinkSourceTaskId}，請點選後置任務完成連結。
+                       </div>
+                     )}
+                   </div>
                    </div>
                    
                    <button 
@@ -2285,7 +3031,17 @@
                    </button>
                 </div>
 
-                <div className="border border-gray-200 rounded-lg shadow-sm min-w-max flex-1 bg-white relative">
+                <div ref={ganttContainerRef} className="border border-gray-200 rounded-lg shadow-sm min-w-max flex-1 bg-white relative">
+                  <svg className="absolute inset-0 pointer-events-none" style={{ zIndex: 15 }}>
+                    <defs>
+                      <marker id="gantt-arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
+                        <path d="M0,0 L10,5 L0,10" fill="#1d4ed8" />
+                      </marker>
+                    </defs>
+                    {ganttDependencyLines.map(line => (
+                      <path key={line.id} d={line.path} fill="none" stroke="#1d4ed8" strokeWidth="3" strokeDasharray="6 4" markerEnd="url(#gantt-arrow)" strokeLinecap="round" strokeLinejoin="round" opacity="0.95" />
+                    ))}
+                  </svg>
                   <div className="flex border-b border-gray-200 sticky top-0 bg-gray-50 z-30">
                     <div className="w-72 flex-shrink-0 border-r border-gray-200 p-4 font-bold text-sm sticky left-0 bg-gray-50 z-40">任務列表</div>
                     <div className="flex">
@@ -2442,7 +3198,26 @@
                                   </button>
                                 )}
 
-                                <div className="flex items-center gap-1.5 pr-8">
+                                <div className="flex items-center gap-2 pr-8">
+                                  {!isReadOnly && (
+                                    <button
+                                      type="button"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        if (!ganttLinkSourceTaskId) {
+                                          setGanttLinkSourceTaskId(task.id);
+                                          return;
+                                        }
+                                        if (ganttLinkSourceTaskId === task.id) {
+                                          setGanttLinkSourceTaskId(null);
+                                          return;
+                                        }
+                                        connectGanttTasks(ganttLinkSourceTaskId, task.id);
+                                      }}
+                                      className={`w-3.5 h-3.5 rounded-full border ${ganttLinkSourceTaskId === task.id ? 'bg-blue-600 border-blue-600' : 'bg-white border-gray-300 hover:bg-blue-100'} transition-all`}
+                                      title={ganttLinkSourceTaskId ? (ganttLinkSourceTaskId === task.id ? '取消選取此任務' : '將此任務設為後續任務') : '選取此任務為前置任務'}
+                                    />
+                                  )}
                                   {!isReadOnly && <GripVertical size={14} className="text-gray-300 flex-shrink-0" title="拖曳排序或變更負責人" />}
                                   <span className="text-sm font-bold cursor-pointer hover:underline flex items-center gap-1.5 truncate" onClick={() => jumpToBlueprintTask(task)}>
                                     <TaskIcon type={task.type} colorId={task.colorId} />
@@ -2466,6 +3241,7 @@
                                 })}
                                 
                                 <div 
+                                   ref={el => ganttTaskBarRefs.current[task.id] = el}
                                    className={`absolute top-3 h-8 rounded shadow-sm flex items-center text-xs font-bold z-10 group/bar ${task.status === 'done' && !task.colorId ? 'opacity-60' : ''}`} 
                                    style={{ 
                                      left: left, 
@@ -2612,6 +3388,32 @@
                   </div>
                 )}
 
+                {showConfirmTemplate && (
+                  <div className="fixed inset-0 z-[65] flex items-center justify-center bg-black/40 backdrop-blur-sm">
+                    <div className="bg-white rounded-xl shadow-2xl w-full max-w-sm border border-gray-200 overflow-hidden">
+                      <div className="p-6">
+                        <h3 className="text-lg font-black flex items-center gap-2 text-brand-danger mb-3">
+                          <AlertTriangle size={20} /> {LANGUAGES[language].confirmTemplateTitle}
+                        </h3>
+                        <p className="text-sm text-gray-600 mb-6 leading-relaxed">
+                          {LANGUAGES[language].confirmTemplateMessage}
+                        </p>
+                        <div className="flex justify-end gap-3">
+                          <button onClick={() => setShowConfirmTemplate(false)} className="px-4 py-2 text-sm font-bold text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors">
+                            {LANGUAGES[language].cancel}
+                          </button>
+                          <button 
+                            onClick={resetToTemplate} 
+                            className="px-4 py-2 text-sm font-bold text-white bg-brand-danger rounded-md hover:bg-brand-danger/90 transition-colors shadow-sm"
+                          >
+                            {LANGUAGES[language].confirmTemplate}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
                 <div 
                   ref={viewportRef} 
                   className={`flex-1 overflow-hidden relative bg-[#e5e7eb] touch-none ${isSpacePressed || isPanning ? 'cursor-grab active:cursor-grabbing' : ''}`} 
@@ -2654,14 +3456,27 @@
                       {!isReadOnly && (
                         <>
                           <div className="w-px h-4 bg-gray-200" />
+                          <input type="file" className="hidden" ref={oldFileInputRef} accept="application/pdf" onChange={handleOldFileUpload} />
+                          <button onClick={() => oldFileInputRef.current?.click()} className="p-1.5 rounded-full text-gray-600 hover:bg-gray-100 hover:text-black transition-colors" title="載入舊版 PDF"><FilePlus size={16} /></button>
                           <input type="file" className="hidden" ref={fileInputRef} accept="image/*,application/pdf,.dxf" onChange={handleFileUpload} />
                           <button onClick={() => fileInputRef.current?.click()} className="p-1.5 rounded-full text-gray-600 hover:bg-gray-100 hover:text-black transition-colors" title="載入圖紙 (支援 DXF/PDF/圖片)"><Upload size={16} /></button>
+                          <button
+                            onClick={() => {
+                              if (!oldPdfDocument || !pdfDocument) return alert("請先載入新版與舊版 PDF，才能進入比對模式。");
+                              setCompareMode(prev => !prev);
+                            }}
+                            className={`p-1.5 rounded-full transition-colors ${compareMode ? 'bg-brand-secondary text-white shadow-sm' : 'text-gray-600 hover:bg-gray-100 hover:text-black'}`}
+                            title="切換 PDF 比對模式 (舊版紅 / 新版藍)"
+                          >
+                            <Eye size={16} />
+                          </button>
                           
                           <div className="w-px h-4 bg-gray-200" />
+                          <ToolbarBtn mode="select" icon={MousePointerClick} title={LANGUAGES[language].selectTitle} onClick={() => setAddMode('none')} />
                           <ToolbarBtn mode="pin" icon={MapPin} title="放置圖釘 (快捷鍵 1)" />
                           <ToolbarBtn mode="cloud" icon={Cloud} title="拖曳產生雲形 (快捷鍵 2)" />
-                          <ToolbarBtn mode="highlight" icon={Highlighter} title="繪製螢光筆 (可選色) (快捷鍵 3)" />
-                          <ToolbarBtn mode="pen" icon={PenLine} title="色筆一線標記 (可選色) (快捷鍵 4)" />
+                          <ToolbarBtn mode="highlight" icon={Highlighter} title={LANGUAGES[language].highlightTitle} />
+                          <ToolbarBtn mode="pen" icon={PenLine} title={LANGUAGES[language].penTitle} />
                           <ToolbarBtn mode="area" icon={Hexagon} title="多邊形面積測量 (點擊繪製頂點) (快捷鍵 5)" />
                           <ToolbarBtn mode="measure" icon={Ruler} title="兩點測量 (按住 Shift 正交鎖點) (快捷鍵 6)" />
                           <ToolbarBtn mode="calibrate" icon={Maximize} title="校正比例尺" />
@@ -2687,6 +3502,9 @@
                     
                     {(addMode === 'highlight' || addMode === 'pen') && !isReadOnly && (
                       <div className="bg-white shadow-md border border-gray-200 rounded-full px-3 py-1.5 flex items-center gap-2 pointer-events-auto">
+                        <span className="text-xs font-bold text-gray-600 mr-1">
+                          {addMode === 'highlight' ? LANGUAGES[language].highlightMode : LANGUAGES[language].penMode}
+                        </span>
                         {MARKER_COLORS.map(c => (
                           <button key={c.id} onClick={(e) => { e.stopPropagation(); setActiveColor(c); }} className={`w-5 h-5 rounded-full border-2 transition-all ${activeColor.id === c.id ? 'scale-125 shadow-sm' : 'hover:scale-110'}`} style={{ backgroundColor: c.stroke, borderColor: activeColor.id === c.id ? '#000' : 'transparent' }} title={c.name} />
                         ))}
@@ -2805,15 +3623,90 @@
                       )}
                     </div>
                     
-                    <div className="bg-white shadow-sm border border-gray-200 rounded-lg px-3 py-2 flex items-center gap-2 pointer-events-auto h-[38px]">
+                    <div className="relative bg-white shadow-sm border border-gray-200 rounded-lg px-3 py-2 flex items-center gap-2 pointer-events-auto h-[38px]">
                       <Maximize size={14} className={scaleInfo.isCalibrated ? "text-brand-primary" : "text-gray-500"} />
                       <div className={`text-xs font-bold ${scaleInfo.isCalibrated ? "text-brand-primary" : "text-gray-700"}`}>
-                        {scaleInfo.isCalibrated ? `比例尺 1 : ${Math.round(scaleInfo.ratio)}` : "比例尺: 尚未校正 (1:1)"}
+                        {scaleInfo.isCalibrated ? `${LANGUAGES[language].scaleLabel} 1 : ${Math.round(scaleInfo.ratio)}` : `${LANGUAGES[language].scaleLabel}: ${LANGUAGES[language].scaleNotCalibrated}`}
                       </div>
                       {scaleInfo.isCalibrated && !isReadOnly && (
                         <button onClick={() => setScaleInfo({ ratio: 1, unit: 'mm', isCalibrated: false })} className="ml-2 text-gray-400 hover:text-brand-danger bg-gray-100 hover:bg-brand-danger/10 rounded-full p-0.5 transition-colors" title="清除比例尺">
                           <X size={12} />
                         </button>
+                      )}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setShowSopGuide(prev => {
+                            if (!prev) setShowHelpGuide(false);
+                            return !prev;
+                          });
+                        }}
+                        className={`inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold rounded-full transition-colors ${showSopGuide ? 'bg-brand-secondary text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
+                        title="開啟系統SOP說明"
+                      >
+                        <FileText size={14} />
+                        {LANGUAGES[language].sop}
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setShowHelpGuide(prev => {
+                            if (!prev) setShowSopGuide(false);
+                            return !prev;
+                          });
+                        }}
+                        className={`inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold rounded-full transition-colors ${showHelpGuide ? 'bg-brand-primary text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
+                        title="切換操作指南"
+                      >
+                        <HelpCircle size={14} />
+                        {LANGUAGES[language].guide}
+                      </button>
+
+                      {showSopGuide && (
+                        <div className="absolute bottom-full right-0 mb-2 w-80 bg-white border border-gray-200 shadow-2xl rounded-xl p-4 text-sm text-gray-700 space-y-3 z-40">
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="font-bold text-gray-900">{LANGUAGES[language].sopTitle}</span>
+                            <button type="button" onClick={() => setShowSopGuide(false)} className="text-gray-400 hover:text-gray-800"><X size={16} /></button>
+                          </div>
+                          <div className="space-y-2 text-xs leading-relaxed">
+                            <p className="font-semibold text-gray-800">快速上手</p>
+                            <p>• 左側工具列：新增任務、篩選人員、管理標籤與章節。</p>
+                            <p>• 中央工作區：拖曳任務條排程，拖曳右側邊緣調整結束日期。</p>
+                            <p>• 上方比例尺與顯示設定：校正圖面比例、調整亮度/對比。</p>
+                            <p>• 右下放大 / 縮小：快速檢視整體圖面。</p>
+                            <p>• 支援離線儲存，重新開啟瀏覽器可繼續使用。</p>
+                          </div>
+                        </div>
+                      )}
+
+                      {showHelpGuide && (
+                        <div className="absolute bottom-full right-0 mb-2 w-72 bg-white border border-gray-200 shadow-2xl rounded-xl p-4 text-sm text-gray-700 space-y-3 z-40">
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="font-bold text-gray-900">{LANGUAGES[language].helpTitle}</span>
+                            <button type="button" onClick={() => setShowHelpGuide(false)} className="text-gray-400 hover:text-gray-800"><X size={16} /></button>
+                          </div>
+                          {isTouchDevice ? (
+                            <div className="space-y-2 text-xs leading-relaxed">
+                              <p className="font-semibold text-gray-800">iPad / 觸控操作</p>
+                              <p>• 點擊任務條：開啟任務編輯或選取。</p>
+                              <p>• 拖曳任務條：移動任務日期。</p>
+                              <p>• 拖曳任務條右側邊緣：調整結束日期。</p>
+                              <p>• 先點前置任務，再點後續任務：建立 Finish-to-Start 依賴。</p>
+                              <p>• 右上 X 或再次點擊「指南」：關閉說明。</p>
+                            </div>
+                          ) : (
+                            <div className="space-y-2 text-xs leading-relaxed">
+                              <p className="font-semibold text-gray-800">電腦版快捷鍵</p>
+                              <p>• F1 或 ?：開啟 / 關閉說明。</p>
+                              <p>• Esc：關閉說明。</p>
+                              <p>• 點擊任務條：編輯或選取任務。</p>
+                              <p>• 拖曳任務條：移動任務日期。</p>
+                              <p>• 拖曳任務條右側邊緣：調整結束日期。</p>
+                              <p>• 先點前置任務，再點後續任務：建立 Finish-to-Start 依賴。</p>
+                            </div>
+                          )}
+                        </div>
                       )}
                     </div>
                   </div>
@@ -2854,18 +3747,32 @@
                   
                   {viewMode === 'pdf' && totalPages > 1 && (
                     <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 bg-white shadow-sm rounded-full px-1.5 py-1.5 flex items-center gap-4 border border-gray-200">
-                      <button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1} className="p-1.5 hover:bg-gray-100 disabled:opacity-30 rounded-full"><ChevronLeft size={16} /></button>
-                      <span className="text-xs font-bold font-mono min-w-[80px] text-center">{currentPage} / {totalPages}</span>
-                      <button onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages} className="p-1.5 hover:bg-gray-100 disabled:opacity-30 rounded-full"><ChevronRight size={16} /></button>
+                      <button onClick={() => {
+                        setCurrentPage(p => {
+                          const next = Math.max(1, p - 1);
+                          if (compareMode) setOldCurrentPage(next);
+                          return next;
+                        });
+                      }} disabled={currentPage === 1} className="p-1.5 hover:bg-gray-100 disabled:opacity-30 rounded-full"><ChevronLeft size={16} /></button>
+                      <span className="text-xs font-bold font-mono min-w-[80px] text-center">{currentPage} / {compareMode && oldPdfDocument ? Math.min(totalPages, oldTotalPages) : totalPages}</span>
+                      <button onClick={() => {
+                        setCurrentPage(p => {
+                          const next = Math.min(totalPages, p + 1);
+                          if (compareMode) setOldCurrentPage(next);
+                          return next;
+                        });
+                      }} disabled={currentPage === totalPages} className="p-1.5 hover:bg-gray-100 disabled:opacity-30 rounded-full"><ChevronRight size={16} /></button>
                     </div>
                   )}
 
-                  <div className="absolute bottom-6 right-6 z-20 flex flex-col gap-1 bg-white shadow-sm border rounded-lg p-1.5 pointer-events-auto">
-                    <button onClick={() => handleZoomStep(0.2)} className="p-1.5 hover:bg-gray-100 rounded text-gray-700"><Plus size={16} /></button>
-                    <div className="w-full h-px bg-gray-100" />
-                    <button onClick={resetView} className="p-1.5 hover:bg-gray-100 rounded text-[10px] font-bold">置中</button>
-                    <div className="w-full h-px bg-gray-100" />
-                    <button onClick={() => handleZoomStep(-0.2)} className="p-1.5 hover:bg-gray-100 rounded text-gray-700"><Minus size={16} /></button>
+                  <div className="absolute bottom-6 right-6 z-20 flex flex-col gap-2 items-end pointer-events-auto">
+                    <div className="bg-white shadow-sm border rounded-lg p-1.5 flex flex-col gap-1">
+                      <button onClick={() => handleZoomStep(0.2)} className="p-1.5 hover:bg-gray-100 rounded text-gray-700"><Plus size={16} /></button>
+                      <div className="w-full h-px bg-gray-100" />
+                      <button onClick={resetView} className="p-1.5 hover:bg-gray-100 rounded text-[10px] font-bold">置中</button>
+                      <div className="w-full h-px bg-gray-100" />
+                      <button onClick={() => handleZoomStep(-0.2)} className="p-1.5 hover:bg-gray-100 rounded text-gray-700"><Minus size={16} /></button>
+                    </div>
                   </div>
 
                   <div className="absolute origin-top-left pointer-events-none" style={{ transform: `translate3d(${pan.x}px, ${pan.y}px, 0) scale(${scale})`, width: '1200px' }}>
@@ -2873,7 +3780,26 @@
                       
                       <div style={filterStyle} className="w-full">
                         {isRendering && viewMode === 'pdf' && <div className="absolute inset-0 z-40 bg-white/80 backdrop-blur-sm flex items-center justify-center"><Loader2 className="w-6 h-6 animate-spin mb-3 text-black" /></div>}
-                        {viewMode === 'pdf' ? <canvas ref={canvasRef} className="w-full block bg-white" /> : backgroundImage ? <img src={backgroundImage} alt="BP" className="w-full block opacity-95 sepia hue-rotate-[190deg] saturate-200 contrast-125 brightness-90" draggable={false} /> : <div className="w-full bg-[#f8fafc]" style={{ height: '840px', backgroundImage: 'linear-gradient(to right, #e2e8f0 1px, transparent 1px), linear-gradient(to bottom, #e2e8f0 1px, transparent 1px)', backgroundSize: '40px 40px' }} />}
+                        {viewMode === 'dxf' ? (
+                          <div ref={dxfContainerRef} className="relative w-full h-full bg-white overflow-hidden" style={{ minHeight: '840px' }} />
+                        ) : compareMode && oldPdfDocument && pdfDocument ? (
+                          <div className="relative w-full">
+                            <canvas ref={oldCanvasRef} className="w-full block bg-white" style={{ opacity: 0.46, filter: 'grayscale(100%) sepia(1) hue-rotate(-20deg) saturate(8) brightness(0.85)' }} />
+                            <canvas ref={canvasRef} className="absolute inset-0 w-full h-full block bg-white" style={{ opacity: 0.46, filter: 'grayscale(100%) sepia(1) hue-rotate(180deg) saturate(8) brightness(0.85)' }} />
+                            <div className="absolute top-3 left-3 z-30 rounded-full bg-black/60 text-white text-[11px] px-2 py-1 flex items-center gap-2">
+                              <span className="w-2 h-2 rounded-full bg-red-400" />舊版
+                            </div>
+                            <div className="absolute top-12 left-3 z-30 rounded-full bg-black/60 text-white text-[11px] px-2 py-1 flex items-center gap-2">
+                              <span className="w-2 h-2 rounded-full bg-blue-400" />新版
+                            </div>
+                          </div>
+                        ) : viewMode === 'pdf' ? (
+                          <canvas ref={canvasRef} className="w-full block bg-white" />
+                        ) : backgroundImage ? (
+                          <img src={backgroundImage} alt="BP" className="w-full block opacity-95 sepia hue-rotate-[190deg] saturate-200 contrast-125 brightness-90" draggable={false} />
+                        ) : (
+                          <div className="w-full bg-[#f8fafc]" style={{ height: '840px', backgroundImage: 'linear-gradient(to right, #e2e8f0 1px, transparent 1px), linear-gradient(to bottom, #e2e8f0 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
+                        )}
                       </div>
 
                       {filteredTasks.filter(t => t.page === currentPage).map(task => {
@@ -3297,6 +4223,18 @@
 
     const root = ReactDOM.createRoot(document.getElementById('root'));
     root.render(<App />);
+
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js')
+          .then(reg => {
+            console.log('Service Worker 已註冊:', reg.scope);
+          })
+          .catch(err => {
+            console.warn('Service Worker 註冊失敗:', err);
+          });
+      });
+    }
   </script>
 </body>
 </html>
