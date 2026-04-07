@@ -1261,23 +1261,37 @@
             canvas.height = viewport.height;
             await page.render({ canvasContext: ctx, viewport }).promise;
           } catch (err) {
-            console.error(err);
+            if (err.name !== 'RenderingCancelledException') {
+              console.error('PDF Render Error:', err);
+            }
           }
         };
 
-        const renderPage = async () => {
+        const renderPage = () => {
           if (!window.pdfjsLib) return;
-          setIsRendering(true);
-          try {
-            if (compareMode && oldPdfDocument && pdfDocument) {
-              await renderPdfPage(oldPdfDocument, oldCurrentPage, oldCanvasRef.current);
-              await renderPdfPage(pdfDocument, currentPage, canvasRef.current);
-            } else if (viewMode === 'pdf' && pdfDocument) {
-              await renderPdfPage(pdfDocument, currentPage, canvasRef.current);
+          
+          const tryRender = async (retries = 3) => {
+            if (viewMode === 'pdf' && !canvasRef.current && retries > 0) {
+              setTimeout(() => tryRender(retries - 1), 100);
+              return;
             }
-          } finally {
-            setIsRendering(false);
-          }
+            if (viewMode === 'pdf' && !canvasRef.current) return;
+
+            setIsRendering(true);
+            try {
+              if (compareMode && oldPdfDocument && pdfDocument) {
+                if (oldCanvasRef.current) await renderPdfPage(oldPdfDocument, oldCurrentPage, oldCanvasRef.current);
+                if (canvasRef.current) await renderPdfPage(pdfDocument, currentPage, canvasRef.current);
+              } else if (viewMode === 'pdf' && pdfDocument && canvasRef.current) {
+                await renderPdfPage(pdfDocument, currentPage, canvasRef.current);
+              }
+            } catch (err) {
+              console.error(err);
+            } finally {
+              setIsRendering(false);
+            }
+          };
+          tryRender();
         };
         renderPage();
       }, [pdfDocument, currentPage, viewMode, appView, compareMode, oldPdfDocument, oldCurrentPage]);
@@ -1414,6 +1428,7 @@
             }
           };
           reader.readAsArrayBuffer(file);
+          e.target.value = null;
           return;
         }
 
@@ -1425,13 +1440,17 @@
               const pdf = await window.pdfjsLib.getDocument({ data: new Uint8Array(ev.target.result) }).promise;
               setPdfDocument(pdf); setTotalPages(pdf.numPages); setCurrentPage(1); setViewMode('pdf');
               resetAppState();
-            } catch (err) { alert("PDF讀取失敗，請確認檔案格式。"); }
+            } catch (err) { 
+              console.error(err);
+              alert("PDF讀取失敗，請確認檔案格式或檔案是否損毀。"); 
+            }
           };
           reader.readAsArrayBuffer(file);
         } else if (file.type.startsWith('image/')) {
           setBackgroundImage(URL.createObjectURL(file)); setViewMode('image'); setTotalPages(1); setCurrentPage(1);
           resetAppState();
         }
+        e.target.value = null;
       };
 
       const handleOldFileUpload = (e) => {
@@ -1452,10 +1471,12 @@
               alert('已載入舊版 PDF，請再載入新版 PDF 以啟動比對模式。');
             }
           } catch (err) {
+            console.error(err);
             alert("舊版 PDF 讀取失敗，請確認檔案格式。");
           }
         };
         reader.readAsArrayBuffer(file);
+        e.target.value = null;
       };
 
       const handleExportProject = () => {
