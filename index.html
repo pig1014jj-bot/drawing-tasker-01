@@ -7,6 +7,20 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="圖面管理">
+  <meta name="apple-touch-fullscreen" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📐</text></svg>">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📐</text></svg>">
+  <link rel="manifest" href="data:application/manifest+json,{
+    'name': 'Drawing Tasker Pro',
+    'short_name': '圖面管理',
+    'description': '專業圖面任務管理工具',
+    'start_url': './',
+    'display': 'standalone',
+    'background_color': '#ffffff',
+    'theme_color': '#0067a6',
+    'orientation': 'any'
+  }">
   
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -51,6 +65,30 @@
       return undefined;
     };
     window.react = window.React; 
+    
+    // iPadOS 16.4 優化：檢測設備和事件支援
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    const isWebApp = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
+    const supportsPointerEvents = typeof PointerEvent !== 'undefined';
+    const supportsTouchEvents = 'ontouchstart' in window;
+    
+    console.log('Device detection:', { isIOS, isWebApp, supportsPointerEvents, supportsTouchEvents });
+    
+    // iPadOS 16.4 Web App 模式優化
+    if (isWebApp && isIOS) {
+      // 禁用 iOS 的雙擊縮放
+      let lastTouchEnd = 0;
+      document.addEventListener('touchend', (e) => {
+        const now = Date.now();
+        if (now - lastTouchEnd <= 300) {
+          e.preventDefault();
+        }
+        lastTouchEnd = now;
+      }, false);
+      
+      // 優化滾動性能
+      document.body.style.webkitTransform = 'translateZ(0)';
+    } 
   </script>
   
   <!-- Lucide Icons -->
@@ -68,6 +106,25 @@
     ::-webkit-scrollbar-track { background: #f1f1f1; }
     ::-webkit-scrollbar-thumb { background: #c1c1c1; border-radius: 4px; }
     ::-webkit-scrollbar-thumb:hover { background: #a8a8a8; }
+    
+    /* PWA Web App 模式優化 */
+    @media all and (display-mode: standalone) {
+      body { padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom); }
+      .pwa-safe-area { padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom); }
+    }
+    
+    /* 防止 iOS Safari 橡皮筋效果 */
+    body { overscroll-behavior: none; }
+    .viewport { overscroll-behavior: none; }
+    
+    /* iPadOS 16.4 優化 */
+    @supports (-webkit-touch-callout: none) {
+      .drawing-canvas {
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -webkit-tap-highlight-color: transparent;
+      }
+    }
   </style>
 </head>
 <body class="bg-gray-50 text-gray-900 font-sans antialiased overflow-hidden">
@@ -1798,6 +1855,7 @@
         if (penPointerId.current && e.pointerId !== penPointerId.current && e.pointerType === 'pen') return;
         activePointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
         if (activePointers.current.size >= 2) {
+          e.preventDefault();
           setIsPanning(true);
           if (isDrawing) { setIsDrawing(false); setDrawStart(null); setDrawCurrent(null); setDrawPoints([]); }
           return;
@@ -1813,6 +1871,7 @@
         if (activePointers.current.has(e.pointerId)) activePointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
         
         if (activePointers.current.size >= 2) {
+          e.preventDefault();
           if (isSidebarVisible) setIsSidebarVisible(false); 
           
           const pts = Array.from(activePointers.current.values());
@@ -1820,18 +1879,23 @@
           const dist = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
           const center = { x: (pts[0].x + pts[1].x) / 2, y: (pts[0].y + pts[1].y) / 2 };
 
-          if (lastPinchDist.current && lastPinchCenter.current && lastPinchDist.current > 5) {
+          if (lastPinchDist.current && lastPinchCenter.current && lastPinchDist.current > 5 && viewportRef.current) {
             const scaleFactor = dist / lastPinchDist.current;
-            const newScale = Math.min(Math.max(0.1, scale * scaleFactor), 4);
-            
-            if (newScale !== scale && viewportRef.current) {
-                const rect = viewportRef.current.getBoundingClientRect();
-                setPan({
-                  x: pan.x + (center.x - lastPinchCenter.current.x) - (center.x - rect.left - pan.x) * (newScale / scale - 1),
-                  y: pan.y + (center.y - lastPinchCenter.current.y) - (center.y - rect.top - pan.y) * (newScale / scale - 1)
-                });
-                setScale(newScale);
-            }
+            const rect = viewportRef.current.getBoundingClientRect();
+
+            // iPadOS 16.4 優化：使用 requestAnimationFrame 確保平滑縮放
+            requestAnimationFrame(() => {
+              setScale((prevScale) => {
+                const newScale = Math.min(Math.max(0.1, prevScale * scaleFactor), 4);
+                if (newScale !== prevScale) {
+                  setPan((prevPan) => ({
+                    x: prevPan.x + (center.x - lastPinchCenter.current.x) - (center.x - rect.left - prevPan.x) * (newScale / prevScale - 1),
+                    y: prevPan.y + (center.y - lastPinchCenter.current.y) - (center.y - rect.top - prevPan.y) * (newScale / prevScale - 1)
+                  }));
+                }
+                return newScale;
+              });
+            });
           }
           lastPinchDist.current = dist; lastPinchCenter.current = center; return;
         }
@@ -2371,6 +2435,40 @@
           setLastDrawPoint({ x, y });
           e.currentTarget.setPointerCapture(e.pointerId);
         }
+      };
+
+      const createTouchPointerEvent = (touch, originalEvent) => ({
+        pointerId: touch.identifier,
+        clientX: touch.clientX,
+        clientY: touch.clientY,
+        pointerType: 'touch',
+        button: 0,
+        currentTarget: originalEvent.currentTarget,
+        preventDefault: () => originalEvent.preventDefault(),
+        stopPropagation: () => originalEvent.stopPropagation(),
+        shiftKey: originalEvent.shiftKey || false
+      });
+
+      // iPadOS 16.4 優化：檢查是否支援 Pointer Events
+      const supportsPointerEvents = typeof PointerEvent !== 'undefined' && 'ontouchstart' in window;
+
+      const handleContentTouchStart = (e) => {
+        // 如果支援 Pointer Events，優先使用 Pointer Events，避免雙重觸發
+        if (supportsPointerEvents && e.pointerId !== undefined) return;
+        if (e.touches.length === 0) return;
+        handleContentPointerDown(createTouchPointerEvent(e.touches[0], e));
+      };
+
+      const handleContentTouchMove = (e) => {
+        if (supportsPointerEvents && e.pointerId !== undefined) return;
+        if (e.changedTouches.length === 0) return;
+        handleContentPointerMove(createTouchPointerEvent(e.changedTouches[0], e));
+      };
+
+      const handleContentTouchEnd = (e) => {
+        if (supportsPointerEvents && e.pointerId !== undefined) return;
+        if (e.changedTouches.length === 0) return;
+        handleContentPointerUp(createTouchPointerEvent(e.changedTouches[0], e));
       };
 
       const handleContentPointerMove = (e) => {
@@ -4646,7 +4744,7 @@
                   </div>
 
                   <div className="absolute origin-top-left pointer-events-none" style={{ transform: `translate3d(${pan.x}px, ${pan.y}px, 0) scale(${scale})`, width: '1200px' }}>
-                    <div className={`relative inline-block w-full bg-white ${scale > 1.5 ? 'shadow-sm' : 'shadow-2xl'} ${!isSpacePressed && !isPanning && addMode !== 'none' ? 'cursor-crosshair' : ''}`} style={{ pointerEvents: isSpacePressed || isPanning ? 'none' : 'auto', touchAction: 'none' }} onPointerDown={handleContentPointerDown} onPointerMove={handleContentPointerMove} onPointerUp={handleContentPointerUp} onPointerLeave={handleContentPointerUp} onPointerCancel={handleContentPointerUp}>
+                    <div className={`relative inline-block w-full bg-white drawing-canvas ${scale > 1.5 ? 'shadow-sm' : 'shadow-2xl'} ${!isSpacePressed && !isPanning && addMode !== 'none' ? 'cursor-crosshair' : ''}`} style={{ pointerEvents: isSpacePressed || isPanning ? 'none' : 'auto', touchAction: 'none' }} onPointerDown={handleContentPointerDown} onPointerMove={handleContentPointerMove} onPointerUp={handleContentPointerUp} onPointerLeave={handleContentPointerUp} onPointerCancel={handleContentPointerUp} onTouchStart={handleContentTouchStart} onTouchMove={handleContentTouchMove} onTouchEnd={handleContentTouchEnd} onTouchCancel={handleContentTouchEnd}>
                       
                       <div style={filterStyle} className="w-full">
                         {isRendering && viewMode === 'pdf' && <div className="absolute inset-0 z-40 bg-white/80 backdrop-blur-sm flex items-center justify-center"><Loader2 className="w-6 h-6 animate-spin mb-3 text-black" /></div>}
