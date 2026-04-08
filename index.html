@@ -1151,6 +1151,7 @@
       );
       const [paletteReplaceIndex, setPaletteReplaceIndex] = useState(0);
       const [activeColor, setActiveColor] = useState(MARKER_COLORS[0]);
+      const [activeStampId, setActiveStampId] = useState(null);
 
       const [language, setLanguage] = useState('ja');
 
@@ -2363,10 +2364,19 @@
           setEditingId(null); setShowTaskModal(true); setAddMode('none');
           drawingPointerId.current = null; drawingPointerType.current = null;
         } else if (addMode === 'stamp') {
-          setNewTaskCoords({ type: 'stamp', x, y, page: currentPage });
           const selectedStamp = stamps.find(s => s.id === activeStampId) || stamps[0];
-          setFormData({ title: selectedStamp?.title || '', description: selectedStamp?.description || '', stampCode: selectedStamp?.code || '', ...baseData });
-          setEditingId(null); setShowTaskModal(true); setAddMode('none');
+          const newTask = {
+            id: Date.now().toString(),
+            type: 'stamp',
+            x, y, page: currentPage,
+            stampCode: selectedStamp?.code || '',
+            title: selectedStamp?.title || '',
+            description: selectedStamp?.description || '',
+            ...baseData,
+            history: [{ date: getNow(), message: '任務建立 (快速蓋章)' }]
+          };
+          updateTasks(prev => [...prev, newTask]);
+          // 不關閉 addMode，允許連續蓋章
           drawingPointerId.current = null; drawingPointerType.current = null;
         } else if (addMode === 'cloud' || addMode === 'measure' || addMode === 'calibrate') {
           setIsDrawing(true); setDrawStart({ x, y }); setDrawCurrent({ x, y });
@@ -4428,6 +4438,21 @@
                             <input type="color" className="opacity-0 absolute inset-0 w-full h-full cursor-pointer" onChange={handleColorPick} />
                           </label>
                         </div>
+                      </div>
+                    )}
+
+                    {addMode === 'stamp' && !isReadOnly && stamps.length > 0 && (
+                      <div className="bg-white shadow-md border border-gray-200 rounded-xl px-4 py-2.5 flex items-center pointer-events-auto relative">
+                        <span className="text-xs font-bold text-gray-500 mr-2">{LANGUAGES[language].selectStamp}:</span>
+                        <select 
+                          value={activeStampId || stamps[0].id} 
+                          onChange={e => setActiveStampId(e.target.value)}
+                          className="w-48 px-2 py-1.5 border border-gray-300 rounded text-sm focus:outline-none focus:border-black font-bold cursor-pointer bg-gray-50"
+                        >
+                          {stamps.map(s => (
+                            <option key={s.id} value={s.id}>[{s.code}] {s.title}</option>
+                          ))}
+                        </select>
                       </div>
                     )}
 
