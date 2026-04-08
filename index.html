@@ -2307,6 +2307,7 @@
         if (areaResult) setAreaResult(null);
         if (isReadOnly || addMode === 'none') { setActiveTaskId(null); return; }
         
+        e.stopPropagation();
         e.preventDefault();
         const rect = e.currentTarget.getBoundingClientRect();
         let x = ((e.clientX - rect.left) / rect.width) * 100;
@@ -2375,6 +2376,8 @@
       const handleContentPointerMove = (e) => {
         if (penPointerId.current && e.pointerId !== penPointerId.current && e.pointerType === 'pen') return;
         if (!isDrawing || activePointers.current.size >= 2 || isSpacePressed || isPanning || isReadOnly) return;
+        e.stopPropagation();
+        e.preventDefault();
         
         const rect = e.currentTarget.getBoundingClientRect();
         let x = Math.max(0, Math.min(100, ((e.clientX - rect.left) / rect.width) * 100));
@@ -2409,6 +2412,8 @@
       const handleContentPointerUp = (e) => {
         if (penPointerId.current && e.pointerId !== penPointerId.current && e.pointerType === 'pen') return;
         if (!isDrawing || activePointers.current.size >= 2 || isSpacePressed || isPanning || isReadOnly) return;
+        e.stopPropagation();
+        e.preventDefault();
         
         if (addMode === 'area') return; 
 
@@ -4641,7 +4646,7 @@
                   </div>
 
                   <div className="absolute origin-top-left pointer-events-none" style={{ transform: `translate3d(${pan.x}px, ${pan.y}px, 0) scale(${scale})`, width: '1200px' }}>
-                    <div className={`relative inline-block w-full bg-white ${scale > 1.5 ? 'shadow-sm' : 'shadow-2xl'} ${!isSpacePressed && !isPanning && addMode !== 'none' ? 'cursor-crosshair' : ''}`} style={{ pointerEvents: isSpacePressed || isPanning ? 'none' : 'auto' }} onPointerDown={handleContentPointerDown} onPointerMove={handleContentPointerMove} onPointerUp={handleContentPointerUp} onPointerLeave={handleContentPointerUp} onPointerCancel={handleContentPointerUp}>
+                    <div className={`relative inline-block w-full bg-white ${scale > 1.5 ? 'shadow-sm' : 'shadow-2xl'} ${!isSpacePressed && !isPanning && addMode !== 'none' ? 'cursor-crosshair' : ''}`} style={{ pointerEvents: isSpacePressed || isPanning ? 'none' : 'auto', touchAction: 'none' }} onPointerDown={handleContentPointerDown} onPointerMove={handleContentPointerMove} onPointerUp={handleContentPointerUp} onPointerLeave={handleContentPointerUp} onPointerCancel={handleContentPointerUp}>
                       
                       <div style={filterStyle} className="w-full">
                         {isRendering && viewMode === 'pdf' && <div className="absolute inset-0 z-40 bg-white/80 backdrop-blur-sm flex items-center justify-center"><Loader2 className="w-6 h-6 animate-spin mb-3 text-black" /></div>}
