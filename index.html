@@ -2309,7 +2309,8 @@
       const handleContentPointerDown = (e) => {
         if (isSpacePressed || e.button === 1 || e.button === 2) return;
         
-        if (isDrawing && addMode !== 'area') {
+        // 使用 drawingPointerId 判斷，不受 React state 更新延遲影響
+        if (drawingPointerId.current !== null && addMode !== 'area') {
           // 如果現在是手(touch)在畫，但突然筆(pen)點下來了，強制搶走畫圖權，優先讓筆畫！
           if (e.pointerType === 'pen' && drawingPointerType.current !== 'pen') {
             drawingPointerId.current = e.pointerId;
@@ -2320,7 +2321,8 @@
             setDrawStart({ x, y });
             setDrawCurrent({ x, y });
             setDrawPoints([{ x, y }]);
-            e.currentTarget.setPointerCapture(e.pointerId);
+            drawPointsRef.current = [{ x, y }]; // 同步更新 ref 確保不漏點
+            try { e.currentTarget.setPointerCapture(e.pointerId); } catch(err){}
           }
           return; // 忽略其他非優先的觸控點
         }
@@ -2400,8 +2402,8 @@
       };
 
       const handleContentPointerMove = (e) => {
-        // 確認是否為當前發起繪圖的觸控點，若非則直接忽略（防止掌觸誤判為移動）
-        if (!isDrawing || e.pointerId !== drawingPointerId.current || isSpacePressed || isReadOnly) return;
+        // 完全捨棄 isDrawing state 檢查，只要 pointerId 匹配，直接畫，防止 React state 延遲造成掉線
+        if (e.pointerId !== drawingPointerId.current || isSpacePressed || isReadOnly) return;
         
         const rect = e.currentTarget.getBoundingClientRect();
         let x = Math.max(0, Math.min(100, ((e.clientX - rect.left) / rect.width) * 100));
@@ -2426,16 +2428,11 @@
         else if (addMode === 'area') setDrawCurrent({ x, y });
         else if (addMode === 'highlight' || addMode === 'pen') {
           const prev = drawPointsRef.current;
-          const last = prev[prev.length - 1]; 
-          if (last) {
-            const dx = last.x - x;
-            const dy = last.y - y;
-            // 極小移動距離過濾
-            if (dx * dx + dy * dy < 0.0005) return; 
-          }
+          
+          // 徹底移除距離過濾器，確保 iPad 的高頻率更新不會漏掉慢速繪製的點
           prev.push({ x, y });
           
-          // 【修復】極限效能最佳化：直接操作 DOM 屬性，不觸發 React 重新渲染
+          // 極限效能最佳化：直接操作 DOM 屬性，不觸發 React 重新渲染
           if (livePolylineRef.current) {
             livePolylineRef.current.setAttribute('points', prev.map(p => `${p.x},${p.y}`).join(' '));
           }
@@ -2447,8 +2444,8 @@
       };
 
       const handleContentPointerUp = (e) => {
-        // 修復：同樣移除 isPanning 阻擋
-        if (!isDrawing || e.pointerId !== drawingPointerId.current || isSpacePressed || isReadOnly) return;
+        // 同樣移除 isDrawing state 檢查
+        if (e.pointerId !== drawingPointerId.current || isSpacePressed || isReadOnly) return;
         
         if (addMode === 'area') return; 
 
