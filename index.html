@@ -357,10 +357,10 @@
     };
 
     const TaskIcon = ({ type, colorId, size = 14, className = "" }) => {
-      const markerStroke = colorId && colorId.startsWith('#') ? colorId : (MARKER_COLORS.find(c => c.id === colorId)?.stroke || '#efc028');
+      const markerColor = MARKER_COLORS.find(c => c.id === colorId)?.stroke || '#efc028';
       if (type === 'area') return <Hexagon size={size} className={`text-brand-primary flex-shrink-0 ${className}`} />;
-      if (type === 'highlight') return <Highlighter size={size} color={markerStroke} className={`flex-shrink-0 ${className}`} />;
-      if (type === 'pen') return <PenLine size={size} color={markerStroke} className={`flex-shrink-0 ${className}`} /> || <Edit3 size={size} color={markerStroke} className={`flex-shrink-0 ${className}`} />;
+      if (type === 'highlight') return <Highlighter size={size} color={markerColor} className={`flex-shrink-0 ${className}`} />;
+      if (type === 'pen') return <PenLine size={size} color={markerColor} className={`flex-shrink-0 ${className}`} /> || <Edit3 size={size} color={markerColor} className={`flex-shrink-0 ${className}`} />;
       if (type === 'cloud') return <Cloud size={size} className={`text-gray-500 flex-shrink-0 ${className}`} />;
       if (type === 'stamp') return <Stamp size={size} className={`text-brand-danger flex-shrink-0 ${className}`} />; 
       return <MapPin size={size} className={`text-gray-400 flex-shrink-0 ${className}`} />;
@@ -428,7 +428,7 @@
     };
 
     const HighlightMark = ({ task, isActive, onClick, onContextMenu, onPointerDown, onPointerMove, onPointerUp, onPointerCancel, showLockIcons }) => {
-      const markerStroke = task.colorId && task.colorId.startsWith('#') ? task.colorId : (MARKER_COLORS.find(c => c.id === task.colorId)?.stroke || '#efc028');
+      const markerColor = MARKER_COLORS.find(c => c.id === task.colorId) || MARKER_COLORS[0];
       const paths = task.paths || (task.points ? [task.points] : []);
       return (
         <div className={`absolute group pointer-events-auto ${isActive ? 'z-30' : 'z-10'} ${task.isLocked ? 'cursor-pointer' : 'cursor-move'}`} 
@@ -440,10 +440,10 @@
           {isActive && <span className={`absolute -inset-2 rounded opacity-20 animate-pulse ${STATUS_CONFIG[task.status]?.color}`}></span>}
           <svg viewBox={`0 0 ${task.width} ${task.height}`} preserveAspectRatio="none" width="100%" height="100%" style={{ overflow: 'visible' }} className="relative z-10 pointer-events-none">
             {paths.map((path, idx) => (
-              <polyline key={idx} points={path.map(p => `${p.x},${p.y}`).join(' ')} fill="none" stroke={markerStroke} strokeWidth="12" strokeLinecap="round" strokeLinejoin="round" opacity="0.4" vectorEffect="non-scaling-stroke" className={isActive ? "brightness-110 drop-shadow-md" : ""} />
+              <polyline key={idx} points={path.map(p => `${p.x},${p.y}`).join(' ')} fill="none" stroke={markerColor.stroke} strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" opacity="0.8" vectorEffect="non-scaling-stroke" className={isActive ? "brightness-110 drop-shadow-md" : ""} />
             ))}
             {paths.map((path, idx) => (
-              <polyline key={`hit-${idx}`} points={path.map(p => `${p.x},${p.y}`).join(' ')} fill="none" stroke="transparent" strokeWidth="20" strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" className="pointer-events-auto" />
+              <polyline key={`hit-${idx}`} points={path.map(p => `${p.x},${p.y}`).join(' ')} fill="none" stroke="transparent" strokeWidth="8" strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" className="pointer-events-auto" />
             ))}
           </svg>
           {task.isLocked && showLockIcons && <div className="absolute -top-2 -right-2 bg-gray-800 text-white rounded-full p-0.5 shadow-md z-40"><Lock size={10} /></div>}
@@ -453,7 +453,7 @@
     };
 
     const PenMark = ({ task, isActive, onClick, onContextMenu, onPointerDown, onPointerMove, onPointerUp, onPointerCancel, showLockIcons }) => {
-      const markerStroke = task.colorId && task.colorId.startsWith('#') ? task.colorId : (MARKER_COLORS.find(c => c.id === task.colorId)?.stroke || '#efc028');
+      const markerColor = MARKER_COLORS.find(c => c.id === task.colorId) || MARKER_COLORS[0];
       const paths = task.paths || (task.points ? [task.points] : []);
       return (
         <div className={`absolute group pointer-events-auto ${isActive ? 'z-30' : 'z-10'} ${task.isLocked ? 'cursor-pointer' : 'cursor-move'}`} 
@@ -465,7 +465,7 @@
           {isActive && <span className={`absolute -inset-2 rounded opacity-20 animate-pulse ${STATUS_CONFIG[task.status]?.color}`}></span>}
           <svg viewBox={`0 0 ${task.width} ${task.height}`} preserveAspectRatio="none" width="100%" height="100%" style={{ overflow: 'visible' }} className="relative z-10 pointer-events-none">
             {paths.map((path, idx) => (
-              <polyline key={idx} points={path.map(p => `${p.x},${p.y}`).join(' ')} fill="none" stroke={markerStroke} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" opacity="1" vectorEffect="non-scaling-stroke" className={isActive ? "brightness-110 drop-shadow-md" : ""} />
+              <polyline key={idx} points={path.map(p => `${p.x},${p.y}`).join(' ')} fill="none" stroke={markerColor.stroke} strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" className={isActive ? "brightness-110 drop-shadow-md" : ""} />
             ))}
             {paths.map((path, idx) => (
               <polyline key={`hit-${idx}`} points={path.map(p => `${p.x},${p.y}`).join(' ')} fill="none" stroke="transparent" strokeWidth="16" strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" className="pointer-events-auto" />
@@ -561,12 +561,6 @@
       
       const [currentUserId, setCurrentUserId] = useState(INITIAL_USERS[0].id);
       const [addMode, setAddMode] = useState('none'); 
-      
-      // Custom Palette State (7 empty slots by default)
-      const [customPalette, setCustomPalette] = useState(() => 
-        [...Array(7)].map((_, i) => ({ id: `empty-${i}`, stroke: '#f3f4f6', name: '自訂顏色', isEmpty: true }))
-      );
-      const [paletteReplaceIndex, setPaletteReplaceIndex] = useState(0);
       const [activeColor, setActiveColor] = useState(MARKER_COLORS[0]);
 
       const [language, setLanguage] = useState('ja');
@@ -780,22 +774,12 @@
             const storedUsers = await getPersistedData('users');
             const storedTags = await getPersistedData('tags');
             const storedStamps = await getPersistedData('stamps');
-            const storedCustomPalette = await getPersistedData('customPalette');
-            const storedPaletteReplaceIndex = await getPersistedData('paletteReplaceIndex');
             if (!isMounted) return;
             if (storedTasks) setTasks(storedTasks);
             if (storedSnapshots) setSnapshots(storedSnapshots);
             if (storedUsers) setUsers(storedUsers);
             if (storedTags) setTags(storedTags);
             if (storedStamps) setStamps(storedStamps);
-            if (storedCustomPalette) {
-              // Ensure legacy data gets an isEmpty flag if not present
-              setCustomPalette(storedCustomPalette.map((c, i) => ({
-                ...c,
-                isEmpty: c.isEmpty !== undefined ? c.isEmpty : false
-              })));
-            }
-            if (storedPaletteReplaceIndex !== undefined) setPaletteReplaceIndex(storedPaletteReplaceIndex);
           } catch (error) {
             console.warn('IndexedDB 載入失敗', error);
           }
@@ -823,14 +807,6 @@
       useEffect(() => {
         setPersistedData('stamps', stamps).catch((err) => console.warn('IndexedDB 儲存 stamps 失敗', err));
       }, [stamps]);
-      
-      useEffect(() => {
-        setPersistedData('customPalette', customPalette).catch((err) => console.warn('IndexedDB 儲存 customPalette 失敗', err));
-      }, [customPalette]);
-      
-      useEffect(() => {
-        setPersistedData('paletteReplaceIndex', paletteReplaceIndex).catch((err) => console.warn('IndexedDB 儲存 paletteReplaceIndex 失敗', err));
-      }, [paletteReplaceIndex]);
 
       const measureGanttDependencyLines = useCallback(() => {
         if (!ganttContainerRef.current) return;
@@ -933,6 +909,7 @@
         });
       }, [isReadOnly]);
 
+      // --- 修正 createTaskFromPending：使用絕對座標 ---
       const createTaskFromPending = useCallback(() => {
         if (!pendingDrawing) return;
         const { mode, paths, colorId, page, baseData } = pendingDrawing;
@@ -947,6 +924,7 @@
         const newWidth = Math.max(maxX - minX, 0.1);
         const newHeight = Math.max(maxY - minY, 0.1);
         
+        // 將絕對座標轉換為相對於 minX, minY 的相對座標
         const relativePaths = paths.map(path => path.map(p => ({ x: p.x - minX, y: p.y - minY })));
         
         const newTask = { 
@@ -968,8 +946,10 @@
         setActiveTaskId(newTask.id);
       }, [pendingDrawing, updateTasks]);
 
+      // --- 新增 useEffect 自動儲存 PendingDrawing ---
       useEffect(() => {
         if (!pendingDrawing) return;
+        // 如果切換了工具、顏色、頁面或跳出圖面檢視，則自動將畫好的筆劃儲存為任務
         if (appView !== 'blueprint' || addMode === 'none' || pendingDrawing.page !== currentPage || pendingDrawing.mode !== addMode || pendingDrawing.colorId !== activeColor.id) {
           createTaskFromPending();
           setPendingDrawing(null);
@@ -1261,37 +1241,23 @@
             canvas.height = viewport.height;
             await page.render({ canvasContext: ctx, viewport }).promise;
           } catch (err) {
-            if (err.name !== 'RenderingCancelledException') {
-              console.error('PDF Render Error:', err);
-            }
+            console.error(err);
           }
         };
 
-        const renderPage = () => {
+        const renderPage = async () => {
           if (!window.pdfjsLib) return;
-          
-          const tryRender = async (retries = 3) => {
-            if (viewMode === 'pdf' && !canvasRef.current && retries > 0) {
-              setTimeout(() => tryRender(retries - 1), 100);
-              return;
+          setIsRendering(true);
+          try {
+            if (compareMode && oldPdfDocument && pdfDocument) {
+              await renderPdfPage(oldPdfDocument, oldCurrentPage, oldCanvasRef.current);
+              await renderPdfPage(pdfDocument, currentPage, canvasRef.current);
+            } else if (viewMode === 'pdf' && pdfDocument) {
+              await renderPdfPage(pdfDocument, currentPage, canvasRef.current);
             }
-            if (viewMode === 'pdf' && !canvasRef.current) return;
-
-            setIsRendering(true);
-            try {
-              if (compareMode && oldPdfDocument && pdfDocument) {
-                if (oldCanvasRef.current) await renderPdfPage(oldPdfDocument, oldCurrentPage, oldCanvasRef.current);
-                if (canvasRef.current) await renderPdfPage(pdfDocument, currentPage, canvasRef.current);
-              } else if (viewMode === 'pdf' && pdfDocument && canvasRef.current) {
-                await renderPdfPage(pdfDocument, currentPage, canvasRef.current);
-              }
-            } catch (err) {
-              console.error(err);
-            } finally {
-              setIsRendering(false);
-            }
-          };
-          tryRender();
+          } finally {
+            setIsRendering(false);
+          }
         };
         renderPage();
       }, [pdfDocument, currentPage, viewMode, appView, compareMode, oldPdfDocument, oldCurrentPage]);
@@ -1428,7 +1394,6 @@
             }
           };
           reader.readAsArrayBuffer(file);
-          e.target.value = null;
           return;
         }
 
@@ -1440,17 +1405,13 @@
               const pdf = await window.pdfjsLib.getDocument({ data: new Uint8Array(ev.target.result) }).promise;
               setPdfDocument(pdf); setTotalPages(pdf.numPages); setCurrentPage(1); setViewMode('pdf');
               resetAppState();
-            } catch (err) { 
-              console.error(err);
-              alert("PDF讀取失敗，請確認檔案格式或檔案是否損毀。"); 
-            }
+            } catch (err) { alert("PDF讀取失敗，請確認檔案格式。"); }
           };
           reader.readAsArrayBuffer(file);
         } else if (file.type.startsWith('image/')) {
           setBackgroundImage(URL.createObjectURL(file)); setViewMode('image'); setTotalPages(1); setCurrentPage(1);
           resetAppState();
         }
-        e.target.value = null;
       };
 
       const handleOldFileUpload = (e) => {
@@ -1471,12 +1432,10 @@
               alert('已載入舊版 PDF，請再載入新版 PDF 以啟動比對模式。');
             }
           } catch (err) {
-            console.error(err);
             alert("舊版 PDF 讀取失敗，請確認檔案格式。");
           }
         };
         reader.readAsArrayBuffer(file);
-        e.target.value = null;
       };
 
       const handleExportProject = () => {
@@ -1754,17 +1713,6 @@
           try { e.currentTarget.releasePointerCapture(e.pointerId); } catch (err) {}
           setDrawPoints([]);
         }
-      };
-
-      // Custom Color Picker Handler
-      const handleColorPick = (e) => {
-        const hex = e.target.value;
-        const newColorObj = { id: hex, stroke: hex, name: '自訂顏色', isEmpty: false };
-        const newPalette = [...customPalette];
-        newPalette[paletteReplaceIndex] = newColorObj;
-        setCustomPalette(newPalette);
-        setActiveColor(newColorObj);
-        setPaletteReplaceIndex((paletteReplaceIndex + 1) % 7);
       };
 
       const handlePhotoUpload = (e) => {
@@ -2567,22 +2515,13 @@
                 >
                   <RefreshCw size={12} />
                 </button>
-                {MARKER_COLORS.map(c => (
+                {MARKER_COLORS.filter(c => c.id !== 'white').map(c => (
                   <button 
                     key={c.id} 
                     onClick={() => { updateTasks(tasks.map(t => t.id === contextMenu.task.id ? { ...t, colorId: c.id } : t)); setContextMenu(null); }}
                     className={`w-6 h-6 rounded-full border-2 transition-transform ${contextMenu.task.colorId === c.id ? 'scale-110 shadow-sm border-black' : 'border-transparent hover:scale-110'}`}
                     style={{ backgroundColor: c.stroke }}
-                    title={c.name}
-                  />
-                ))}
-                {customPalette.filter(c => !c.isEmpty).map((c, idx) => (
-                  <button 
-                    key={`${c.id}-${idx}`} 
-                    onClick={() => { updateTasks(tasks.map(t => t.id === contextMenu.task.id ? { ...t, colorId: c.id } : t)); setContextMenu(null); }}
-                    className={`w-6 h-6 rounded-full border-2 transition-transform ${contextMenu.task.colorId === c.id ? 'scale-110 shadow-sm border-black' : 'border-transparent hover:scale-110'}`}
-                    style={{ backgroundColor: c.stroke }}
-                    title={c.name}
+                    title={`標示為${c.name}`}
                   />
                 ))}
               </div>
@@ -2789,13 +2728,12 @@
                         const isAreaType = ['cloud', 'area', 'highlight', 'pen', 'measure'].includes(task.type);
 
                         if (isAreaType && task.width && task.height) {
-                          const markerStroke = task.colorId && task.colorId.startsWith('#') ? task.colorId : (MARKER_COLORS.find(c => c.id === task.colorId)?.stroke || '#efc028');
                           return (
                             <div key={task.id} className={`absolute border-2 border-brand-danger ${task.type==='area'||task.type==='cloud' ? 'bg-brand-danger/10' : ''} pointer-events-none`} style={{ left: `${task.x}%`, top: `${task.y}%`, width: `${task.width}%`, height: `${task.height}%` }}>
                                {(task.type === 'highlight' || task.type === 'pen') && (task.paths || task.points) && (
-                                  <svg viewBox={`0 0 ${task.width} ${task.height}`} preserveAspectRatio="none" className="w-full h-full absolute inset-0 pointer-events-none">
+                                  <svg viewBox={`0 0 ${task.width} ${task.height}`} preserveAspectRatio="none" className="w-full h-full absolute inset-0 pointer-events-none" style={{ opacity: task.type === 'highlight' ? 0.6 : 1 }}>
                                     {(task.paths || (task.points ? [task.points] : [])).map((path, idx) => (
-                                      <polyline key={idx} points={path.map(p => `${p.x},${p.y}`).join(' ')} fill="none" stroke={markerStroke} strokeWidth={task.type === 'highlight' ? "12" : "3"} strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" opacity={task.type === 'highlight' ? "0.4" : "1"} />
+                                      <polyline key={idx} points={path.map(p => `${p.x},${p.y}`).join(' ')} fill="none" stroke={MARKER_COLORS.find(c => c.id === task.colorId)?.stroke || '#efc028'} strokeWidth={task.type === 'highlight' ? "4" : "2"} strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />
                                     ))}
                                   </svg>
                                )}
@@ -2837,11 +2775,7 @@
                               <td colSpan="5" className="p-8 text-center text-gray-400 font-bold">此頁面目前沒有紀錄</td>
                             </tr>
                           ) : (
-                            filteredTasks.filter(t => t.page === currentPage).map((task, index) => {
-                              const markerName = task.colorId && task.colorId.startsWith('#') ? '自訂' : (MARKER_COLORS.find(c => c.id === task.colorId)?.name || '預設');
-                              const markerStroke = task.colorId && task.colorId.startsWith('#') ? task.colorId : (MARKER_COLORS.find(c => c.id === task.colorId)?.stroke || '#efc028');
-                              
-                              return (
+                            filteredTasks.filter(t => t.page === currentPage).map((task, index) => (
                                <tr key={task.id} className="border-b border-gray-200 bg-white">
                                   <td className="p-3 text-center font-black text-lg text-brand-danger">{index + 1}</td>
                                   <td className="p-3">
@@ -2853,8 +2787,8 @@
                                      {task.type === 'area' && task.area && <div className="text-xs font-bold text-brand-primary mt-1 bg-brand-primary/10 w-fit px-1 rounded">面積: {task.area}</div>}
                                      {(task.type === 'highlight' || task.type === 'pen') && (
                                        <div className="text-[10px] font-bold text-gray-500 mt-1 flex items-center gap-1">
-                                          <span className="w-2 h-2 rounded-full inline-block" style={{ backgroundColor: markerStroke }}></span>
-                                          {task.type === 'highlight' ? '螢光筆' : '色筆'} ({markerName})
+                                          <span className="w-2 h-2 rounded-full inline-block" style={{ backgroundColor: MARKER_COLORS.find(c => c.id === task.colorId)?.stroke || '#efc028' }}></span>
+                                          {task.type === 'highlight' ? '螢光筆' : '色筆'} ({MARKER_COLORS.find(c => c.id === task.colorId)?.name || '預設'})
                                        </div>
                                      )}
                                      {task.type === 'stamp' && <div className="text-[10px] font-bold text-gray-500 mt-1 font-mono">印章代碼: [{task.stampCode}]</div>}
@@ -2869,7 +2803,7 @@
                                   </td>
                                   <td className="p-3 font-bold text-gray-700 text-sm">{users.find(u => u.id === task.assigneeId)?.name || '未指派'}</td>
                                </tr>
-                            )})
+                            ))
                           )}
                        </tbody>
                     </table>
@@ -3271,9 +3205,9 @@
                           const left = ((sD - ganttData.minD) / 86400000) * 40;
 
                           const markerColorInfo = MARKER_COLORS.find(c => c.id === task.colorId);
-                          const bgColor = task.colorId ? (markerColorInfo?.stroke || task.colorId) : (task.status === 'done' ? '#e5e7eb' : '#1f2937');
+                          const bgColor = task.colorId ? markerColorInfo.stroke : (task.status === 'done' ? '#e5e7eb' : '#1f2937');
                           const textColor = task.colorId && ['warning', 'white'].includes(task.colorId) ? '#000' : (task.colorId ? '#fff' : (task.status === 'done' ? '#6b7280' : '#fff'));
-                          const borderColor = task.colorId ? (markerColorInfo?.stroke || task.colorId) : (task.status === 'done' ? '#d1d5db' : '#111827');
+                          const borderColor = task.colorId ? markerColorInfo.stroke : (task.status === 'done' ? '#d1d5db' : '#111827');
 
                           return (
                             <div 
@@ -3641,30 +3575,13 @@
                     </div>
                     
                     {(addMode === 'highlight' || addMode === 'pen') && !isReadOnly && (
-                      <div className="bg-white shadow-md border border-gray-200 rounded-xl px-4 py-2.5 flex flex-col gap-2.5 pointer-events-auto relative">
-                        <div className="flex items-center gap-2">
-                          <span className="text-xs font-bold text-gray-500 w-8 text-right whitespace-nowrap">預設:</span>
-                          {MARKER_COLORS.map(c => (
-                            <button key={c.id} onClick={(e) => { e.stopPropagation(); setActiveColor(c); }} className={`w-5 h-5 rounded-full border-2 transition-all ${activeColor.id === c.id ? 'scale-125 shadow-sm border-black' : 'border-transparent hover:scale-110'}`} style={{ backgroundColor: c.stroke }} title={c.name} />
-                          ))}
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <span className="text-xs font-bold text-gray-500 w-8 text-right whitespace-nowrap">自訂:</span>
-                          {customPalette.map((c, idx) => (
-                            <button 
-                              key={`${c.id}-${idx}`} 
-                              onClick={(e) => { e.stopPropagation(); if(!c.isEmpty) setActiveColor(c); }} 
-                              className={`w-5 h-5 rounded-full border-2 transition-all ${!c.isEmpty && activeColor.id === c.id ? 'scale-125 shadow-sm border-black' : 'border-transparent hover:scale-110'} ${c.isEmpty ? 'border-dashed border-gray-300 cursor-default opacity-50' : ''}`} 
-                              style={{ backgroundColor: c.isEmpty ? '#f9fafb' : c.stroke }} 
-                              title={c.isEmpty ? '尚未設定' : c.name} 
-                            />
-                          ))}
-                          <div className="w-px h-4 bg-gray-200 ml-1" />
-                          <label className="w-5 h-5 rounded-full border border-gray-300 overflow-hidden cursor-pointer relative hover:scale-110 transition-transform shadow-sm" title="加入新顏色">
-                            <div className="absolute inset-0" style={{ background: 'conic-gradient(red, yellow, lime, cyan, blue, magenta, red)' }}></div>
-                            <input type="color" className="opacity-0 absolute inset-0 w-full h-full cursor-pointer" onChange={handleColorPick} />
-                          </label>
-                        </div>
+                      <div className="bg-white shadow-md border border-gray-200 rounded-full px-3 py-1.5 flex items-center gap-2 pointer-events-auto">
+                        <span className="text-xs font-bold text-gray-600 mr-1">
+                          {addMode === 'highlight' ? LANGUAGES[language].highlightMode : LANGUAGES[language].penMode}
+                        </span>
+                        {MARKER_COLORS.map(c => (
+                          <button key={c.id} onClick={(e) => { e.stopPropagation(); setActiveColor(c); }} className={`w-5 h-5 rounded-full border-2 transition-all ${activeColor.id === c.id ? 'scale-125 shadow-sm' : 'hover:scale-110'}`} style={{ backgroundColor: c.stroke, borderColor: activeColor.id === c.id ? '#000' : 'transparent' }} title={c.name} />
+                        ))}
                       </div>
                     )}
 
@@ -3995,11 +3912,11 @@
                               key={idx} 
                               points={path.map(p => `${p.x},${p.y}`).join(' ')} 
                               fill="none" 
-                              stroke={pendingDrawing.colorId && pendingDrawing.colorId.startsWith('#') ? pendingDrawing.colorId : (MARKER_COLORS.find(c => c.id === pendingDrawing.colorId)?.stroke || '#000')} 
-                              strokeWidth={pendingDrawing.mode === 'highlight' ? "12" : "3"} 
+                              stroke={MARKER_COLORS.find(c => c.id === pendingDrawing.colorId)?.stroke || '#000'} 
+                              strokeWidth={pendingDrawing.mode === 'highlight' ? "4" : "2"} 
                               strokeLinecap="round" 
                               strokeLinejoin="round" 
-                              opacity={pendingDrawing.mode === 'highlight' ? "0.4" : "1"} 
+                              opacity={pendingDrawing.mode === 'highlight' ? "0.8" : "1"} 
                               vectorEffect="non-scaling-stroke" 
                             />
                           ))}
@@ -4010,7 +3927,7 @@
                       
                       {isDrawing && (addMode === 'highlight' || addMode === 'pen') && drawPoints.length > 0 && (
                         <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="absolute inset-0 w-full h-full pointer-events-none z-40">
-                          <polyline points={drawPoints.map(p => `${p.x},${p.y}`).join(' ')} fill="none" stroke={activeColor.stroke} strokeWidth={addMode === 'highlight' ? "12" : "3"} strokeLinecap="round" strokeLinejoin="round" opacity={addMode === 'highlight' ? "0.4" : "1"} vectorEffect="non-scaling-stroke" />
+                          <polyline points={drawPoints.map(p => `${p.x},${p.y}`).join(' ')} fill="none" stroke={activeColor.stroke} strokeWidth={addMode === 'highlight' ? "4" : "2"} strokeLinecap="round" strokeLinejoin="round" opacity={addMode === 'highlight' ? "0.8" : "1"} vectorEffect="non-scaling-stroke" />
                           {drawPoints.length > 0 && (
                             <circle cx={drawPoints[drawPoints.length - 1].x} cy={drawPoints[drawPoints.length - 1].y} r={addMode === 'highlight' ? 1.2 : 0.8} fill={activeColor.stroke} opacity="0.9" vectorEffect="non-scaling-stroke" />
                           )}
@@ -4226,38 +4143,17 @@
 
                   {!isReadOnly && (formData.type === 'highlight' || formData.type === 'pen') && (
                     <FormField label="標記顏色">
-                      <div className="flex flex-col gap-3">
-                        <div className="flex items-center gap-2">
-                          <span className="text-xs font-bold text-gray-400 w-8">預設:</span>
-                          <div className="flex gap-2.5">
-                            {MARKER_COLORS.map(c => (
-                              <button
-                                key={c.id}
-                                type="button"
-                                className={`w-8 h-8 rounded-full border-2 transition-transform shadow-sm ${formData.colorId === c.id ? 'scale-110 border-black' : 'border-transparent hover:scale-110'}`}
-                                style={{ backgroundColor: c.stroke }}
-                                onClick={() => setFormData({ ...formData, colorId: c.id })}
-                                title={c.name}
-                              />
-                            ))}
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <span className="text-xs font-bold text-gray-400 w-8">自訂:</span>
-                          <div className="flex gap-2.5">
-                            {customPalette.map((c, idx) => (
-                              <button
-                                key={`custom-${idx}`}
-                                type="button"
-                                disabled={c.isEmpty}
-                                className={`w-8 h-8 rounded-full border-2 transition-transform shadow-sm ${!c.isEmpty && formData.colorId === c.id ? 'scale-110 border-black' : 'border-transparent hover:scale-110'} ${c.isEmpty ? 'border-dashed border-gray-300 opacity-50 cursor-not-allowed' : ''}`}
-                                style={{ backgroundColor: c.isEmpty ? '#f9fafb' : c.stroke }}
-                                onClick={() => { if(!c.isEmpty) setFormData({ ...formData, colorId: c.id }) }}
-                                title={c.isEmpty ? '尚未設定' : c.name}
-                              />
-                            ))}
-                          </div>
-                        </div>
+                      <div className="flex gap-2.5">
+                        {MARKER_COLORS.map(c => (
+                          <button
+                            key={c.id}
+                            type="button"
+                            className={`w-8 h-8 rounded-full border-2 transition-transform shadow-sm ${formData.colorId === c.id ? 'scale-110' : 'border-transparent hover:scale-110'}`}
+                            style={{ backgroundColor: c.stroke, borderColor: formData.colorId === c.id ? '#000' : 'transparent' }}
+                            onClick={() => setFormData({ ...formData, colorId: c.id })}
+                            title={c.name}
+                          />
+                        ))}
                       </div>
                     </FormField>
                   )}
