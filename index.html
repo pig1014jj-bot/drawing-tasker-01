@@ -1790,21 +1790,20 @@
       const handleViewportPointerDown = (e) => {
         activePointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY, type: e.pointerType || 'touch' });
         
-        // 若偵測到兩指以上
-        if (activePointers.current.size >= 2) {
-          const hasPen = Array.from(activePointers.current.values()).some(p => p.type === 'pen');
-          // 如果沒有筆（純手指），才允許進入平移縮放模式並打斷畫圖
-          if (!hasPen) {
-            setIsPanning(true);
-            if (isDrawing) { 
-              setIsDrawing(false); 
-              setDrawStart(null); 
-              setDrawCurrent(null); 
-              setDrawPoints([]); 
-              drawPointsRef.current = [];
-              drawingPointerId.current = null;
-              drawingPointerType.current = null;
-            }
+        const hasPen = Array.from(activePointers.current.values()).some(p => p.type === 'pen');
+        
+        if (hasPen) {
+          setIsPanning(false); // ペンがある場合はパン操作を強制終了
+        } else if (activePointers.current.size >= 2) {
+          setIsPanning(true);
+          if (isDrawing) { 
+            setIsDrawing(false); 
+            setDrawStart(null); 
+            setDrawCurrent(null); 
+            setDrawPoints([]); 
+            drawPointsRef.current = [];
+            drawingPointerId.current = null;
+            drawingPointerType.current = null;
           }
           return;
         }
@@ -2311,7 +2310,6 @@
         
         // 使用 drawingPointerId 判斷，不受 React state 更新延遲影響
         if (drawingPointerId.current !== null && addMode !== 'area') {
-          // 如果現在是手(touch)在畫，但突然筆(pen)點下來了，強制搶走畫圖權，優先讓筆畫！
           if (e.pointerType === 'pen' && drawingPointerType.current !== 'pen') {
             drawingPointerId.current = e.pointerId;
             drawingPointerType.current = 'pen';
@@ -2321,7 +2319,18 @@
             setDrawStart({ x, y });
             setDrawCurrent({ x, y });
             setDrawPoints([{ x, y }]);
-            drawPointsRef.current = [{ x, y }]; // 同步更新 ref 確保不漏點
+            drawPointsRef.current = [{ x, y }]; 
+            
+            // 直接更新 DOM
+            if (livePolylineRef.current) {
+              livePolylineRef.current.setAttribute('points', `${x},${y}`);
+            }
+            if (liveCircleRef.current) {
+              liveCircleRef.current.setAttribute('cx', x);
+              liveCircleRef.current.setAttribute('cy', y);
+              liveCircleRef.current.setAttribute('r', addMode === 'highlight' ? "1.2" : "0.8");
+              liveCircleRef.current.style.opacity = "0.9";
+            }
             try { e.currentTarget.setPointerCapture(e.pointerId); } catch(err){}
           }
           return; // 忽略其他非優先的觸控點
@@ -2333,8 +2342,8 @@
         if (areaResult) setAreaResult(null);
         if (isReadOnly || addMode === 'none') { setActiveTaskId(null); return; } 
 
-        drawingPointerId.current = e.pointerId; // 鎖定目前正在繪圖的指標 ID
-        drawingPointerType.current = e.pointerType; // 記錄指標類型，方便後續優先權判斷
+        drawingPointerId.current = e.pointerId; 
+        drawingPointerType.current = e.pointerType; 
         
         const rect = e.currentTarget.getBoundingClientRect();
         let x = ((e.clientX - rect.left) / rect.width) * 100;
@@ -2355,8 +2364,8 @@
           drawingPointerId.current = null; drawingPointerType.current = null;
         } else if (addMode === 'stamp') {
           setNewTaskCoords({ type: 'stamp', x, y, page: currentPage });
-          const defaultStamp = stamps[0];
-          setFormData({ title: defaultStamp?.title || '', description: defaultStamp?.description || '', stampCode: defaultStamp?.code || '', ...baseData });
+          const selectedStamp = stamps.find(s => s.id === activeStampId) || stamps[0];
+          setFormData({ title: selectedStamp?.title || '', description: selectedStamp?.description || '', stampCode: selectedStamp?.code || '', ...baseData });
           setEditingId(null); setShowTaskModal(true); setAddMode('none');
           drawingPointerId.current = null; drawingPointerType.current = null;
         } else if (addMode === 'cloud' || addMode === 'measure' || addMode === 'calibrate') {
@@ -2395,14 +2404,23 @@
             }
           }
         } else if (addMode === 'highlight' || addMode === 'pen') {
-          drawPointsRef.current = [{ x, y }]; // 【修復】使用 ref 而非 state 以達成 120Hz 高效能繪圖
+          drawPointsRef.current = [{ x, y }];
           setIsDrawing(true); 
+          
+          if (livePolylineRef.current) {
+            livePolylineRef.current.setAttribute('points', `${x},${y}`);
+          }
+          if (liveCircleRef.current) {
+            liveCircleRef.current.setAttribute('cx', x);
+            liveCircleRef.current.setAttribute('cy', y);
+            liveCircleRef.current.setAttribute('r', addMode === 'highlight' ? "1.2" : "0.8");
+            liveCircleRef.current.style.opacity = "0.9";
+          }
           try { e.currentTarget.setPointerCapture(e.pointerId); } catch(err){}
         }
       };
 
       const handleContentPointerMove = (e) => {
-        // 完全捨棄 isDrawing state 檢查，只要 pointerId 匹配，直接畫，防止 React state 延遲造成掉線
         if (e.pointerId !== drawingPointerId.current || isSpacePressed || isReadOnly) return;
         
         const rect = e.currentTarget.getBoundingClientRect();
@@ -2428,11 +2446,8 @@
         else if (addMode === 'area') setDrawCurrent({ x, y });
         else if (addMode === 'highlight' || addMode === 'pen') {
           const prev = drawPointsRef.current;
-          
-          // 徹底移除距離過濾器，確保 iPad 的高頻率更新不會漏掉慢速繪製的點
           prev.push({ x, y });
           
-          // 極限效能最佳化：直接操作 DOM 屬性，不觸發 React 重新渲染
           if (livePolylineRef.current) {
             livePolylineRef.current.setAttribute('points', prev.map(p => `${p.x},${p.y}`).join(' '));
           }
@@ -2444,14 +2459,13 @@
       };
 
       const handleContentPointerUp = (e) => {
-        // 同樣移除 isDrawing state 檢查
         if (e.pointerId !== drawingPointerId.current || isSpacePressed || isReadOnly) return;
         
         if (addMode === 'area') return; 
 
         setIsDrawing(false);
-        drawingPointerId.current = null; // 解除綁定
-        drawingPointerType.current = null; // 解除綁定
+        drawingPointerId.current = null; 
+        drawingPointerType.current = null; 
 
         const baseData = { type: addMode, colorId: activeColor.id, title: '', description: '', status: 'todo', startDate: getToday(), endDate: getToday(1), assigneeId: 'unassigned', stampCode: '', tagId: 'none', attachments: [], history: [], comments: [], isLocked: true };
 
@@ -2476,7 +2490,6 @@
         else if ((addMode === 'highlight' || addMode === 'pen') && drawPointsRef.current.length >= 1) {
           
           const pts = drawPointsRef.current;
-          // 如果只有一個點（點擊一下），自動補一個極微小偏移的點，讓 SVG polyline 能夠渲染出一個點
           const finalPoints = pts.length === 1 
             ? [pts[0], { x: pts[0].x + 0.01, y: pts[0].y }] 
             : [...pts];
@@ -2499,7 +2512,10 @@
             });
           }
           try { e.currentTarget.releasePointerCapture(e.pointerId); } catch (err) {}
+          
           drawPointsRef.current = [];
+          if (livePolylineRef.current) livePolylineRef.current.setAttribute('points', '');
+          if (liveCircleRef.current) liveCircleRef.current.style.opacity = "0";
         }
       };
 
@@ -4680,7 +4696,7 @@
                   </div>
 
                   <div className="absolute origin-top-left pointer-events-none" style={{ transform: `translate3d(${pan.x}px, ${pan.y}px, 0) scale(${scale})`, width: '1200px' }}>
-                    <div className={`relative inline-block w-full bg-white ${scale > 1.5 ? 'shadow-sm' : 'shadow-2xl'} ${!isSpacePressed && !isPanning && addMode !== 'none' ? 'cursor-crosshair' : ''}`} style={{ pointerEvents: isSpacePressed || isPanning ? 'none' : 'auto', touchAction: 'none', userSelect: 'none', WebkitUserSelect: 'none' }} onPointerDown={!isSpacePressed ? handleContentPointerDown : undefined} onPointerMove={!isSpacePressed ? handleContentPointerMove : undefined} onPointerUp={!isSpacePressed ? handleContentPointerUp : undefined} onPointerLeave={!isSpacePressed ? handleContentPointerUp : undefined} onPointerCancel={!isSpacePressed ? handleContentPointerUp : undefined}>
+                    <div className={`relative inline-block w-full bg-white ${scale > 1.5 ? 'shadow-sm' : 'shadow-2xl'} ${!isSpacePressed && !isPanning && addMode !== 'none' ? 'cursor-crosshair' : ''}`} style={{ pointerEvents: isSpacePressed || isPanning ? 'none' : 'auto', touchAction: 'none', userSelect: 'none', WebkitUserSelect: 'none' }} onPointerDown={!isSpacePressed ? handleContentPointerDown : undefined} onPointerMove={!isSpacePressed ? handleContentPointerMove : undefined} onPointerUp={!isSpacePressed ? handleContentPointerUp : undefined} onPointerCancel={!isSpacePressed ? handleContentPointerUp : undefined}>
                       
                       <div style={filterStyle} className="w-full">
                         {isRendering && viewMode === 'pdf' && <div className="absolute inset-0 z-40 bg-white/80 backdrop-blur-sm flex items-center justify-center"><Loader2 className="w-6 h-6 animate-spin mb-3 text-black" /></div>}
@@ -4756,12 +4772,11 @@
 
                       {isDrawing && addMode === 'cloud' && drawStart && drawCurrent && <div className="absolute border-2 border-gray-800 border-dashed bg-black/5 z-40 pointer-events-none" style={{ left: `${Math.min(drawStart.x, drawCurrent.x)}%`, top: `${Math.min(drawStart.y, drawCurrent.y)}%`, width: `${Math.abs(drawCurrent.x - drawStart.x)}%`, height: `${Math.abs(drawCurrent.y - drawStart.y)}%` }} />}
                       
-                      {isDrawing && (addMode === 'highlight' || addMode === 'pen') && (
-                        <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="absolute inset-0 w-full h-full pointer-events-none z-40">
-                          <polyline ref={livePolylineRef} points={drawPointsRef.current.map(p => `${p.x},${p.y}`).join(' ')} fill="none" stroke={activeColor.stroke} strokeWidth={addMode === 'highlight' ? "12" : "3"} strokeLinecap="round" strokeLinejoin="round" opacity={addMode === 'highlight' ? "0.4" : "1"} vectorEffect="non-scaling-stroke" />
-                          <circle ref={liveCircleRef} cx={drawPointsRef.current.length ? drawPointsRef.current[drawPointsRef.current.length - 1].x : 0} cy={drawPointsRef.current.length ? drawPointsRef.current[drawPointsRef.current.length - 1].y : 0} r={addMode === 'highlight' ? 1.2 : 0.8} fill={activeColor.stroke} opacity="0.9" vectorEffect="non-scaling-stroke" />
-                        </svg>
-                      )}
+                      {/* 永久保留在 DOM 中的繪圖層，以確保 120Hz 更新不延遲 */}
+                      <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="absolute inset-0 w-full h-full pointer-events-none z-40" style={{ display: (addMode === 'highlight' || addMode === 'pen') ? 'block' : 'none' }}>
+                        <polyline ref={livePolylineRef} points="" fill="none" stroke={activeColor.stroke} strokeWidth={addMode === 'highlight' ? "12" : "3"} strokeLinecap="round" strokeLinejoin="round" opacity={addMode === 'highlight' ? "0.4" : "1"} vectorEffect="non-scaling-stroke" />
+                        <circle ref={liveCircleRef} cx="0" cy="0" r="0" fill={activeColor.stroke} opacity="0" vectorEffect="non-scaling-stroke" />
+                      </svg>
                       
                       {isDrawing && addMode === 'area' && drawPoints.length > 0 && (
                         <div className="absolute inset-0 pointer-events-none z-40">
