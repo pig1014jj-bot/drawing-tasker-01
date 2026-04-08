@@ -190,12 +190,6 @@
       { id: 'tg4', name: '木作' }
     ];
 
-    const STATUS_CONFIG = {
-      'todo': { label: '待辦', color: 'bg-brand-danger', bgColor: 'bg-brand-danger/10', textColor: 'text-brand-danger', icon: ListTodo },
-      'in-progress': { label: '進行中', color: 'bg-brand-warning', bgColor: 'bg-brand-warning/20', textColor: 'text-brand-warningDark', icon: Clock },
-      'done': { label: '已完成', color: 'bg-brand-success', bgColor: 'bg-brand-success/10', textColor: 'text-brand-success', icon: CheckCircle2 },
-    };
-
     const INITIAL_STAMPS = [
       { id: 'st1', code: 'W-01', title: '壁面漏水', description: '發現牆面有不正常水痕或滲漏狀況，請相關人員進行管線或防水層查驗。' },
       { id: 'st2', code: 'E-01', title: '機電干涉', description: '管線、插座或照明位置與結構體/木作有干涉，需重新檢討圖面。' },
@@ -213,6 +207,7 @@
 
     const LANGUAGES = {
       zh: {
+        // Navigation
         appTitle: '圖面管理',
         navBlueprint: '圖面',
         navBoard: '看板',
@@ -220,14 +215,17 @@
         navGantt: '進度表',
         navSnapshots: '快照',
         navSettings: '設定',
+        // Export/Import
         exportPDF: '產生 PDF',
         exportCSV: '匯出 Excel',
         exportBCF: '匯出 BCF',
         importBCF: '匯入 BCF',
+        // Projects
         newProject: '開啟新專案',
         resetTemplate: '重置回範本',
         backupProject: '備份專案',
         importProject: '讀取專案',
+        // Confirmations
         confirmNewTitle: '警告：開啟新專案',
         confirmNewMessage: '您確定要開啟一個全新的專案嗎？目前所有未備份的圖面、標記與設定都將被清除且無法復原！建議您先點擊「備份專案」將目前進度下載儲存。',
         confirmTemplateTitle: '警告：重置回範本',
@@ -236,6 +234,7 @@
         confirm: '確定',
         confirmNew: '確定捨棄並開啟新專案',
         confirmTemplate: '確定重置回範本',
+        // Help & Guides
         sopTitle: '系統操作 SOP',
         helpTitle: '甘特圖操作說明',
         touchHelp: 'iPad / 觸控操作',
@@ -244,13 +243,236 @@
         scaleNotCalibrated: '尚未校正 (1:1)',
         guide: '指南',
         sop: 'SOP',
+        // Drawing tools
         highlightTitle: '繪製螢光筆 (可選色) (快捷鍵 3)',
         penTitle: '色筆一線標記 (可選色) (快捷鍵 4)',
         highlightMode: '螢光筆: ',
         penMode: '色筆: ',
-        selectTitle: '點選模式 (快捷鍵 0)'
+        selectTitle: '點選模式 (快捷鍵 0)',
+        // Status labels
+        statusTodo: '待辦',
+        statusInProgress: '進行中',
+        statusDone: '已完成',
+        // Marker colors
+        colorDeepBlue: '深藍',
+        colorLightBlue: '淺藍',
+        colorGreen: '碧綠',
+        colorYellow: '銘黃',
+        colorRed: '橘紅',
+        colorBlack: '黑色',
+        colorWhite: '白色',
+        // Header area
+        liveProgress: '🟢 最新進度 (即時編輯)',
+        snapshotHistory: '歷史快照 (唯讀模式)',
+        currentIdentity: '當前身分:',
+        searchPlaceholder: '搜尋...',
+        allPersonnel: '所有人員',
+        filteredPersonnel: '已篩選 {n} 人',
+        filterAssigneeTitle: '篩選經手人員 (可複選)',
+        showAll: '顯示所有人',
+        unassignedTasks: '未指派任務',
+        allPages: '所有頁面',
+        pageN: '第 {n} 頁',
+        // Read-only notice
+        readOnlyNotice: '注意：目前正在檢視歷史快照【{name}】。此為唯讀預覽模式，無法進行修改。',
+        backToLatest: '返回最新進度',
+        // Right-click menu
+        unlockPosition: '解除鎖定位置',
+        lockPosition: '鎖定標記位置',
+        setTodo: '設為待辦',
+        setInProgress: '設為進行中',
+        setDone: '設為已完成',
+        editDetails: '編輯詳情',
+        deleteMarker: '刪除標記',
+        // Snapshots page
+        snapshotsTitle: '圖面歷史快照 (Snapshots)',
+        snapshotsDesc: '將目前的圖面與所有任務狀態完整備份...',
+        newSnapshotLabel: '為新快照命名',
+        saveSnapshot: '儲存目前狀態為快照',
+        savedSnapshots: '已儲存の歷史快照',
+        viewing: '檢視中',
+        previewBlueprint: '預覽圖面',
+        deleteSnapshot: '刪除此快照',
+        noSnapshots: '目前沒有建立任何快照',
+        // Settings page
+        tagManagementTitle: '工種 / 標籤管理',
+        tagManagementDesc: '設定專案の工種分類...',
+        addTag: '新增工種',
+        tagPlaceholder: '輸入標籤名稱 (如：弱電、空調)',
+        noTags: '目前沒有設定任何工種標籤',
+        stampManagementTitle: '常用印章管理',
+        stampManagementDesc: '預先設定常見の缺失與問題...',
+        stampCodePlaceholder: '編號',
+        stampTitlePlaceholder: '標題',
+        stampDescPlaceholder: '說明',
+        addStamp: '新增',
+        userManagementTitle: '經手人員管理',
+        userManagementDesc: '設定專案參與人員。',
+        namePlaceholder: '姓名',
+        avatarPlaceholder: '大頭貼網址',
+        systemInfoTitle: '系統說明',
+        // PDF Report
+        reportPreview: '巡檢總表 PDF 預覽',
+        reportPreviewDesc: '請確認圖面標記與下方表格...',
+        backToBlueprint: '返回圖面',
+        printSavePDF: '列印 / 儲存 PDF',
+        inspectionReport: '圖面巡檢總表',
+        detailList: '圖面詳細清單',
+        colNumber: '編號',
+        colMarkName: '標記名稱 / 說明',
+        colStatus: '狀態',
+        colTrade: '工種',
+        colAssignee: '負責人',
+        noRecords: '此頁面目前沒有紀錄',
+        photoAttachments: '現場照片與附件紀錄',
+        unassigned: '未指派',
+        // Kanban view
+        noDescription: '無詳細說明',
+        viewBlueprint: '看圖面',
+        addTask: '新增任務',
+        photos: '照片',
+        comments: '留言',
+        // Calendar view
+        today: '今天',
+        exportICal: '匯出為 iCal',
+        dayNames: ['日','一','二','三','四','五','六'],
+        // Gantt chart
+        projectDuration: '專案總期程：',
+        ganttAutoExtendNote: '若任務時間超出此設定範圍...',
+        dependencyNote: '依賴線已顯示於任務條上方...',
+        selectedPredecessor: '已選擇前置任務 {id}...',
+        exportExcel: '匯出為 Excel',
+        taskList: '任務列表',
+        noFilteredTasks: '沒有符合圖層篩選條件的任務',
+        calendar: 'の行事曆',
+        tasks: '任務',
+        deleteTask: '刪除任務',
+        // Blueprint sidebar
+        markerList: '圖面標記列表',
+        visible: '可見 {n} 件',
+        noMarkers: '目前的圖層/條件下沒有任何標記',
+        // Toolbar
+        dragToolbar: '拖曳移動工具列',
+        hideHeader: '隱藏上選單',
+        showHeader: '顯示上選單',
+        hideSidebar: '隱藏側邊欄',
+        showSidebar: '顯示側邊欄',
+        undo: '復原 (Ctrl+Z)',
+        redo: '重做 (Ctrl+Y)',
+        layerMenu: '圖層選單 (一鍵隱藏狀態/工種/負責人)',
+        pinTitle: '放置圖釘 (快捷鍵 1)',
+        cloudTitle: '拖曳產生雲形 (快捷鍵 2)',
+        areaTitle: '多邊形面積測量 (快捷鍵 5)',
+        measureTitle: '兩點測量 (按住 Shift 正交鎖點) (快捷鍵 6)',
+        calibrateTitle: '校正比例尺',
+        applyStamp: '套用印章',
+        pleaseSetStamp: '請先設定印章！',
+        deleteSelected: '刪除選取的標記 (Delete鍵)',
+        // Layer menu
+        layerAndFilter: '圖層與篩選',
+        byStatus: '依狀態顯示',
+        byTag: '依工種 / 標籤顯示',
+        manage: '管理',
+        noTag: '無標籤',
+        byAssignee: '依負責人顯示',
+        // Bottom tools
+        toggleMinimap: '切換鷹眼小地圖',
+        displaySettings: '圖面顯示設定',
+        brightness: '亮度',
+        contrast: '對比度',
+        negativeInvert: '負片反轉',
+        grayscaleMode: '灰階模式',
+        resetDefault: '重設為預設值',
+        center: '置中',
+        pdfDrawing: 'PDF 圖紙',
+        defaultColor: '預設',
+        custom: '自訂',
+        notSet: '尚未設定',
+        addNewColor: '加入新顏色',
+        // Calibrate dialog
+        calibrateDialogTitle: '設定圖面比例尺',
+        calibrateDesc: '系統已記錄您繪製的參考線...',
+        autoMode: '依照線段真實長度反推',
+        actualLength: '實際長度',
+        calcRatio: '換算比例:',
+        manualMode: '直接設定標準比例尺 (1:N)',
+        manualDesc: '適用於已知圖面比例的狀況',
+        saveSettings: '儲存設定',
+        // Task edit dialog
+        viewTaskDetails: '檢視任務詳情',
+        editTask: '編輯任務',
+        newTask: '新增任務',
+        markerOnPage: '標記位於： 第 {n} 頁',
+        quickApplyStamp: '快速套用常用印章',
+        markerColor: '標記顏色',
+        tradeTag: '工種 / 標籤',
+        taskName: '任務名稱',
+        detailDesc: '詳細說明',
+        startDate: '開始日期',
+        endDate: '結束日期',
+        status: '狀態',
+        assignee: '經手人員',
+        sitePhotos: '現場照片 / 附件',
+        uploadPhoto: '上傳照片',
+        discussion: '討論區',
+        noComments: '目前沒有留言，輸入 @ 可標記相關人員。',
+        commentPlaceholder: '輸入留言... 輸入 @ 標記人員',
+        mentionPerson: '標記人員',
+        noMatchPerson: '找不到相符的人員',
+        activityLog: '系統活動紀錄',
+        noLog: '無紀錄',
+        addToGCal: '加到 Google 行事曆',
+        close: '關閉',
+        saveTask: '儲存任務',
+        // Alerts & Notifications
+        dxfNotLoaded: 'DXF 解析引擎尚未載入...',
+        dxfParseFailed: 'DXF 解析失敗...',
+        pdfEngineLoading: 'PDF引擎讀取中，請稍後再試。',
+        pdfLoadFailed: 'PDF讀取失敗...',
+        projectLoadSuccess: '專案讀取成功！',
+        projectLoadFailed: '專案檔案格式錯誤或已損毀！',
+        noExportTasks: '目前沒有可匯出的任務！',
+        bcfImportSuccess: '成功匯入 {n} 個任務！',
+        snapLockMode: '🔒 鎖點模式啟動 (正交 / 網格)',
+        // Activity log messages
+        taskCreated: '任務建立',
+        statusChanged: '狀態由「{a}」變更為「{b}」',
+        assigneeChanged: '經手人由「{a}」變更為「{b}」',
+        markerMoved: '移動了標記位置',
+        importedFromBCF: '從 BCF 匯入',
+        highlightMark: '螢光筆標記',
+        penMark: '色筆標記',
+        cloudMark: '雲狀線標記',
+        // Excel export
+        ganttExcelTitle: '圖面任務進度表',
+        worksheetName: '專案進度表',
+        categoryAssignee: '分類 / 負責人',
+        days: '天',
+        // Additional tooltips
+        defaultColorByStatus: '依狀態顯示預設顏色',
+        dragToSortOrChangeAssignee: '拖曳排序或變更負責人',
+        dragToAdjustEndDate: '拖曳拉伸結束日期',
+        dragToSort: '拖曳排序',
+        containsPhotoAttachment: '包含照片附件',
+        layerMenuTooltip: '圖層選單 (一鍵隱藏狀態/工種/負責人)',
+        loadOldVersionPDF: '載入舊版 PDF',
+        loadBlueprint: '載入圖紙 (支援 DXF/PDF/圖片)',
+        togglePDFComparisonMode: '切換 PDF 比對模式 (舊版紅 / 新版藍)',
+        clearScale: '清除比例尺',
+        openSOPGuide: '開啟系統SOP說明',
+        toggleOperationGuide: '切換操作指南',
+        sendComment: '送出留言',
+        hideLockIcons: '隱藏圖面上的鎖定標示 (不影響鎖定功能)',
+        showLockIcons: '顯示圖面上的鎖定標示',
+        addNewColor: '加入新顏色',
+        toggleMinimap: '切換鷹眼小地圖',
+        displaySettings: '調整圖面亮度/對比',
+        cancelSelectTask: '取消選取此任務',
+        setAsPredecessor: '將此任務設為後續任務',
+        selectAsPredecessor: '選取此任務為前置任務'
       },
       ja: {
+        // Navigation
         appTitle: '図面管理',
         navBlueprint: '図面',
         navBoard: 'ボード',
@@ -258,14 +480,17 @@
         navGantt: 'ガントチャート',
         navSnapshots: 'スナップショット',
         navSettings: '設定',
+        // Export/Import
         exportPDF: 'PDF生成',
         exportCSV: 'Excelエクスポート',
         exportBCF: 'BCFエクスポート',
         importBCF: 'BCFインポート',
+        // Projects
         newProject: '新規プロジェクト',
         resetTemplate: 'テンプレートに戻す',
         backupProject: 'プロジェクトバックアップ',
         importProject: 'プロジェクト読み込み',
+        // Confirmations
         confirmNewTitle: '警告：新規プロジェクト',
         confirmNewMessage: '新規プロジェクトを開始しますか？現在の図面、マーキング、設定がすべて削除され、復元できません！まず「プロジェクトバックアップ」をクリックして現在の進捗をダウンロードしてください。',
         confirmTemplateTitle: '警告：テンプレートに戻す',
@@ -274,6 +499,7 @@
         confirm: '確定',
         confirmNew: '破棄して新規プロジェクトを開始',
         confirmTemplate: 'テンプレートに戻す',
+        // Help & Guides
         sopTitle: 'システム操作 SOP',
         helpTitle: 'ガントチャート操作説明',
         touchHelp: 'iPad / タッチ操作',
@@ -282,13 +508,236 @@
         scaleNotCalibrated: '未校正 (1:1)',
         guide: 'ガイド',
         sop: 'SOP',
+        // Drawing tools
         highlightTitle: '蛍光ペンで描画 (色選択可) (ショートカット 3)',
         penTitle: 'ペンで線を描画 (色選択可) (ショートカット 4)',
         highlightMode: '蛍光ペン: ',
         penMode: '色ペン: ',
-        selectTitle: '選択モード (ショートカット 0)'
+        selectTitle: '選択モード (ショートカット 0)',
+        // Status labels
+        statusTodo: '未完了',
+        statusInProgress: '進行中',
+        statusDone: '完了',
+        // Marker colors
+        colorDeepBlue: 'ダークブルー',
+        colorLightBlue: 'ライトブルー',
+        colorGreen: 'グリーン',
+        colorYellow: 'イエロー',
+        colorRed: 'オレンジレッド',
+        colorBlack: 'ブラック',
+        colorWhite: 'ホワイト',
+        // Header area
+        liveProgress: '🟢 最新の進捗 (リアルタイム編集)',
+        snapshotHistory: 'スナップショット履歴 (読取専用)',
+        currentIdentity: '現在のユーザー:',
+        searchPlaceholder: '検索...',
+        allPersonnel: '全メンバー',
+        filteredPersonnel: '{n} 人選択中',
+        filterAssigneeTitle: '担当者フィルター (複数選択可)',
+        showAll: '全員を表示',
+        unassignedTasks: '未割り当てタスク',
+        allPages: '全ページ',
+        pageN: '{n} ページ',
+        // Read-only notice
+        readOnlyNotice: '注意：スナップショット【{name}】を閲覧中。読取専用プレビューモードのため、変更できません。',
+        backToLatest: '最新の進捗に戻る',
+        // Right-click menu
+        unlockPosition: '位置のロック解除',
+        lockPosition: 'マーカー位置をロック',
+        setTodo: '未完了に設定',
+        setInProgress: '進行中に設定',
+        setDone: '完了に設定',
+        editDetails: '詳細を編集',
+        deleteMarker: 'マーカーを削除',
+        // Snapshots page
+        snapshotsTitle: '図面スナップショット履歴',
+        snapshotsDesc: '現在の図面とタスク状態を完全バックアップ...',
+        newSnapshotLabel: '新しいスナップショットの名前',
+        saveSnapshot: '現在の状態をスナップショットとして保存',
+        savedSnapshots: '保存済みスナップショット',
+        viewing: '閲覧中',
+        previewBlueprint: '図面をプレビュー',
+        deleteSnapshot: 'このスナップショットを削除',
+        noSnapshots: 'スナップショットはまだありません',
+        // Settings page
+        tagManagementTitle: '工種 / タグ管理',
+        tagManagementDesc: 'プロジェクトの工種分類を設定...',
+        addTag: '工種を追加',
+        tagPlaceholder: 'タグ名を入力（例：弱電、空調）',
+        noTags: '工種タグは設定されていません',
+        stampManagementTitle: 'スタンプ管理',
+        stampManagementDesc: '一般的な欠陥と問題を事前設定...',
+        stampCodePlaceholder: 'コード',
+        stampTitlePlaceholder: 'タイトル',
+        stampDescPlaceholder: '説明',
+        addStamp: '追加',
+        userManagementTitle: '担当者管理',
+        userManagementDesc: 'プロジェクト参加メンバーを設定',
+        namePlaceholder: '名前',
+        avatarPlaceholder: 'アバターURL',
+        systemInfoTitle: 'システム説明',
+        // PDF Report
+        reportPreview: '検査報告 PDF プレビュー',
+        reportPreviewDesc: '図面マーカーと下の表を確認...',
+        backToBlueprint: '図面に戻る',
+        printSavePDF: '印刷 / PDF保存',
+        inspectionReport: '図面検査報告',
+        detailList: '図面詳細リスト',
+        colNumber: '番号',
+        colMarkName: 'マーカー名 / 説明',
+        colStatus: 'ステータス',
+        colTrade: '工種',
+        colAssignee: '担当者',
+        noRecords: 'このページにはレコードがありません',
+        photoAttachments: '現場写真と添付記録',
+        unassigned: '未割り当て',
+        // Kanban view
+        noDescription: '詳細説明なし',
+        viewBlueprint: '図面を見る',
+        addTask: 'タスクを追加',
+        photos: '写真',
+        comments: 'コメント',
+        // Calendar view
+        today: '今日',
+        exportICal: 'iCalにエクスポート',
+        dayNames: ['日','月','火','水','木','金','土'],
+        // Gantt chart
+        projectDuration: 'プロジェクト期間:',
+        ganttAutoExtendNote: 'タスク時間がこの設定範囲を超えた場合...',
+        dependencyNote: '依存関係線がタスクバーの上に表示されます...',
+        selectedPredecessor: '前置タスク {id} を選択済み...',
+        exportExcel: 'Excelにエクスポート',
+        taskList: 'タスクリスト',
+        noFilteredTasks: 'フィルター条件に一致するタスクがありません',
+        calendar: 'のカレンダー',
+        tasks: 'タスク',
+        deleteTask: 'タスクを削除',
+        // Blueprint sidebar
+        markerList: '図面マーカーリスト',
+        visible: '{n} 件表示中',
+        noMarkers: '現在のフィルター条件にマーカーがありません',
+        // Toolbar
+        dragToolbar: 'ツールバーをドラッグして移動',
+        hideHeader: '上部メニューを非表示',
+        showHeader: '上部メニューを表示',
+        hideSidebar: 'サイドバーを非表示',
+        showSidebar: 'サイドバーを表示',
+        undo: '元に戻す (Ctrl+Z)',
+        redo: 'やり直し (Ctrl+Y)',
+        layerMenu: 'レイヤーメニュー',
+        pinTitle: 'ピンを配置 (ショートカット 1)',
+        cloudTitle: 'ドラッグで雲形を作成 (ショートカット 2)',
+        areaTitle: '多角形面積測定 (ショートカット 5)',
+        measureTitle: '2点測定 (ショートカット 6)',
+        calibrateTitle: 'スケール校正',
+        applyStamp: 'スタンプを適用',
+        pleaseSetStamp: 'まずスタンプを設定してください！',
+        deleteSelected: '選択したマーカーを削除 (Deleteキー)',
+        // Layer menu
+        layerAndFilter: 'レイヤーとフィルター',
+        byStatus: 'ステータス別表示',
+        byTag: '工種 / タグ別表示',
+        manage: '管理',
+        noTag: 'タグなし',
+        byAssignee: '担当者別表示',
+        // Bottom tools
+        toggleMinimap: 'ミニマップ切替',
+        displaySettings: '表示設定',
+        brightness: '明るさ',
+        contrast: 'コントラスト',
+        negativeInvert: 'ネガ反転',
+        grayscaleMode: 'グレースケール',
+        resetDefault: 'デフォルトに戻す',
+        center: '中央に戻す',
+        pdfDrawing: 'PDF図面',
+        defaultColor: 'デフォルト',
+        custom: 'カスタム',
+        notSet: '未設定',
+        addNewColor: '新しい色を追加',
+        // Calibrate dialog
+        calibrateDialogTitle: '図面スケールを設定',
+        calibrateDesc: '参考線が記録されました...',
+        autoMode: '線分の実際の長さから逆算',
+        actualLength: '実際の長さ',
+        calcRatio: '換算比率:',
+        manualMode: '標準スケールを直接設定 (1:N)',
+        manualDesc: '図面比率が既知の場合に適用',
+        saveSettings: '設定を保存',
+        // Task edit dialog
+        viewTaskDetails: 'タスク詳細を表示',
+        editTask: 'タスクを編集',
+        newTask: '新規タスク',
+        markerOnPage: 'マーカーの位置：{n} ページ',
+        quickApplyStamp: '定番スタンプの適用',
+        markerColor: 'マーカーの色',
+        tradeTag: '工種 / タグ',
+        taskName: 'タスク名',
+        detailDesc: '詳細説明',
+        startDate: '開始日',
+        endDate: '終了日',
+        status: 'ステータス',
+        assignee: '担当者',
+        sitePhotos: '現場写真 / 添付',
+        uploadPhoto: '写真をアップロード',
+        discussion: 'ディスカッション',
+        noComments: 'コメントなし。@で関連メンバーを追加できます。',
+        commentPlaceholder: 'コメントを入力... @でメンバーを追加',
+        mentionPerson: 'メンバーを追加',
+        noMatchPerson: '該当するメンバーがいません',
+        activityLog: 'システムアクティビティログ',
+        noLog: '記録なし',
+        addToGCal: 'Google カレンダーに追加',
+        close: '閉じる',
+        saveTask: 'タスクを保存',
+        // Alerts & Notifications
+        dxfNotLoaded: 'DXF解析エンジンが未読込...',
+        dxfParseFailed: 'DXF解析に失敗...',
+        pdfEngineLoading: 'PDFエンジン読込中...',
+        pdfLoadFailed: 'PDF読取に失敗...',
+        projectLoadSuccess: 'プロジェクト読込成功！',
+        projectLoadFailed: 'プロジェクトファイルが壊れています！',
+        noExportTasks: 'エクスポート対象なし！',
+        bcfImportSuccess: '{n} 個のタスクをインポート！',
+        snapLockMode: '🔒 スナップモード（直交/グリッド）',
+        // Activity log messages
+        taskCreated: 'タスク作成',
+        statusChanged: 'ステータスが「{a}」から「{b}」に変更',
+        assigneeChanged: '担当者が「{a}」から「{b}」に変更',
+        markerMoved: 'マーカー位置を移動',
+        importedFromBCF: 'BCFからインポート',
+        highlightMark: '蛍光ペンマーカー',
+        penMark: 'ペンマーカー',
+        cloudMark: '雲形線マーカー',
+        // Excel export
+        ganttExcelTitle: '図面タスク進捗表',
+        worksheetName: 'プロジェクト進捗表',
+        categoryAssignee: '分類 / 担当者',
+        days: '日',
+        // Additional tooltips
+        defaultColorByStatus: 'ステータス別デフォルト色を表示',
+        dragToSortOrChangeAssignee: 'ドラッグでソートまたは担当者変更',
+        dragToAdjustEndDate: 'ドラッグで終了日を調整',
+        dragToSort: 'ドラッグでソート',
+        containsPhotoAttachment: '写真附添付を含む',
+        layerMenuTooltip: 'レイヤーメニュー (ワンクリックでステータス/工種/担当者を非表示)',
+        loadOldVersionPDF: '旧版PDFをロード',
+        loadBlueprint: '図面をロード (DXF/PDF/画像対応)',
+        togglePDFComparisonMode: 'PDF比較モード切替 (旧版赤 / 新版青)',
+        clearScale: 'スケール解除',
+        openSOPGuide: 'システムSOP説明を開く',
+        toggleOperationGuide: '操作ガイドの切替',
+        sendComment: 'コメントを送信',
+        hideLockIcons: '図面上ロック標示を非表示 (ロック機能には影響なし)',
+        showLockIcons: '図面上ロック標示を表示',
+        addNewColor: '新しい色を追加',
+        toggleMinimap: 'ミニマップの切替',
+        displaySettings: '図面の明るさ/コントラスト調整',
+        cancelSelectTask: 'このタスク選択をキャンセル',
+        setAsPredecessor: 'このタスクを後続タスクとして設定',
+        selectAsPredecessor: 'このタスクを前置タスクとして選択'
       },
       en: {
+        // Navigation
         appTitle: 'Blueprint Manager',
         navBlueprint: 'Blueprint',
         navBoard: 'Board',
@@ -296,14 +745,17 @@
         navGantt: 'Gantt Chart',
         navSnapshots: 'Snapshots',
         navSettings: 'Settings',
+        // Export/Import
         exportPDF: 'Generate PDF',
         exportCSV: 'Export Excel',
         exportBCF: 'Export BCF',
         importBCF: 'Import BCF',
+        // Projects
         newProject: 'New Project',
         resetTemplate: 'Reset to Template',
         backupProject: 'Backup Project',
         importProject: 'Import Project',
+        // Confirmations
         confirmNewTitle: 'Warning: New Project',
         confirmNewMessage: 'Are you sure you want to start a new project? All current blueprints, markings, and settings will be cleared and cannot be restored! Please click "Backup Project" first to download your current progress.',
         confirmTemplateTitle: 'Warning: Reset to Template',
@@ -312,6 +764,7 @@
         confirm: 'Confirm',
         confirmNew: 'Discard and Start New Project',
         confirmTemplate: 'Reset to Template',
+        // Help & Guides
         sopTitle: 'System Operation SOP',
         helpTitle: 'Gantt Chart Operation Guide',
         touchHelp: 'iPad / Touch Operation',
@@ -320,11 +773,233 @@
         scaleNotCalibrated: 'Not calibrated (1:1)',
         guide: 'Guide',
         sop: 'SOP',
+        // Drawing tools
         highlightTitle: 'Draw with highlighter (color selectable) (Shortcut 3)',
         penTitle: 'Draw line with pen (color selectable) (Shortcut 4)',
         highlightMode: 'Highlighter: ',
         penMode: 'Pen: ',
-        selectTitle: 'Select mode (Shortcut 0)'
+        selectTitle: 'Select mode (Shortcut 0)',
+        // Status labels
+        statusTodo: 'To Do',
+        statusInProgress: 'In Progress',
+        statusDone: 'Done',
+        // Marker colors
+        colorDeepBlue: 'Dark Blue',
+        colorLightBlue: 'Light Blue',
+        colorGreen: 'Green',
+        colorYellow: 'Yellow',
+        colorRed: 'Orange Red',
+        colorBlack: 'Black',
+        colorWhite: 'White',
+        // Header area
+        liveProgress: '🟢 Latest (Live Edit)',
+        snapshotHistory: 'Snapshot History (Read Only)',
+        currentIdentity: 'Current User:',
+        searchPlaceholder: 'Search...',
+        allPersonnel: 'All Members',
+        filteredPersonnel: '{n} Selected',
+        filterAssigneeTitle: 'Filter Assignees (Multi-select)',
+        showAll: 'Show All',
+        unassignedTasks: 'Unassigned Tasks',
+        allPages: 'All Pages',
+        pageN: 'Page {n}',
+        // Read-only notice
+        readOnlyNotice: 'Note: Viewing snapshot [{name}]. This is read-only preview mode, no changes allowed.',
+        backToLatest: 'Back to Latest',
+        // Right-click menu
+        unlockPosition: 'Unlock Position',
+        lockPosition: 'Lock Position',
+        setTodo: 'Set as To Do',
+        setInProgress: 'Set as In Progress',
+        setDone: 'Set as Done',
+        editDetails: 'Edit Details',
+        deleteMarker: 'Delete Marker',
+        // Snapshots page
+        snapshotsTitle: 'Blueprint Snapshots',
+        snapshotsDesc: 'Back up the current blueprint and all task states...',
+        newSnapshotLabel: 'Name the New Snapshot',
+        saveSnapshot: 'Save Current State as Snapshot',
+        savedSnapshots: 'Saved Snapshots',
+        viewing: 'Viewing',
+        previewBlueprint: 'Preview Blueprint',
+        deleteSnapshot: 'Delete Snapshot',
+        noSnapshots: 'No snapshots created yet',
+        // Settings page
+        tagManagementTitle: 'Trade / Tag Management',
+        tagManagementDesc: 'Set up project trade categories...',
+        addTag: 'Add Trade',
+        tagPlaceholder: 'Enter tag name (e.g., Electrical, HVAC)',
+        noTags: 'No trade tags configured',
+        stampManagementTitle: 'Stamp Management',
+        stampManagementDesc: 'Pre-configure common defects and issues...',
+        stampCodePlaceholder: 'Code',
+        stampTitlePlaceholder: 'Title',
+        stampDescPlaceholder: 'Description',
+        addStamp: 'Add',
+        userManagementTitle: 'Personnel Management',
+        userManagementDesc: 'Configure project members.',
+        namePlaceholder: 'Name',
+        avatarPlaceholder: 'Avatar URL',
+        systemInfoTitle: 'System Info',
+        // PDF Report
+        reportPreview: 'Inspection Report PDF Preview',
+        reportPreviewDesc: 'Please verify the blueprint markers and table below...',
+        backToBlueprint: 'Back to Blueprint',
+        printSavePDF: 'Print / Save PDF',
+        inspectionReport: 'Blueprint Inspection Report',
+        detailList: 'Blueprint Detail List',
+        colNumber: 'No.',
+        colMarkName: 'Marker Name / Description',
+        colStatus: 'Status',
+        colTrade: 'Trade',
+        colAssignee: 'Assignee',
+        noRecords: 'No records on this page',
+        photoAttachments: 'Site Photos & Attachments',
+        unassigned: 'Unassigned',
+        // Kanban view
+        noDescription: 'No description',
+        viewBlueprint: 'View Blueprint',
+        addTask: 'Add Task',
+        photos: 'Photos',
+        comments: 'Comments',
+        // Calendar view
+        today: 'Today',
+        exportICal: 'Export as iCal',
+        dayNames: ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],
+        // Gantt chart
+        projectDuration: 'Project Duration:',
+        ganttAutoExtendNote: 'If task times exceed this range...',
+        dependencyNote: 'Dependency lines are shown above task bars...',
+        selectedPredecessor: 'Selected predecessor {id}...',
+        exportExcel: 'Export as Excel',
+        taskList: 'Task List',
+        noFilteredTasks: 'No tasks matching filter criteria',
+        calendar: '\'s Calendar',
+        tasks: 'Tasks',
+        deleteTask: 'Delete Task',
+        // Blueprint sidebar
+        markerList: 'Blueprint Marker List',
+        visible: '{n} Visible',
+        noMarkers: 'No markers under current filter',
+        // Toolbar
+        dragToolbar: 'Drag to Move Toolbar',
+        hideHeader: 'Hide Header',
+        showHeader: 'Show Header',
+        hideSidebar: 'Hide Sidebar',
+        showSidebar: 'Show Sidebar',
+        undo: 'Undo (Ctrl+Z)',
+        redo: 'Redo (Ctrl+Y)',
+        layerMenu: 'Layer Menu',
+        pinTitle: 'Place Pin (Shortcut 1)',
+        cloudTitle: 'Drag to Create Cloud (Shortcut 2)',
+        areaTitle: 'Polygon Area Measurement (Shortcut 5)',
+        measureTitle: 'Two-point Measurement (Shortcut 6)',
+        calibrateTitle: 'Calibrate Scale',
+        applyStamp: 'Apply Stamp',
+        pleaseSetStamp: 'Please configure stamps first!',
+        deleteSelected: 'Delete Selected Marker (Delete key)',
+        // Layer menu
+        layerAndFilter: 'Layers & Filters',
+        byStatus: 'By Status',
+        byTag: 'By Trade / Tag',
+        manage: 'Manage',
+        noTag: 'No Tag',
+        byAssignee: 'By Assignee',
+        // Bottom tools
+        toggleMinimap: 'Toggle Minimap',
+        displaySettings: 'Display Settings',
+        brightness: 'Brightness',
+        contrast: 'Contrast',
+        negativeInvert: 'Negative Invert',
+        grayscaleMode: 'Grayscale',
+        resetDefault: 'Reset to Default',
+        center: 'Center',
+        pdfDrawing: 'PDF Drawing',
+        defaultColor: 'Default',
+        custom: 'Custom',
+        notSet: 'Not Set',
+        addNewColor: 'Add New Color',
+        // Calibrate dialog
+        calibrateDialogTitle: 'Set Blueprint Scale',
+        calibrateDesc: 'Reference line recorded...',
+        autoMode: 'Calculate from actual line length',
+        actualLength: 'Actual Length',
+        calcRatio: 'Calculated Ratio:',
+        manualMode: 'Set standard scale directly (1:N)',
+        manualDesc: 'For known blueprint ratios',
+        saveSettings: 'Save Settings',
+        // Task edit dialog
+        viewTaskDetails: 'View Task Details',
+        editTask: 'Edit Task',
+        newTask: 'New Task',
+        markerOnPage: 'Marker Location: Page {n}',
+        quickApplyStamp: 'Quick Apply Stamp',
+        markerColor: 'Marker Color',
+        tradeTag: 'Trade / Tag',
+        taskName: 'Task Name',
+        detailDesc: 'Description',
+        startDate: 'Start Date',
+        endDate: 'End Date',
+        status: 'Status',
+        assignee: 'Assignee',
+        sitePhotos: 'Site Photos / Attachments',
+        uploadPhoto: 'Upload Photo',
+        discussion: 'Discussion',
+        noComments: 'No comments yet. Type @ to mention members.',
+        commentPlaceholder: 'Type a comment... @ to mention',
+        mentionPerson: 'Mention Member',
+        noMatchPerson: 'No matching members',
+        activityLog: 'System Activity Log',
+        noLog: 'No Logs',
+        addToGCal: 'Add to Google Calendar',
+        close: 'Close',
+        saveTask: 'Save Task',
+        // Alerts & Notifications
+        dxfNotLoaded: 'DXF parser not loaded yet...',
+        dxfParseFailed: 'DXF parsing failed...',
+        pdfEngineLoading: 'PDF engine loading, please try later.',
+        pdfLoadFailed: 'PDF loading failed...',
+        projectLoadSuccess: 'Project loaded successfully!',
+        projectLoadFailed: 'Project file is corrupted!',
+        noExportTasks: 'No tasks to export!',
+        bcfImportSuccess: 'Successfully imported {n} tasks!',
+        snapLockMode: '🔒 Snap Mode (Orthogonal / Grid)',
+        // Activity log messages
+        taskCreated: 'Task Created',
+        statusChanged: 'Status changed from "{a}" to "{b}"',
+        assigneeChanged: 'Assignee changed from "{a}" to "{b}"',
+        markerMoved: 'Marker position moved',
+        importedFromBCF: 'Imported from BCF',
+        highlightMark: 'Highlighter Mark',
+        penMark: 'Pen Mark',
+        cloudMark: 'Cloud Line Mark',
+        // Excel export
+        ganttExcelTitle: 'Blueprint Task Progress',
+        worksheetName: 'Project Schedule',
+        categoryAssignee: 'Category / Assignee',
+        days: 'days',
+        // Additional tooltips
+        defaultColorByStatus: 'Display default color by status',
+        dragToSortOrChangeAssignee: 'Drag to sort or change assignee',
+        dragToAdjustEndDate: 'Drag to adjust end date',
+        dragToSort: 'Drag to sort',
+        containsPhotoAttachment: 'Contains photo attachment',
+        layerMenuTooltip: 'Layer Menu (One-click hide status/trade/assignee)',
+        loadOldVersionPDF: 'Load old version PDF',
+        loadBlueprint: 'Load blueprint (supports DXF/PDF/images)',
+        togglePDFComparisonMode: 'Toggle PDF comparison mode (old: red / new: blue)',
+        clearScale: 'Clear scale',
+        openSOPGuide: 'Open system SOP guide',
+        toggleOperationGuide: 'Toggle operation guide',
+        sendComment: 'Send comment',
+        hideLockIcons: 'Hide lock indicators on drawing (does not affect locking)',
+        showLockIcons: 'Show lock indicators on drawing',
+        addNewColor: 'Add new color',
+        toggleMinimap: 'Toggle Minimap',
+        displaySettings: 'Adjust drawing brightness/contrast',
+        cancelSelectTask: 'Cancel select this task',
+        setAsPredecessor: 'Set as successor task',
+        selectAsPredecessor: 'Select as predecessor task'
       }
     };
 
@@ -346,37 +1021,15 @@
       );
     };
 
-    const StatusBadge = ({ status }) => {
-      const config = STATUS_CONFIG[status];
-      const Icon = config?.icon || ListTodo;
-      return (
-        <span className={`text-[11px] font-bold px-2 py-0.5 rounded-sm flex items-center gap-1 ${config?.bgColor} ${config?.textColor}`}>
-          <Icon size={12} /> {config?.label}
-        </span>
-      );
-    };
-
     const TaskIcon = ({ type, colorId, size = 14, className = "" }) => {
-      const markerColor = MARKER_COLORS.find(c => c.id === colorId)?.stroke || '#efc028';
+      const markerStroke = colorId && colorId.startsWith('#') ? colorId : (MARKER_COLORS.find(c => c.id === colorId)?.stroke || '#efc028');
       if (type === 'area') return <Hexagon size={size} className={`text-brand-primary flex-shrink-0 ${className}`} />;
-      if (type === 'highlight') return <Highlighter size={size} color={markerColor} className={`flex-shrink-0 ${className}`} />;
-      if (type === 'pen') return <PenLine size={size} color={markerColor} className={`flex-shrink-0 ${className}`} /> || <Edit3 size={size} color={markerColor} className={`flex-shrink-0 ${className}`} />;
+      if (type === 'highlight') return <Highlighter size={size} color={markerStroke} className={`flex-shrink-0 ${className}`} />;
+      if (type === 'pen') return <PenLine size={size} color={markerStroke} className={`flex-shrink-0 ${className}`} /> || <Edit3 size={size} color={markerStroke} className={`flex-shrink-0 ${className}`} />;
       if (type === 'cloud') return <Cloud size={size} className={`text-gray-500 flex-shrink-0 ${className}`} />;
       if (type === 'stamp') return <Stamp size={size} className={`text-brand-danger flex-shrink-0 ${className}`} />; 
       return <MapPin size={size} className={`text-gray-400 flex-shrink-0 ${className}`} />;
     };
-
-    const TaskTooltip = ({ task }) => (
-      <div className="absolute top-full mt-2 left-1/2 -translate-x-1/2 w-48 p-2.5 bg-black text-white text-xs rounded-md shadow-xl opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50">
-        <div className="font-bold truncate leading-tight">{task.title}</div>
-        <div className="text-gray-400 truncate mt-1 text-[10px]">{STATUS_CONFIG[task.status]?.label}</div>
-        {task.attachments && task.attachments.length > 0 && (
-          <div className="flex items-center gap-1 text-gray-400 mt-1 text-[10px]">
-            <ImageIcon size={10} /> 附 {task.attachments.length} 張照片
-          </div>
-        )}
-      </div>
-    );
 
     const FormField = ({ label, children }) => (
       <div>
@@ -385,50 +1038,8 @@
       </div>
     );
 
-    const CloudMark = ({ task, isActive, onClick, onContextMenu, onPointerDown, onPointerMove, onPointerUp, onPointerCancel, showLockIcons }) => {
-      const [size, setSize] = useState({ w: 0, h: 0 });
-      const ref = useRef();
-      useEffect(() => {
-        if (!ref.current) return;
-        const observer = new ResizeObserver(entries => setSize({ w: entries[0].contentRect.width, h: entries[0].contentRect.height }));
-        observer.observe(ref.current);
-        return () => observer.disconnect();
-      }, []);
-      const getCloudPath = (w, h, inverted) => {
-        if (w <= 0 || h <= 0) return "";
-        const r = 10, step = r * 1.5;
-        const sweep = inverted ? 1 : 0;
-        let path = `M ${Math.min(r, w)} 0`;
-        for (let x = Math.min(r, w); x < w; x += step) path += ` A ${r} ${r} 0 0 ${sweep} ${Math.min(x + step, w)} 0`;
-        for (let y = 0; y < h; y += step) path += ` A ${r} ${r} 0 0 ${sweep} ${w} ${Math.min(y + step, h)}`;
-        for (let x = w; x > 0; x -= step) path += ` A ${r} ${r} 0 0 ${sweep} ${Math.max(x - step, 0)} ${h}`;
-        for (let y = h; y > 0; y -= step) {
-           let ny = Math.max(y - step, 0);
-           path += ny === 0 ? ` A ${r} ${r} 0 0 ${sweep} 0 0 A ${r} ${r} 0 0 ${sweep} ${Math.min(r, w)} 0` : ` A ${r} ${r} 0 0 ${sweep} 0 ${ny}`;
-        }
-        return path;
-      };
-      const colorMap = { 'bg-brand-danger': '#f2572d', 'bg-brand-warning': '#efc028', 'bg-brand-success': '#008972' };
-      const strokeColor = colorMap[STATUS_CONFIG[task.status]?.color] || '#f2572d';
-      return (
-        <div ref={ref} className={`absolute group pointer-events-auto ${isActive ? 'z-30' : 'z-10'} ${task.isLocked ? 'cursor-pointer' : 'cursor-move'}`} 
-             style={{ left: `${task.x}%`, top: `${task.y}%`, width: `${task.width}%`, height: `${task.height}%` }} 
-             onClick={(e) => { e.stopPropagation(); onClick(); }} 
-             onContextMenu={onContextMenu}
-             onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={onPointerUp} onPointerCancel={onPointerCancel}
-        >
-          {isActive && <span className={`absolute -inset-2 rounded opacity-20 animate-pulse ${STATUS_CONFIG[task.status]?.color}`}></span>}
-          <svg width="100%" height="100%" style={{ overflow: 'visible' }} className="relative z-10 pointer-events-none">
-            <path d={getCloudPath(size.w, size.h, task.isInverted)} fill={isActive ? `${strokeColor}22` : 'transparent'} stroke={strokeColor} strokeWidth={isActive ? "4" : "2.5"} strokeLinecap="round" strokeLinejoin="round" className="transition-all duration-300 drop-shadow-sm" />
-          </svg>
-          {task.isLocked && showLockIcons && <div className="absolute -top-2 -right-2 bg-gray-800 text-white rounded-full p-0.5 shadow-md z-40"><Lock size={10} /></div>}
-          <TaskTooltip task={task} />
-        </div>
-      );
-    };
-
-    const HighlightMark = ({ task, isActive, onClick, onContextMenu, onPointerDown, onPointerMove, onPointerUp, onPointerCancel, showLockIcons }) => {
-      const markerColor = MARKER_COLORS.find(c => c.id === task.colorId) || MARKER_COLORS[0];
+    const HighlightMark = ({ task, isActive, onClick, onContextMenu, onPointerDown, onPointerMove, onPointerUp, onPointerCancel, showLockIcons, STATUS_CONFIG }) => {
+      const markerStroke = task.colorId && task.colorId.startsWith('#') ? task.colorId : (MARKER_COLORS.find(c => c.id === task.colorId)?.stroke || '#efc028');
       const paths = task.paths || (task.points ? [task.points] : []);
       return (
         <div className={`absolute group pointer-events-auto ${isActive ? 'z-30' : 'z-10'} ${task.isLocked ? 'cursor-pointer' : 'cursor-move'}`} 
@@ -440,20 +1051,18 @@
           {isActive && <span className={`absolute -inset-2 rounded opacity-20 animate-pulse ${STATUS_CONFIG[task.status]?.color}`}></span>}
           <svg viewBox={`0 0 ${task.width} ${task.height}`} preserveAspectRatio="none" width="100%" height="100%" style={{ overflow: 'visible' }} className="relative z-10 pointer-events-none">
             {paths.map((path, idx) => (
-              <polyline key={idx} points={path.map(p => `${p.x},${p.y}`).join(' ')} fill="none" stroke={markerColor.stroke} strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" opacity="0.8" vectorEffect="non-scaling-stroke" className={isActive ? "brightness-110 drop-shadow-md" : ""} />
+              <polyline key={idx} points={path.map(p => `${p.x},${p.y}`).join(' ')} fill="none" stroke={markerStroke} strokeWidth="12" strokeLinecap="round" strokeLinejoin="round" opacity="0.4" vectorEffect="non-scaling-stroke" className={isActive ? "brightness-110 drop-shadow-md" : ""} />
             ))}
             {paths.map((path, idx) => (
-              <polyline key={`hit-${idx}`} points={path.map(p => `${p.x},${p.y}`).join(' ')} fill="none" stroke="transparent" strokeWidth="8" strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" className="pointer-events-auto" />
+              <polyline key={`hit-${idx}`} points={path.map(p => `${p.x},${p.y}`).join(' ')} fill="none" stroke="transparent" strokeWidth="20" strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" className="pointer-events-auto" />
             ))}
           </svg>
-          {task.isLocked && showLockIcons && <div className="absolute -top-2 -right-2 bg-gray-800 text-white rounded-full p-0.5 shadow-md z-40"><Lock size={10} /></div>}
-          <TaskTooltip task={task} />
         </div>
       );
     };
 
-    const PenMark = ({ task, isActive, onClick, onContextMenu, onPointerDown, onPointerMove, onPointerUp, onPointerCancel, showLockIcons }) => {
-      const markerColor = MARKER_COLORS.find(c => c.id === task.colorId) || MARKER_COLORS[0];
+    const PenMark = ({ task, isActive, onClick, onContextMenu, onPointerDown, onPointerMove, onPointerUp, onPointerCancel, showLockIcons, STATUS_CONFIG }) => {
+      const markerStroke = task.colorId && task.colorId.startsWith('#') ? task.colorId : (MARKER_COLORS.find(c => c.id === task.colorId)?.stroke || '#efc028');
       const paths = task.paths || (task.points ? [task.points] : []);
       return (
         <div className={`absolute group pointer-events-auto ${isActive ? 'z-30' : 'z-10'} ${task.isLocked ? 'cursor-pointer' : 'cursor-move'}`} 
@@ -465,19 +1074,17 @@
           {isActive && <span className={`absolute -inset-2 rounded opacity-20 animate-pulse ${STATUS_CONFIG[task.status]?.color}`}></span>}
           <svg viewBox={`0 0 ${task.width} ${task.height}`} preserveAspectRatio="none" width="100%" height="100%" style={{ overflow: 'visible' }} className="relative z-10 pointer-events-none">
             {paths.map((path, idx) => (
-              <polyline key={idx} points={path.map(p => `${p.x},${p.y}`).join(' ')} fill="none" stroke={markerColor.stroke} strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" className={isActive ? "brightness-110 drop-shadow-md" : ""} />
+              <polyline key={idx} points={path.map(p => `${p.x},${p.y}`).join(' ')} fill="none" stroke={markerStroke} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" opacity="1" vectorEffect="non-scaling-stroke" className={isActive ? "brightness-110 drop-shadow-md" : ""} />
             ))}
             {paths.map((path, idx) => (
               <polyline key={`hit-${idx}`} points={path.map(p => `${p.x},${p.y}`).join(' ')} fill="none" stroke="transparent" strokeWidth="16" strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" className="pointer-events-auto" />
             ))}
           </svg>
-          {task.isLocked && showLockIcons && <div className="absolute -top-2 -right-2 bg-gray-800 text-white rounded-full p-0.5 shadow-md z-40"><Lock size={10} /></div>}
-          <TaskTooltip task={task} />
         </div>
       );
     };
 
-    const AreaMark = ({ task, isActive, onClick, onContextMenu, onPointerDown, onPointerMove, onPointerUp, onPointerCancel, showLockIcons }) => {
+    const AreaMark = ({ task, isActive, onClick, onContextMenu, onPointerDown, onPointerMove, onPointerUp, onPointerCancel, showLockIcons, STATUS_CONFIG }) => {
       const colorMap = { 'bg-brand-danger': '#f2572d', 'bg-brand-warning': '#efc028', 'bg-brand-success': '#008972' };
       const strokeColor = colorMap[STATUS_CONFIG[task.status]?.color] || '#0067a6';
       const pts = task.points.map(p => `${p.x},${p.y}`).join(' ');
@@ -496,29 +1103,6 @@
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none font-bold text-white text-[10px] drop-shadow-md bg-black/60 px-1.5 py-0.5 rounded whitespace-nowrap opacity-90">
             {task.area}
           </div>
-          {task.isLocked && showLockIcons && <div className="absolute -top-2 -right-2 bg-gray-800 text-white rounded-full p-0.5 shadow-md z-40"><Lock size={10} /></div>}
-          <TaskTooltip task={task} />
-        </div>
-      );
-    };
-
-    const PinMark = ({ task, isActive, onClick, onContextMenu, onPointerDown, onPointerMove, onPointerUp, onPointerCancel, showLockIcons }) => {
-      const statusColor = STATUS_CONFIG[task.status]?.color || 'bg-gray-500';
-      return (
-        <div className={`absolute transform -translate-x-1/2 -translate-y-1/2 group pointer-events-auto ${task.isLocked ? 'cursor-pointer' : 'cursor-move'}`} 
-             style={{ left: `${task.x}%`, top: `${task.y}%` }} 
-             onClick={(e) => { e.stopPropagation(); onClick(); }} 
-             onContextMenu={onContextMenu}
-             onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={onPointerUp} onPointerCancel={onPointerCancel}
-        >
-          <div className={`relative flex items-center justify-center transition-transform duration-300 ${isActive ? 'scale-125 z-30' : 'scale-100 z-10 hover:scale-110'}`}>
-            {isActive && <span className={`absolute inline-flex h-full w-full rounded-full opacity-50 animate-ping ${statusColor}`}></span>}
-            <div className={`relative flex items-center justify-center w-7 h-7 rounded-full shadow-sm text-white border-2 border-white ${statusColor}`}>
-              <MapPin size={14} fill="currentColor" className="text-white/30" />
-            </div>
-            {task.isLocked && showLockIcons && <div className="absolute -top-2 -right-2 bg-gray-800 text-white rounded-full p-0.5 shadow-md z-40"><Lock size={10} /></div>}
-            <TaskTooltip task={task} />
-          </div>
         </div>
       );
     };
@@ -535,7 +1119,6 @@
             [{task.stampCode}]
           </div>
           {task.isLocked && showLockIcons && <div className="absolute -top-2 -right-2 bg-gray-800 text-white rounded-full p-0.5 shadow-md z-40"><Lock size={10} /></div>}
-          <TaskTooltip task={task} />
         </div>
       </div>
     );
@@ -561,6 +1144,12 @@
       
       const [currentUserId, setCurrentUserId] = useState(INITIAL_USERS[0].id);
       const [addMode, setAddMode] = useState('none'); 
+      
+      // Custom Palette State
+      const [customPalette, setCustomPalette] = useState(() => 
+        [...Array(7)].map((_, i) => ({ id: `empty-${i}`, stroke: '#f3f4f6', name: '自訂顏色', isEmpty: true }))
+      );
+      const [paletteReplaceIndex, setPaletteReplaceIndex] = useState(0);
       const [activeColor, setActiveColor] = useState(MARKER_COLORS[0]);
 
       const [language, setLanguage] = useState('ja');
@@ -568,6 +1157,97 @@
       useEffect(() => {
         document.documentElement.lang = language;
       }, [language]);
+
+      const STATUS_CONFIG = useMemo(() => ({
+        'todo': { label: LANGUAGES[language].statusTodo, color: 'bg-brand-danger', bgColor: 'bg-brand-danger/10', textColor: 'text-brand-danger', icon: ListTodo },
+        'in-progress': { label: LANGUAGES[language].statusInProgress, color: 'bg-brand-warning', bgColor: 'bg-brand-warning/20', textColor: 'text-brand-warningDark', icon: Clock },
+        'done': { label: LANGUAGES[language].statusDone, color: 'bg-brand-success', bgColor: 'bg-brand-success/10', textColor: 'text-brand-success', icon: CheckCircle2 },
+      }), [language]);
+
+      const StatusBadge = ({ status }) => {
+        const config = STATUS_CONFIG[status];
+        const Icon = config?.icon || ListTodo;
+        return (
+          <span className={`text-[11px] font-bold px-2 py-0.5 rounded-sm flex items-center gap-1 ${config?.bgColor} ${config?.textColor}`}>
+            <Icon size={12} /> {config?.label}
+          </span>
+        );
+      };
+
+      const TaskTooltip = ({ task }) => (
+        <div className="absolute top-full mt-2 left-1/2 -translate-x-1/2 w-48 p-2.5 bg-black text-white text-xs rounded-md shadow-xl opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50">
+          <div className="font-bold truncate leading-tight">{task.title}</div>
+          <div className="text-gray-400 truncate mt-1 text-[10px]">{STATUS_CONFIG[task.status]?.label}</div>
+          {task.attachments && task.attachments.length > 0 && (
+            <div className="flex items-center gap-1 text-gray-400 mt-1 text-[10px]">
+              <ImageIcon size={10} /> 附 {task.attachments.length} 張照片
+            </div>
+          )}
+        </div>
+      );
+
+      const PinMark = ({ task, isActive, onClick, onContextMenu, onPointerDown, onPointerMove, onPointerUp, onPointerCancel, showLockIcons }) => {
+        const statusColor = STATUS_CONFIG[task.status]?.color || 'bg-gray-500';
+        return (
+          <div className={`absolute transform -translate-x-1/2 -translate-y-1/2 group pointer-events-auto ${task.isLocked ? 'cursor-pointer' : 'cursor-move'}`} 
+               style={{ left: `${task.x}%`, top: `${task.y}%` }} 
+               onClick={(e) => { e.stopPropagation(); onClick(); }} 
+               onContextMenu={onContextMenu}
+               onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={onPointerUp} onPointerCancel={onPointerCancel}
+          >
+            <div className={`relative flex items-center justify-center transition-transform duration-300 ${isActive ? 'scale-125 z-30' : 'scale-100 z-10 hover:scale-110'}`}>
+              {isActive && <span className={`absolute inline-flex h-full w-full rounded-full opacity-50 animate-ping ${statusColor}`}></span>}
+              <div className={`relative flex items-center justify-center w-7 h-7 rounded-full shadow-sm text-white border-2 border-white ${statusColor}`}>
+                <MapPin size={14} fill="currentColor" className="text-white/30" />
+              </div>
+              {task.isLocked && showLockIcons && <div className="absolute -top-2 -right-2 bg-gray-800 text-white rounded-full p-0.5 shadow-md z-40"><Lock size={10} /></div>}
+              <TaskTooltip task={task} />
+            </div>
+          </div>
+        );
+      };
+
+      const CloudMark = ({ task, isActive, onClick, onContextMenu, onPointerDown, onPointerMove, onPointerUp, onPointerCancel, showLockIcons }) => {
+        const [size, setSize] = useState({ w: 0, h: 0 });
+        const ref = useRef();
+        useEffect(() => {
+          if (!ref.current) return;
+          const observer = new ResizeObserver(entries => setSize({ w: entries[0].contentRect.width, h: entries[0].contentRect.height }));
+          observer.observe(ref.current);
+          return () => observer.disconnect();
+        }, []);
+        const getCloudPath = (w, h, inverted) => {
+          if (w <= 0 || h <= 0) return "";
+          const r = 10, step = r * 1.5;
+          const sweep = inverted ? 1 : 0;
+          let path = `M ${Math.min(r, w)} 0`;
+          for (let x = Math.min(r, w); x < w; x += step) path += ` A ${r} ${r} 0 0 ${sweep} ${Math.min(x + step, w)} 0`;
+          for (let y = 0; y < h; y += step) path += ` A ${r} ${r} 0 0 ${sweep} ${w} ${Math.min(y + step, h)}`;
+          for (let x = w; x > 0; x -= step) path += ` A ${r} ${r} 0 0 ${sweep} ${Math.max(x - step, 0)} ${h}`;
+          for (let y = h; y > 0; y -= step) {
+             let ny = Math.max(y - step, 0);
+             path += ny === 0 ? ` A ${r} ${r} 0 0 ${sweep} 0 0 A ${r} ${r} 0 0 ${sweep} ${Math.min(r, w)} 0` : ` A ${r} ${r} 0 0 ${sweep} 0 ${ny}`;
+          }
+          return path;
+        };
+        const colorMap = { 'bg-brand-danger': '#f2572d', 'bg-brand-warning': '#efc028', 'bg-brand-success': '#008972' };
+        const strokeColor = colorMap[STATUS_CONFIG[task.status]?.color] || '#f2572d';
+        return (
+          <div ref={ref} className={`absolute group pointer-events-auto ${isActive ? 'z-30' : 'z-10'} ${task.isLocked ? 'cursor-pointer' : 'cursor-move'}`} 
+               style={{ left: `${task.x}%`, top: `${task.y}%`, width: `${task.width}%`, height: `${task.height}%` }} 
+               onClick={(e) => { e.stopPropagation(); onClick(); }} 
+               onContextMenu={onContextMenu}
+               onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={onPointerUp} onPointerCancel={onPointerCancel}
+          >
+            {isActive && <span className={`absolute -inset-2 rounded opacity-20 animate-pulse ${STATUS_CONFIG[task.status]?.color}`}></span>}
+            <svg width="100%" height="100%" style={{ overflow: 'visible' }} className="relative z-10 pointer-events-none">
+              <path d={getCloudPath(size.w, size.h, task.isInverted)} fill={isActive ? `${strokeColor}22` : 'transparent'} stroke={strokeColor} strokeWidth={isActive ? "4" : "2.5"} strokeLinecap="round" strokeLinejoin="round" className="transition-all duration-300 drop-shadow-sm" />
+            </svg>
+            {task.isLocked && showLockIcons && <div className="absolute -top-2 -right-2 bg-gray-800 text-white rounded-full p-0.5 shadow-md z-40"><Lock size={10} /></div>}
+            <TaskTooltip task={task} />
+          </div>
+        );
+      };
 
       const [isDrawing, setIsDrawing] = useState(false);
       const [drawStart, setDrawStart] = useState(null);
@@ -694,6 +1374,8 @@
       const activePointers = useRef(new window.Map());
       const lastPinchDist = useRef(null);
       const lastPinchCenter = useRef(null);
+      const drawingPointerId = useRef(null); // 用於鎖定目前正在繪圖的指標，防止手掌誤觸
+      const drawingPointerType = useRef(null); // 記錄繪圖的指標類型 (pen/touch)
       
       const sidebarTouchStartX = useRef(null);
       const sidebarTouchStartY = useRef(null);
@@ -774,12 +1456,21 @@
             const storedUsers = await getPersistedData('users');
             const storedTags = await getPersistedData('tags');
             const storedStamps = await getPersistedData('stamps');
+            const storedCustomPalette = await getPersistedData('customPalette');
+            const storedPaletteReplaceIndex = await getPersistedData('paletteReplaceIndex');
             if (!isMounted) return;
             if (storedTasks) setTasks(storedTasks);
             if (storedSnapshots) setSnapshots(storedSnapshots);
             if (storedUsers) setUsers(storedUsers);
             if (storedTags) setTags(storedTags);
             if (storedStamps) setStamps(storedStamps);
+            if (storedCustomPalette) {
+              setCustomPalette(storedCustomPalette.map((c, i) => ({
+                ...c,
+                isEmpty: c.isEmpty !== undefined ? c.isEmpty : false
+              })));
+            }
+            if (storedPaletteReplaceIndex !== undefined) setPaletteReplaceIndex(storedPaletteReplaceIndex);
           } catch (error) {
             console.warn('IndexedDB 載入失敗', error);
           }
@@ -807,6 +1498,14 @@
       useEffect(() => {
         setPersistedData('stamps', stamps).catch((err) => console.warn('IndexedDB 儲存 stamps 失敗', err));
       }, [stamps]);
+      
+      useEffect(() => {
+        setPersistedData('customPalette', customPalette).catch((err) => console.warn('IndexedDB 儲存 customPalette 失敗', err));
+      }, [customPalette]);
+      
+      useEffect(() => {
+        setPersistedData('paletteReplaceIndex', paletteReplaceIndex).catch((err) => console.warn('IndexedDB 儲存 paletteReplaceIndex 失敗', err));
+      }, [paletteReplaceIndex]);
 
       const measureGanttDependencyLines = useCallback(() => {
         if (!ganttContainerRef.current) return;
@@ -909,7 +1608,6 @@
         });
       }, [isReadOnly]);
 
-      // --- 修正 createTaskFromPending：使用絕對座標 ---
       const createTaskFromPending = useCallback(() => {
         if (!pendingDrawing) return;
         const { mode, paths, colorId, page, baseData } = pendingDrawing;
@@ -924,7 +1622,6 @@
         const newWidth = Math.max(maxX - minX, 0.1);
         const newHeight = Math.max(maxY - minY, 0.1);
         
-        // 將絕對座標轉換為相對於 minX, minY 的相對座標
         const relativePaths = paths.map(path => path.map(p => ({ x: p.x - minX, y: p.y - minY })));
         
         const newTask = { 
@@ -946,10 +1643,8 @@
         setActiveTaskId(newTask.id);
       }, [pendingDrawing, updateTasks]);
 
-      // --- 新增 useEffect 自動儲存 PendingDrawing ---
       useEffect(() => {
         if (!pendingDrawing) return;
-        // 如果切換了工具、顏色、頁面或跳出圖面檢視，則自動將畫好的筆劃儲存為任務
         if (appView !== 'blueprint' || addMode === 'none' || pendingDrawing.page !== currentPage || pendingDrawing.mode !== addMode || pendingDrawing.colorId !== activeColor.id) {
           createTaskFromPending();
           setPendingDrawing(null);
@@ -999,7 +1694,7 @@
 
           if (e.key === 'Escape') {
             const { isDrawing: drawing, showTaskModal: modal, measureResult: mRes, areaResult: aRes, showCalibrateModal: cModal, showLayerMenu: lMenu, showConfirmNew: cNew } = activeStatesRef.current;
-            if (drawing) { setIsDrawing(false); setDrawStart(null); setDrawCurrent(null); setDrawPoints([]); }
+            if (drawing) { setIsDrawing(false); setDrawStart(null); setDrawCurrent(null); setDrawPoints([]); drawingPointerId.current = null; drawingPointerType.current = null; }
             if (modal) setShowTaskModal(false);
             if (cModal) setShowCalibrateModal(false);
             if (lMenu) setShowLayerMenu(false);
@@ -1090,12 +1785,17 @@
 
       const handleViewportPointerDown = (e) => {
         activePointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
+        
+        // 若偵測到兩指以上
         if (activePointers.current.size >= 2) {
-          setIsPanning(true);
-          if (isDrawing) { setIsDrawing(false); setDrawStart(null); setDrawCurrent(null); setDrawPoints([]); }
+          if (!isDrawing) {
+            setIsPanning(true);
+          }
           return;
         }
-        if (e.button === 1 || e.button === 2 || isSpacePressed) {
+        
+        // 按下中鍵或右鍵，或按住空白鍵
+        if ((e.button === 1 || e.button === 2 || isSpacePressed) && !isDrawing) {
           e.preventDefault(); setIsPanning(true);
           setPanStart({ x: e.clientX - pan.x, y: e.clientY - pan.y });
           e.currentTarget.setPointerCapture(e.pointerId);
@@ -1104,6 +1804,8 @@
 
       const handleViewportPointerMove = (e) => {
         if (activePointers.current.has(e.pointerId)) activePointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
+        
+        if (isDrawing) return; // 正在繪圖時，不處理平移或縮放邏輯
         
         if (activePointers.current.size >= 2) {
           if (isSidebarVisible) setIsSidebarVisible(false); 
@@ -1241,23 +1943,37 @@
             canvas.height = viewport.height;
             await page.render({ canvasContext: ctx, viewport }).promise;
           } catch (err) {
-            console.error(err);
+            if (err.name !== 'RenderingCancelledException') {
+              console.error('PDF Render Error:', err);
+            }
           }
         };
 
-        const renderPage = async () => {
+        const renderPage = () => {
           if (!window.pdfjsLib) return;
-          setIsRendering(true);
-          try {
-            if (compareMode && oldPdfDocument && pdfDocument) {
-              await renderPdfPage(oldPdfDocument, oldCurrentPage, oldCanvasRef.current);
-              await renderPdfPage(pdfDocument, currentPage, canvasRef.current);
-            } else if (viewMode === 'pdf' && pdfDocument) {
-              await renderPdfPage(pdfDocument, currentPage, canvasRef.current);
+          
+          const tryRender = async (retries = 3) => {
+            if (viewMode === 'pdf' && !canvasRef.current && retries > 0) {
+              setTimeout(() => tryRender(retries - 1), 100);
+              return;
             }
-          } finally {
-            setIsRendering(false);
-          }
+            if (viewMode === 'pdf' && !canvasRef.current) return;
+
+            setIsRendering(true);
+            try {
+              if (compareMode && oldPdfDocument && pdfDocument) {
+                if (oldCanvasRef.current) await renderPdfPage(oldPdfDocument, oldCurrentPage, oldCanvasRef.current);
+                if (canvasRef.current) await renderPdfPage(pdfDocument, currentPage, canvasRef.current);
+              } else if (viewMode === 'pdf' && pdfDocument && canvasRef.current) {
+                await renderPdfPage(pdfDocument, currentPage, canvasRef.current);
+              }
+            } catch (err) {
+              console.error(err);
+            } finally {
+              setIsRendering(false);
+            }
+          };
+          tryRender();
         };
         renderPage();
       }, [pdfDocument, currentPage, viewMode, appView, compareMode, oldPdfDocument, oldCurrentPage]);
@@ -1394,6 +2110,7 @@
             }
           };
           reader.readAsArrayBuffer(file);
+          e.target.value = null;
           return;
         }
 
@@ -1405,13 +2122,17 @@
               const pdf = await window.pdfjsLib.getDocument({ data: new Uint8Array(ev.target.result) }).promise;
               setPdfDocument(pdf); setTotalPages(pdf.numPages); setCurrentPage(1); setViewMode('pdf');
               resetAppState();
-            } catch (err) { alert("PDF讀取失敗，請確認檔案格式。"); }
+            } catch (err) { 
+              console.error(err);
+              alert("PDF讀取失敗，請確認檔案格式或檔案是否損毀。"); 
+            }
           };
           reader.readAsArrayBuffer(file);
         } else if (file.type.startsWith('image/')) {
           setBackgroundImage(URL.createObjectURL(file)); setViewMode('image'); setTotalPages(1); setCurrentPage(1);
           resetAppState();
         }
+        e.target.value = null;
       };
 
       const handleOldFileUpload = (e) => {
@@ -1432,10 +2153,12 @@
               alert('已載入舊版 PDF，請再載入新版 PDF 以啟動比對模式。');
             }
           } catch (err) {
+            console.error(err);
             alert("舊版 PDF 讀取失敗，請確認檔案格式。");
           }
         };
         reader.readAsArrayBuffer(file);
+        e.target.value = null;
       };
 
       const handleExportProject = () => {
@@ -1561,16 +2284,35 @@
 
       const toggleLayerStatus = (statusKey) => { setLayerVisibility(prev => ({ ...prev, statuses: { ...prev.statuses, [statusKey]: prev.statuses[statusKey] === false ? true : false } })); };
       const toggleLayerTag = (tagId) => { setLayerVisibility(prev => ({ ...prev, tags: { ...prev.tags, [tagId]: prev.tags[tagId] === false ? true : false } })); };
-      
       const toggleLayerAssignee = (assigneeId) => { setLayerVisibility(prev => ({ ...prev, assignees: { ...prev.assignees, [assigneeId]: prev.assignees[assigneeId] === false ? true : false } })); };
 
       const handleContentPointerDown = (e) => {
-        if (activePointers.current.size >= 2 || isSpacePressed || isPanning || e.button === 1 || e.button === 2) return;
+        if (isSpacePressed || isPanning || e.button === 1 || e.button === 2) return;
+        
+        if (isDrawing && addMode !== 'area') {
+          // 如果現在是手(touch)在畫，但突然筆(pen)點下來了，強制搶走畫圖權，優先讓筆畫！
+          if (e.pointerType === 'pen' && drawingPointerType.current !== 'pen') {
+            drawingPointerId.current = e.pointerId;
+            drawingPointerType.current = 'pen';
+            const rect = e.currentTarget.getBoundingClientRect();
+            let x = ((e.clientX - rect.left) / rect.width) * 100;
+            let y = ((e.clientY - rect.top) / rect.height) * 100;
+            setDrawStart({ x, y });
+            setDrawCurrent({ x, y });
+            setDrawPoints([{ x, y }]);
+            e.currentTarget.setPointerCapture(e.pointerId);
+          }
+          return; // 忽略其他非優先的觸控點
+        }
+        
         if (showLayerMenu) setShowLayerMenu(false); 
         if (showDisplaySettings) setShowDisplaySettings(false);
         if (measureResult) setMeasureResult(null);
         if (areaResult) setAreaResult(null);
         if (isReadOnly || addMode === 'none') { setActiveTaskId(null); return; } 
+
+        drawingPointerId.current = e.pointerId; // 鎖定目前正在繪圖的指標 ID
+        drawingPointerType.current = e.pointerType; // 記錄指標類型，方便後續優先權判斷
         
         const rect = e.currentTarget.getBoundingClientRect();
         let x = ((e.clientX - rect.left) / rect.width) * 100;
@@ -1588,11 +2330,13 @@
           setNewTaskCoords({ type: 'pin', x, y, page: currentPage });
           setFormData({ title: '', description: '', stampCode: '', ...baseData });
           setEditingId(null); setShowTaskModal(true); setAddMode('none');
+          drawingPointerId.current = null; drawingPointerType.current = null;
         } else if (addMode === 'stamp') {
           setNewTaskCoords({ type: 'stamp', x, y, page: currentPage });
           const defaultStamp = stamps[0];
           setFormData({ title: defaultStamp?.title || '', description: defaultStamp?.description || '', stampCode: defaultStamp?.code || '', ...baseData });
           setEditingId(null); setShowTaskModal(true); setAddMode('none');
+          drawingPointerId.current = null; drawingPointerType.current = null;
         } else if (addMode === 'cloud' || addMode === 'measure' || addMode === 'calibrate') {
           setIsDrawing(true); setDrawStart({ x, y }); setDrawCurrent({ x, y });
           e.currentTarget.setPointerCapture(e.pointerId);
@@ -1611,7 +2355,7 @@
               const width = Math.max(...xs) - minX, height = Math.max(...ys) - minY;
               
               if (width < 0.5 && height < 0.5) {
-                 setIsDrawing(false); setDrawPoints([]); setDrawCurrent(null); return;
+                 setIsDrawing(false); setDrawPoints([]); setDrawCurrent(null); drawingPointerId.current = null; drawingPointerType.current = null; return;
               }
 
               let areaPx2 = 0;
@@ -1623,7 +2367,7 @@
               const areaStr = formatArea(areaPx2, scaleInfo.ratio, scaleInfo.unit, scaleInfo.isCalibrated);
               
               setAreaResult({ points: finalPoints, area: areaStr });
-              setIsDrawing(false); setDrawPoints([]); setDrawCurrent(null); setAddMode('none');
+              setIsDrawing(false); setDrawPoints([]); setDrawCurrent(null); setAddMode('none'); drawingPointerId.current = null; drawingPointerType.current = null;
             } else {
               setDrawPoints(prev => [...prev, { x, y }]);
             }
@@ -1635,7 +2379,9 @@
       };
 
       const handleContentPointerMove = (e) => {
-        if (!isDrawing || activePointers.current.size >= 2 || isSpacePressed || isPanning || isReadOnly) return;
+        // 確認是否為當前發起繪圖的觸控點，若非則直接忽略（防止掌觸誤判為移動）
+        if (!isDrawing || e.pointerId !== drawingPointerId.current || isSpacePressed || isPanning || isReadOnly) return;
+        
         const rect = e.currentTarget.getBoundingClientRect();
         let x = Math.max(0, Math.min(100, ((e.clientX - rect.left) / rect.width) * 100));
         let y = Math.max(0, Math.min(100, ((e.clientY - rect.top) / rect.height) * 100));
@@ -1657,15 +2403,28 @@
 
         if ((addMode === 'cloud' || addMode === 'measure' || addMode === 'calibrate') && drawStart) setDrawCurrent({ x, y });
         else if (addMode === 'area') setDrawCurrent({ x, y });
-        else if (addMode === 'highlight' || addMode === 'pen') setDrawPoints(prev => { const last = prev[prev.length - 1]; if (last && last.x === x && last.y === y) return prev; return [...prev, { x, y }]; });
+        else if (addMode === 'highlight' || addMode === 'pen') setDrawPoints(prev => { 
+          const last = prev[prev.length - 1]; 
+          if (last) {
+            const dx = last.x - x;
+            const dy = last.y - y;
+            // 效能優化：大幅降低過濾門檻 (從 0.05 降到 0.001)，保留高頻率的 iPad 繪圖細節，防止線條斷掉變點點
+            if (dx * dx + dy * dy < 0.001) return prev; 
+          }
+          return [...prev, { x, y }]; 
+        });
       };
 
       const handleContentPointerUp = (e) => {
-        if (!isDrawing || activePointers.current.size >= 2 || isSpacePressed || isPanning || isReadOnly) return;
+        // 確認是否為當前發起繪圖的觸控點
+        if (!isDrawing || e.pointerId !== drawingPointerId.current || isSpacePressed || isPanning || isReadOnly) return;
         
         if (addMode === 'area') return; 
 
         setIsDrawing(false);
+        drawingPointerId.current = null; // 解除綁定
+        drawingPointerType.current = null; // 解除綁定
+
         const baseData = { type: addMode, colorId: activeColor.id, title: '', description: '', status: 'todo', startDate: getToday(), endDate: getToday(1), assigneeId: 'unassigned', stampCode: '', tagId: 'none', attachments: [], history: [], comments: [], isLocked: true };
 
         if (addMode === 'cloud' && drawStart && drawCurrent) {
@@ -1686,17 +2445,18 @@
           setMeasureResult({ p1: drawStart, p2: drawCurrent, distance, unit: scaleInfo.isCalibrated ? scaleInfo.unit : 'mm' });
           setDrawStart(null); setDrawCurrent(null);
         }
-        else if ((addMode === 'highlight' || addMode === 'pen') && drawPoints.length >= 2) {
-          const xs = drawPoints.map(p => p.x), ys = drawPoints.map(p => p.y);
-          const minX = Math.min(...xs), minY = Math.min(...ys);
-          const width = Math.max(...xs) - minX, height = Math.max(...ys) - minY;
+        // 原本是 drawPoints.length >= 2，改為 >= 1，並刪除了 (width < 0.5 && height < 0.5) 的嚴格判斷，以支援單點標記
+        else if ((addMode === 'highlight' || addMode === 'pen') && drawPoints.length >= 1) {
           
-          if (width < 0.5 && height < 0.5) { setDrawPoints([]); return; }
+          // 如果只有一個點（點擊一下），自動補一個極微小偏移的點，讓 SVG polyline 能夠渲染出一個點
+          const finalPoints = drawPoints.length === 1 
+            ? [drawPoints[0], { x: drawPoints[0].x + 0.01, y: drawPoints[0].y }] 
+            : drawPoints;
 
           if (pendingDrawing && pendingDrawing.mode === addMode && pendingDrawing.colorId === activeColor.id && pendingDrawing.page === currentPage) {
             setPendingDrawing(prev => ({ 
               ...prev, 
-              paths: [...prev.paths, drawPoints] 
+              paths: [...prev.paths, finalPoints] 
             }));
           } else {
             if (pendingDrawing) {
@@ -1704,7 +2464,7 @@
             }
             setPendingDrawing({ 
               mode: addMode, 
-              paths: [drawPoints], 
+              paths: [finalPoints], 
               colorId: activeColor.id, 
               page: currentPage, 
               baseData 
@@ -1713,6 +2473,17 @@
           try { e.currentTarget.releasePointerCapture(e.pointerId); } catch (err) {}
           setDrawPoints([]);
         }
+      };
+
+      // Custom Color Picker Handler
+      const handleColorPick = (e) => {
+        const hex = e.target.value;
+        const newColorObj = { id: hex, stroke: hex, name: '自訂顏色', isEmpty: false };
+        const newPalette = [...customPalette];
+        newPalette[paletteReplaceIndex] = newColorObj;
+        setCustomPalette(newPalette);
+        setActiveColor(newColorObj);
+        setPaletteReplaceIndex((paletteReplaceIndex + 1) % 7);
       };
 
       const handlePhotoUpload = (e) => {
@@ -2387,7 +3158,7 @@
                               }}
                             >
                               <input type="checkbox" checked={filterAssignees.includes('unassigned')} readOnly className="rounded text-brand-primary focus:ring-brand-primary w-4 h-4 cursor-pointer" />
-                              <span className="text-sm font-medium text-gray-600">未指派任務</span>
+                              <span className="text-sm font-medium text-gray-600">{LANGUAGES[language].unassignedTasks}</span>
                             </div>
                             {users.map(u => (
                               <div 
@@ -2491,10 +3262,10 @@
             <div className="bg-brand-warning text-[#4a3904] px-6 py-2 flex justify-between items-center z-40 shadow-sm font-bold text-sm shrink-0 border-b border-brand-warningDark">
               <div className="flex items-center gap-2">
                 <AlertTriangle size={16} />
-                注意：目前正在檢視歷史快照【{snapshots.find(s => s.id === activeSnapshotId)?.name}】。此為唯讀預覽模式，無法進行修改。
+                {LANGUAGES[language].readOnlyNotice.replace('{name}', snapshots.find(s => s.id === activeSnapshotId)?.name)}
               </div>
               <button onClick={() => setActiveSnapshotId(null)} className="bg-white/80 hover:bg-white px-4 py-1 rounded shadow-sm transition-colors text-black text-xs uppercase tracking-wider">
-                返回最新進度
+                {LANGUAGES[language].backToLatest}
               </button>
             </div>
           )}
@@ -2511,17 +3282,26 @@
                 <button 
                   onClick={() => { updateTasks(tasks.map(t => t.id === contextMenu.task.id ? { ...t, colorId: null } : t)); setContextMenu(null); }}
                   className={`w-6 h-6 rounded-full border-2 text-[10px] flex items-center justify-center font-bold transition-all bg-gray-100 text-gray-500 hover:bg-gray-200 ${!contextMenu.task.colorId ? 'border-gray-500 shadow-sm scale-110' : 'border-transparent hover:scale-110'}`}
-                  title="依狀態顯示預設顏色"
+                  title={LANGUAGES[language].defaultColorByStatus}
                 >
                   <RefreshCw size={12} />
                 </button>
-                {MARKER_COLORS.filter(c => c.id !== 'white').map(c => (
+                {MARKER_COLORS.map(c => (
                   <button 
                     key={c.id} 
                     onClick={() => { updateTasks(tasks.map(t => t.id === contextMenu.task.id ? { ...t, colorId: c.id } : t)); setContextMenu(null); }}
                     className={`w-6 h-6 rounded-full border-2 transition-transform ${contextMenu.task.colorId === c.id ? 'scale-110 shadow-sm border-black' : 'border-transparent hover:scale-110'}`}
                     style={{ backgroundColor: c.stroke }}
-                    title={`標示為${c.name}`}
+                    title={c.name}
+                  />
+                ))}
+                {customPalette.filter(c => !c.isEmpty).map((c, idx) => (
+                  <button 
+                    key={`${c.id}-${idx}`} 
+                    onClick={() => { updateTasks(tasks.map(t => t.id === contextMenu.task.id ? { ...t, colorId: c.id } : t)); setContextMenu(null); }}
+                    className={`w-6 h-6 rounded-full border-2 transition-transform ${contextMenu.task.colorId === c.id ? 'scale-110 shadow-sm border-black' : 'border-transparent hover:scale-110'}`}
+                    style={{ backgroundColor: c.stroke }}
+                    title={c.name}
                   />
                 ))}
               </div>
@@ -2530,14 +3310,14 @@
                   updateTasks(tasks.map(t => t.id === contextMenu.task.id ? { ...t, isLocked: !t.isLocked } : t)); 
                   setContextMenu(null); 
               }} className="w-full text-left px-3 py-1.5 hover:bg-gray-50 flex items-center gap-2 border-b border-gray-100">
-                  {contextMenu.task.isLocked ? <><Unlock size={14} className="text-gray-500" /> 解除鎖定位置</> : <><Lock size={14} className="text-brand-danger" /> 鎖定標記位置</>}
+                  {contextMenu.task.isLocked ? <><Unlock size={14} className="text-gray-500" /> {LANGUAGES[language].unlockPosition}</> : <><Lock size={14} className="text-brand-danger" /> {LANGUAGES[language].lockPosition}</>}
               </button>
 
-              <button onClick={() => { changeTaskStatus(contextMenu.task.id, 'todo'); }} className="w-full text-left px-3 py-1.5 hover:bg-gray-50 flex items-center gap-2"><div className="w-2 h-2 rounded-full bg-brand-danger"></div> 設為待辦</button>
-              <button onClick={() => { changeTaskStatus(contextMenu.task.id, 'in-progress'); }} className="w-full text-left px-3 py-1.5 hover:bg-gray-50 flex items-center gap-2"><div className="w-2 h-2 rounded-full bg-brand-warning"></div> 設為進行中</button>
-              <button onClick={() => { changeTaskStatus(contextMenu.task.id, 'done'); }} className="w-full text-left px-3 py-1.5 hover:bg-gray-50 flex items-center gap-2 border-b border-gray-100"><div className="w-2 h-2 rounded-full bg-brand-success"></div> 設為已完成</button>
-              <button onClick={() => { setContextMenu(null); openEditModal(contextMenu.task); }} className="w-full text-left px-3 py-1.5 hover:bg-gray-50 flex items-center gap-2 text-brand-secondary"><Edit3 size={14} /> 編輯詳情</button>
-              <button onClick={() => { setContextMenu(null); updateTasks(prev => prev.filter(t => t.id !== contextMenu.task.id)); setActiveTaskId(null); }} className="w-full text-left px-3 py-1.5 hover:bg-brand-danger/10 flex items-center gap-2 text-brand-danger"><Trash2 size={14} /> 刪除標記</button>
+              <button onClick={() => { changeTaskStatus(contextMenu.task.id, 'todo'); }} className="w-full text-left px-3 py-1.5 hover:bg-gray-50 flex items-center gap-2"><div className="w-2 h-2 rounded-full bg-brand-danger"></div> {LANGUAGES[language].setTodo}</button>
+              <button onClick={() => { changeTaskStatus(contextMenu.task.id, 'in-progress'); }} className="w-full text-left px-3 py-1.5 hover:bg-gray-50 flex items-center gap-2"><div className="w-2 h-2 rounded-full bg-brand-warning"></div> {LANGUAGES[language].setInProgress}</button>
+              <button onClick={() => { changeTaskStatus(contextMenu.task.id, 'done'); }} className="w-full text-left px-3 py-1.5 hover:bg-gray-50 flex items-center gap-2 border-b border-gray-100"><div className="w-2 h-2 rounded-full bg-brand-success"></div> {LANGUAGES[language].setDone}</button>
+              <button onClick={() => { setContextMenu(null); openEditModal(contextMenu.task); }} className="w-full text-left px-3 py-1.5 hover:bg-gray-50 flex items-center gap-2 text-brand-secondary"><Edit3 size={14} /> {LANGUAGES[language].editDetails}</button>
+              <button onClick={() => { setContextMenu(null); updateTasks(prev => prev.filter(t => t.id !== contextMenu.task.id)); setActiveTaskId(null); }} className="w-full text-left px-3 py-1.5 hover:bg-brand-danger/10 flex items-center gap-2 text-brand-danger"><Trash2 size={14} /> {LANGUAGES[language].deleteMarker}</button>
             </div>
           )}
 
@@ -2547,12 +3327,12 @@
               <div className="flex-1 p-8 overflow-auto bg-gray-50">
                 <div className="max-w-4xl mx-auto space-y-6">
                   <div className="bg-white rounded-lg border border-gray-200 p-8 shadow-sm">
-                     <h2 className="text-xl font-bold mb-2 flex items-center gap-2 text-black"><Camera size={20} className="text-brand-secondary" /> 圖面歷史快照 (Snapshots)</h2>
-                     <p className="text-sm text-gray-500 mb-8 pb-6 border-b border-gray-100">將目前的圖面與所有任務狀態完整備份。適用於「初驗」、「複驗」等重要里程碑，方便日後隨時切換比對進度（對比紅綠燈變化）。</p>
+                     <h2 className="text-xl font-bold mb-2 flex items-center gap-2 text-black"><Camera size={20} className="text-brand-secondary" /> {LANGUAGES[language].snapshotsTitle}</h2>
+                     <p className="text-sm text-gray-500 mb-8 pb-6 border-b border-gray-100">{LANGUAGES[language].snapshotsDesc}</p>
                      
                      <div className="bg-brand-secondary/10 p-5 rounded-lg border border-brand-secondary/20 mb-8 flex gap-3 items-end shadow-sm">
                        <div className="flex-1">
-                         <label className="block text-xs font-bold text-gray-500 mb-1.5 uppercase tracking-wider">為新快照命名</label>
+                         <label className="block text-xs font-bold text-gray-500 mb-1.5 uppercase tracking-wider">{LANGUAGES[language].newSnapshotLabel}</label>
                          <input type="text" placeholder={`例如：${getToday()} 複驗版`} className={INPUT_CLASS} value={newSnapshotName} onChange={e => setNewSnapshotName(e.target.value)} />
                        </div>
                        <button 
@@ -2563,12 +3343,12 @@
                          }} 
                          className="bg-brand-primary text-white px-5 py-2 rounded-md text-sm font-bold hover:opacity-90 transition-colors h-[38px] flex items-center gap-2 shadow-sm"
                        >
-                         <Save size={16} /> 儲存目前狀態為快照
+                         <Save size={16} /> {LANGUAGES[language].saveSnapshot}
                        </button>
                      </div>
 
                      <div className="space-y-3">
-                       <h3 className="text-sm font-bold text-gray-800 mb-3">已儲存の歷史快照</h3>
+                       <h3 className="text-sm font-bold text-gray-800 mb-3">{LANGUAGES[language].savedSnapshots}</h3>
                        {snapshots.map(snap => (
                          <div key={snap.id} className={`flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 group shadow-sm transition-all ${activeSnapshotId === snap.id ? 'border-brand-primary bg-brand-primary/10' : 'border-gray-200 bg-white'}`}>
                            <div className="flex flex-col">
@@ -2576,7 +3356,7 @@
                                 <Camera size={14} className={activeSnapshotId === snap.id ? 'text-brand-primary' : 'text-gray-400'} />
                                 <span className={`font-bold text-base ${activeSnapshotId === snap.id ? 'text-brand-primary' : 'text-black'}`}>{snap.name}</span>
                                 <span className="text-xs text-gray-400 font-mono ml-2">{snap.date}</span>
-                                {activeSnapshotId === snap.id && <span className="text-[10px] bg-brand-primary text-white px-1.5 py-0.5 rounded ml-2 font-bold tracking-wider">檢視中</span>}
+                                {activeSnapshotId === snap.id && <span className="text-[10px] bg-brand-primary text-white px-1.5 py-0.5 rounded ml-2 font-bold tracking-wider">{LANGUAGES[language].viewing}</span>}
                              </div>
                              <div className="flex gap-3 text-xs font-bold mt-2">
                                 <span className="text-brand-danger bg-brand-danger/10 px-2 py-0.5 rounded">待辦: {snap.tasks.filter(t=>t.status==='todo').length}</span>
@@ -2589,15 +3369,15 @@
                                onClick={() => { setActiveSnapshotId(snap.id); setAppView('blueprint'); }} 
                                className={`px-3 py-1.5 text-sm font-bold rounded flex items-center gap-1.5 transition-colors ${activeSnapshotId === snap.id ? 'bg-brand-primary/20 text-brand-primary' : 'bg-gray-100 hover:bg-gray-200 text-gray-800'}`}
                              >
-                               <Eye size={14} /> 預覽圖面
+                               <Eye size={14} /> {LANGUAGES[language].previewBlueprint}
                              </button>
-                             <button onClick={() => setSnapshots(snapshots.filter(s => s.id !== snap.id))} className="p-1.5 text-gray-400 hover:text-brand-danger hover:bg-brand-danger/10 rounded transition-colors" title="刪除此快照">
+                             <button onClick={() => setSnapshots(snapshots.filter(s => s.id !== snap.id))} className="p-1.5 text-gray-400 hover:text-brand-danger hover:bg-brand-danger/10 rounded transition-colors" title={LANGUAGES[language].deleteSnapshot}>
                                <Trash2 size={16} />
                              </button>
                            </div>
                          </div>
                        ))}
-                       {snapshots.length === 0 && <div className="text-center text-gray-400 py-8 text-sm border border-dashed border-gray-300 rounded-lg">目前沒有建立任何快照</div>}
+                       {snapshots.length === 0 && <div className="text-center text-gray-400 py-8 text-sm border border-dashed border-gray-300 rounded-lg">{LANGUAGES[language].noSnapshots}</div>}
                      </div>
                   </div>
                 </div>
@@ -2609,11 +3389,11 @@
                 <div className="max-w-4xl mx-auto space-y-6">
                   
                   <div className="bg-white rounded-lg border border-gray-200 p-8 shadow-sm">
-                     <h2 className="text-xl font-bold mb-2 flex items-center gap-2 text-black"><Tag size={20} className="text-brand-secondary" /> 工種 / 標籤管理</h2>
-                     <p className="text-sm text-gray-500 mb-8 pb-6 border-b border-gray-100">設定專案の工種分類（如水電、泥作、消防），以便在圖面上透過圖層選單一鍵篩選顯示。</p>
+                     <h2 className="text-xl font-bold mb-2 flex items-center gap-2 text-black"><Tag size={20} className="text-brand-secondary" /> {LANGUAGES[language].tagManagementTitle}</h2>
+                     <p className="text-sm text-gray-500 mb-8 pb-6 border-b border-gray-100">{LANGUAGES[language].tagManagementDesc}</p>
                      <div className="bg-gray-50 p-5 rounded-lg border border-gray-200 mb-8 shadow-sm flex gap-3">
-                       <input type="text" placeholder="輸入標籤名稱 (如：弱電、空調)" className={`${INPUT_CLASS} flex-1`} value={newTagForm.name} onChange={e => setNewTagForm({name: e.target.value})} disabled={isReadOnly}/>
-                       <button onClick={() => { setTags([...tags, { id: `tg_${Date.now()}`, name: newTagForm.name }]); setNewTagForm({name:''}); }} disabled={isReadOnly || !newTagForm.name.trim()} className="bg-black text-white px-5 rounded-md text-sm font-bold hover:bg-gray-800 disabled:opacity-50">新增工種</button>
+                       <input type="text" placeholder={LANGUAGES[language].tagPlaceholder} className={`${INPUT_CLASS} flex-1`} value={newTagForm.name} onChange={e => setNewTagForm({name: e.target.value})} disabled={isReadOnly}/>
+                       <button onClick={() => { setTags([...tags, { id: `tg_${Date.now()}`, name: newTagForm.name }]); setNewTagForm({name:''}); }} disabled={isReadOnly || !newTagForm.name.trim()} className="bg-black text-white px-5 rounded-md text-sm font-bold hover:bg-gray-800 disabled:opacity-50">{LANGUAGES[language].addTag}</button>
                      </div>
                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                        {tags.map(tag => (
@@ -2622,18 +3402,18 @@
                            <button onClick={() => setTags(tags.filter(t => t.id !== tag.id))} disabled={isReadOnly} className="text-gray-400 hover:text-brand-danger p-1 opacity-0 group-hover:opacity-100 disabled:opacity-0"><Trash2 size={14} /></button>
                          </div>
                        ))}
-                       {tags.length === 0 && <div className="col-span-full text-center text-gray-400 py-4 text-sm bg-gray-50 border border-dashed rounded-lg">目前沒有設定任何工種標籤</div>}
+                       {tags.length === 0 && <div className="col-span-full text-center text-gray-400 py-4 text-sm bg-gray-50 border border-dashed rounded-lg">{LANGUAGES[language].noTags}</div>}
                      </div>
                   </div>
 
                   <div className="bg-white rounded-lg border border-gray-200 p-8 shadow-sm">
-                     <h2 className="text-xl font-bold mb-2 flex items-center gap-2 text-black"><Stamp size={20} className="text-brand-primary" /> 常用印章管理</h2>
-                     <p className="text-sm text-gray-500 mb-8 pb-6 border-b border-gray-100">預先設定常見の缺失與問題，在圖面上蓋章時可快速帶入標準說明。</p>
+                     <h2 className="text-xl font-bold mb-2 flex items-center gap-2 text-black"><Stamp size={20} className="text-brand-primary" /> {LANGUAGES[language].stampManagementTitle}</h2>
+                     <p className="text-sm text-gray-500 mb-8 pb-6 border-b border-gray-100">{LANGUAGES[language].stampManagementDesc}</p>
                      <div className="bg-gray-50 p-5 rounded-lg border border-gray-200 mb-8 shadow-sm flex gap-3">
-                       <input type="text" placeholder="編號" className={`${INPUT_CLASS} w-1/4`} value={newStampForm.code} onChange={e => setNewStampForm({...newStampForm, code: e.target.value})} disabled={isReadOnly}/>
-                       <input type="text" placeholder="標題" className={`${INPUT_CLASS} w-1/3`} value={newStampForm.title} onChange={e => setNewStampForm({...newStampForm, title: e.target.value})} disabled={isReadOnly}/>
-                       <input type="text" placeholder="說明" className={`${INPUT_CLASS} flex-1`} value={newStampForm.description} onChange={e => setNewStampForm({...newStampForm, description: e.target.value})} disabled={isReadOnly}/>
-                       <button onClick={() => { setStamps([...stamps, { id: Date.now().toString(), ...newStampForm }]); setNewStampForm({code:'', title:'', description:''}); }} disabled={isReadOnly || !newStampForm.code || !newStampForm.title} className="bg-black text-white px-5 rounded-md text-sm font-bold hover:bg-gray-800 disabled:opacity-50">新增</button>
+                       <input type="text" placeholder={LANGUAGES[language].stampCodePlaceholder} className={`${INPUT_CLASS} w-1/4`} value={newStampForm.code} onChange={e => setNewStampForm({...newStampForm, code: e.target.value})} disabled={isReadOnly}/>
+                       <input type="text" placeholder={LANGUAGES[language].stampTitlePlaceholder} className={`${INPUT_CLASS} w-1/3`} value={newStampForm.title} onChange={e => setNewStampForm({...newStampForm, title: e.target.value})} disabled={isReadOnly}/>
+                       <input type="text" placeholder={LANGUAGES[language].stampDescPlaceholder} className={`${INPUT_CLASS} flex-1`} value={newStampForm.description} onChange={e => setNewStampForm({...newStampForm, description: e.target.value})} disabled={isReadOnly}/>
+                       <button onClick={() => { setStamps([...stamps, { id: Date.now().toString(), ...newStampForm }]); setNewStampForm({code:'', title:'', description:''}); }} disabled={isReadOnly || !newStampForm.code || !newStampForm.title} className="bg-black text-white px-5 rounded-md text-sm font-bold hover:bg-gray-800 disabled:opacity-50">{LANGUAGES[language].addStamp}</button>
                      </div>
                      <div className="space-y-2">
                        {stamps.map(stamp => (
@@ -2647,12 +3427,12 @@
                   </div>
 
                   <div className="bg-white rounded-lg border border-gray-200 p-8 shadow-sm">
-                     <h2 className="text-xl font-bold mb-2 flex items-center gap-2 text-black"><User size={20} className="text-brand-primary" /> 經手人員管理</h2>
-                     <p className="text-sm text-gray-500 mb-8 pb-6 border-b border-gray-100">設定專案參與人員。</p>
+                     <h2 className="text-xl font-bold mb-2 flex items-center gap-2 text-black"><User size={20} className="text-brand-primary" /> {LANGUAGES[language].userManagementTitle}</h2>
+                     <p className="text-sm text-gray-500 mb-8 pb-6 border-b border-gray-100">{LANGUAGES[language].userManagementDesc}</p>
                      <div className="bg-gray-50 p-5 rounded-lg border border-gray-200 mb-8 flex gap-3 shadow-sm">
-                       <input type="text" placeholder="姓名" className={`${INPUT_CLASS} w-1/3`} value={newUserForm.name} onChange={e => setNewUserForm({...newUserForm, name: e.target.value})} disabled={isReadOnly}/>
-                       <input type="text" placeholder="大頭貼網址" className={`${INPUT_CLASS} flex-1`} value={newUserForm.avatar} onChange={e => setNewUserForm({...newUserForm, avatar: e.target.value})} disabled={isReadOnly}/>
-                       <button onClick={() => { setUsers([...users, { id: `u_${Date.now()}`, name: newUserForm.name, avatar: newUserForm.avatar || `https://api.dicebear.com/7.x/initials/svg?seed=${newUserForm.name}` }]); setNewUserForm({name:'', avatar:''}); }} disabled={isReadOnly || !newUserForm.name} className="bg-black text-white px-5 rounded-md text-sm font-bold hover:bg-gray-800 disabled:opacity-50">新增</button>
+                       <input type="text" placeholder={LANGUAGES[language].namePlaceholder} className={`${INPUT_CLASS} w-1/3`} value={newUserForm.name} onChange={e => setNewUserForm({...newUserForm, name: e.target.value})} disabled={isReadOnly}/>
+                       <input type="text" placeholder={LANGUAGES[language].avatarPlaceholder} className={`${INPUT_CLASS} flex-1`} value={newUserForm.avatar} onChange={e => setNewUserForm({...newUserForm, avatar: e.target.value})} disabled={isReadOnly}/>
+                       <button onClick={() => { setUsers([...users, { id: `u_${Date.now()}`, name: newUserForm.name, avatar: newUserForm.avatar || `https://api.dicebear.com/7.x/initials/svg?seed=${newUserForm.name}` }]); setNewUserForm({name:'', avatar:''}); }} disabled={isReadOnly || !newUserForm.name} className="bg-black text-white px-5 rounded-md text-sm font-bold hover:bg-gray-800 disabled:opacity-50">{LANGUAGES[language].addStamp}</button>
                      </div>
                      <div className="grid grid-cols-3 gap-4">
                        {users.map(user => (
@@ -2665,7 +3445,7 @@
                   </div>
                   
                   <div className="bg-white rounded-lg border border-gray-200 p-8 shadow-sm">
-                     <h2 className="text-xl font-bold mb-2 flex items-center gap-2 text-black"><Settings size={20} className="text-brand-primary" /> 系統說明</h2>
+                     <h2 className="text-xl font-bold mb-2 flex items-center gap-2 text-black"><Settings size={20} className="text-brand-primary" /> {LANGUAGES[language].systemInfoTitle}</h2>
                      <div className="prose text-sm text-gray-600">
                        <p>進階版新增了以下功能以提升效率：</p>
                        <ul className="list-disc pl-5 space-y-2 mt-4 font-medium">
@@ -2685,15 +3465,15 @@
               <div className="flex-1 bg-gray-200 overflow-auto print:bg-white flex flex-col relative w-full h-full">
                 <div className="bg-white border-b border-gray-300 px-8 py-4 flex justify-between items-center sticky top-0 z-50 print:hidden shadow-sm">
                   <div>
-                    <h2 className="text-lg font-black text-gray-900">巡檢總表 PDF 預覽</h2>
-                    <p className="text-xs text-gray-500 font-medium mt-1">請確認圖面標記與下方表格，點擊右側按鈕進行列印或儲存為 PDF。</p>
+                    <h2 className="text-lg font-black text-gray-900">{LANGUAGES[language].reportPreview}</h2>
+                    <p className="text-xs text-gray-500 font-medium mt-1">{LANGUAGES[language].reportPreviewDesc}</p>
                   </div>
                   <div className="flex gap-3">
                     <button onClick={() => setAppView('blueprint')} className="px-4 py-2 text-sm font-bold text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors">
-                      返回圖面
+                      {LANGUAGES[language].backToBlueprint}
                     </button>
                     <button onClick={() => window.print()} className="px-5 py-2 text-sm font-bold text-white bg-brand-primary rounded-md hover:opacity-90 shadow-md flex items-center gap-2 transition-colors">
-                      <Printer size={16} /> 列印 / 儲存 PDF
+                      <Printer size={16} /> {LANGUAGES[language].printSavePDF}
                     </button>
                   </div>
                 </div>
@@ -2702,7 +3482,7 @@
                   
                   <div className="border-b-2 border-black pb-4 mb-6 flex justify-between items-end">
                     <div>
-                      <h1 className="text-3xl font-black text-black tracking-wider">圖面巡檢總表</h1>
+                      <h1 className="text-3xl font-black text-black tracking-wider">{LANGUAGES[language].inspectionReport}</h1>
                       <div className="text-sm font-bold text-gray-500 mt-2">
                         {isReadOnly ? `歷史快照：${snapshots.find(s=>s.id===activeSnapshotId)?.name}` : `日期: ${getToday()}`} | 頁面: 第 {currentPage} 頁
                       </div>
@@ -2728,12 +3508,13 @@
                         const isAreaType = ['cloud', 'area', 'highlight', 'pen', 'measure'].includes(task.type);
 
                         if (isAreaType && task.width && task.height) {
+                          const markerStroke = task.colorId && task.colorId.startsWith('#') ? task.colorId : (MARKER_COLORS.find(c => c.id === task.colorId)?.stroke || '#efc028');
                           return (
                             <div key={task.id} className={`absolute border-2 border-brand-danger ${task.type==='area'||task.type==='cloud' ? 'bg-brand-danger/10' : ''} pointer-events-none`} style={{ left: `${task.x}%`, top: `${task.y}%`, width: `${task.width}%`, height: `${task.height}%` }}>
                                {(task.type === 'highlight' || task.type === 'pen') && (task.paths || task.points) && (
-                                  <svg viewBox={`0 0 ${task.width} ${task.height}`} preserveAspectRatio="none" className="w-full h-full absolute inset-0 pointer-events-none" style={{ opacity: task.type === 'highlight' ? 0.6 : 1 }}>
+                                  <svg viewBox={`0 0 ${task.width} ${task.height}`} preserveAspectRatio="none" className="w-full h-full absolute inset-0 pointer-events-none">
                                     {(task.paths || (task.points ? [task.points] : [])).map((path, idx) => (
-                                      <polyline key={idx} points={path.map(p => `${p.x},${p.y}`).join(' ')} fill="none" stroke={MARKER_COLORS.find(c => c.id === task.colorId)?.stroke || '#efc028'} strokeWidth={task.type === 'highlight' ? "4" : "2"} strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />
+                                      <polyline key={idx} points={path.map(p => `${p.x},${p.y}`).join(' ')} fill="none" stroke={markerStroke} strokeWidth={task.type === 'highlight' ? "12" : "3"} strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" opacity={task.type === 'highlight' ? "0.4" : "1"} />
                                     ))}
                                   </svg>
                                )}
@@ -2762,20 +3543,24 @@
                     <table className="w-full text-left border-collapse">
                        <thead>
                           <tr className="bg-gray-100 text-gray-800 text-sm border-b-2 border-gray-300">
-                             <th className="p-3 w-16 text-center font-black">編號</th>
-                             <th className="p-3 font-black">標記名稱 / 說明</th>
-                             <th className="p-3 w-28 font-black">狀態</th>
-                             <th className="p-3 w-28 font-black">工種</th>
-                             <th className="p-3 w-28 font-black">負責人</th>
+                             <th className="p-3 w-16 text-center font-black">{LANGUAGES[language].colNumber}</th>
+                             <th className="p-3 font-black">{LANGUAGES[language].colMarkName}</th>
+                             <th className="p-3 w-28 font-black">{LANGUAGES[language].colStatus}</th>
+                             <th className="p-3 w-28 font-black">{LANGUAGES[language].colTrade}</th>
+                             <th className="p-3 w-28 font-black">{LANGUAGES[language].colAssignee}</th>
                           </tr>
                        </thead>
                        <tbody className="text-sm">
                           {filteredTasks.filter(t => t.page === currentPage).length === 0 ? (
                             <tr>
-                              <td colSpan="5" className="p-8 text-center text-gray-400 font-bold">此頁面目前沒有紀錄</td>
+                              <td colSpan="5" className="p-8 text-center text-gray-400 font-bold">{LANGUAGES[language].noRecords}</td>
                             </tr>
                           ) : (
-                            filteredTasks.filter(t => t.page === currentPage).map((task, index) => (
+                            filteredTasks.filter(t => t.page === currentPage).map((task, index) => {
+                              const markerName = task.colorId && task.colorId.startsWith('#') ? '自訂' : (MARKER_COLORS.find(c => c.id === task.colorId)?.name || '預設');
+                              const markerStroke = task.colorId && task.colorId.startsWith('#') ? task.colorId : (MARKER_COLORS.find(c => c.id === task.colorId)?.stroke || '#efc028');
+                              
+                              return (
                                <tr key={task.id} className="border-b border-gray-200 bg-white">
                                   <td className="p-3 text-center font-black text-lg text-brand-danger">{index + 1}</td>
                                   <td className="p-3">
@@ -2787,8 +3572,8 @@
                                      {task.type === 'area' && task.area && <div className="text-xs font-bold text-brand-primary mt-1 bg-brand-primary/10 w-fit px-1 rounded">面積: {task.area}</div>}
                                      {(task.type === 'highlight' || task.type === 'pen') && (
                                        <div className="text-[10px] font-bold text-gray-500 mt-1 flex items-center gap-1">
-                                          <span className="w-2 h-2 rounded-full inline-block" style={{ backgroundColor: MARKER_COLORS.find(c => c.id === task.colorId)?.stroke || '#efc028' }}></span>
-                                          {task.type === 'highlight' ? '螢光筆' : '色筆'} ({MARKER_COLORS.find(c => c.id === task.colorId)?.name || '預設'})
+                                          <span className="w-2 h-2 rounded-full inline-block" style={{ backgroundColor: markerStroke }}></span>
+                                          {task.type === 'highlight' ? '螢光筆' : '色筆'} ({markerName})
                                        </div>
                                      )}
                                      {task.type === 'stamp' && <div className="text-[10px] font-bold text-gray-500 mt-1 font-mono">印章代碼: [{task.stampCode}]</div>}
@@ -2803,7 +3588,7 @@
                                   </td>
                                   <td className="p-3 font-bold text-gray-700 text-sm">{users.find(u => u.id === task.assigneeId)?.name || '未指派'}</td>
                                </tr>
-                            ))
+                            )})
                           )}
                        </tbody>
                     </table>
@@ -2811,7 +3596,7 @@
 
                   {filteredTasks.filter(t => t.page === currentPage && t.attachments && t.attachments.length > 0).length > 0 && (
                     <div className="mt-10 break-inside-auto">
-                      <h2 className="text-xl font-black text-black mb-4 border-l-4 border-brand-secondary pl-3">現場照片與附件紀錄</h2>
+                      <h2 className="text-xl font-black text-black mb-4 border-l-4 border-brand-secondary pl-3">{LANGUAGES[language].photoAttachments}</h2>
                       <div className="grid grid-cols-2 gap-6">
                         {filteredTasks.filter(t => t.page === currentPage && t.attachments && t.attachments.length > 0).map((task) => {
                           const taskIndex = filteredTasks.filter(t => t.page === currentPage).findIndex(x => x.id === task.id) + 1;
@@ -2872,7 +3657,7 @@
                             </div>
                           </div>
                           <h4 className="font-bold text-sm mb-1.5 flex items-start gap-1.5 leading-snug"><TaskIcon type={task.type} colorId={task.colorId} className="mt-0.5" /><span>{task.type === 'stamp' && <span className="bg-gray-100 border px-1 text-[10px] mr-1 rounded-sm">[{task.stampCode}]</span>}{task.title}</span></h4>
-                          <p className="text-gray-500 text-xs mb-3 line-clamp-2">{task.description || '無詳細說明'}</p>
+                          <p className="text-gray-500 text-xs mb-3 line-clamp-2">{task.description || LANGUAGES[language].noDescription}</p>
                           
                           <div className="flex flex-wrap gap-2 mb-3">
                              {task.tagId && task.tagId !== 'none' && (
@@ -2882,12 +3667,12 @@
                              )}
                              {task.attachments && task.attachments.length > 0 && (
                                <span className="text-[10px] font-bold text-gray-600 bg-gray-100 px-1.5 py-0.5 rounded border border-gray-200 flex items-center gap-1 w-fit">
-                                 <ImageIcon size={10} /> {task.attachments.length} 照片
+                                 <ImageIcon size={10} /> {task.attachments.length} {LANGUAGES[language].photos}
                                </span>
                              )}
                              {task.comments && task.comments.length > 0 && (
                                <span className="text-[10px] font-bold text-brand-primary bg-brand-primary/10 px-1.5 py-0.5 rounded border border-brand-primary/20 flex items-center gap-1 w-fit">
-                                 <MessageSquare size={10} /> {task.comments.length} 留言
+                                 <MessageSquare size={10} /> {task.comments.length} {LANGUAGES[language].comments}
                                </span>
                              )}
                           </div>
@@ -2895,11 +3680,11 @@
                           <div className="flex items-center gap-1.5 mb-3"><UserAvatar user={users.find(u => u.id === task.assigneeId)} /><span className="text-[11px] font-medium">{users.find(u => u.id === task.assigneeId)?.name || '未指派'}</span></div>
                           <div className="pt-3 border-t border-gray-100 flex justify-between items-center">
                             <span className="text-[10px] text-gray-400 font-mono">{task.startDate}</span>
-                            <button onClick={() => jumpToBlueprintTask(task)} className="text-[11px] font-bold border px-2 py-1 rounded hover:bg-gray-50 flex items-center gap-1"><ExternalLink size={12}/>看圖面</button>
+                            <button onClick={() => jumpToBlueprintTask(task)} className="text-[11px] font-bold border px-2 py-1 rounded hover:bg-gray-50 flex items-center gap-1"><ExternalLink size={12}/>{LANGUAGES[language].viewBlueprint}</button>
                           </div>
                         </div>
                       ))}
-                      {!isReadOnly && <button onClick={() => { setAppView('blueprint'); setAddMode('pin'); }} className="w-full py-2.5 flex items-center justify-center gap-2 text-sm text-gray-500 bg-white hover:bg-gray-50 border border-dashed border-gray-300 rounded-lg font-bold transition-colors"><Plus size={16} /> 新增任務</button>}
+                      {!isReadOnly && <button onClick={() => { setAppView('blueprint'); setAddMode('pin'); }} className="w-full py-2.5 flex items-center justify-center gap-2 text-sm text-gray-500 bg-white hover:bg-gray-50 border border-dashed border-gray-300 rounded-lg font-bold transition-colors"><Plus size={16} /> {LANGUAGES[language].addTask}</button>}
                     </div>
                   </div>
                 ))}
@@ -2926,7 +3711,7 @@
                        ))}
                      </div>
                      <button onClick={exportToICal} className="flex items-center gap-1.5 px-3 py-1.5 bg-brand-primary text-white text-sm font-bold rounded-md hover:opacity-90 transition-colors shadow-sm">
-                        <CalendarPlus size={16} /> 匯出為 iCal
+                        <CalendarPlus size={16} /> {LANGUAGES[language].exportICal}
                      </button>
                    </div>
                 </div>
@@ -3075,7 +3860,7 @@
                 <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 flex items-center justify-between shrink-0 sticky left-0 z-40 w-max min-w-full">
                    <div className="flex items-center gap-6">
                      <div className="flex items-center gap-2">
-                        <span className="font-bold text-sm text-gray-700 flex items-center gap-1.5"><Clock size={16} className="text-brand-secondary"/> 專案總期程：</span>
+                        <span className="font-bold text-sm text-gray-700 flex items-center gap-1.5"><Clock size={16} className="text-brand-secondary"/> {LANGUAGES[language].projectDuration}</span>
                         <input type="date" value={projectStartDate} onChange={e => setProjectStartDate(e.target.value)} className="px-3 py-1.5 border border-gray-300 rounded focus:border-brand-primary focus:ring-1 focus:ring-brand-primary outline-none text-sm font-medium transition-all" />
                         <span className="text-gray-500 font-bold">~</span>
                         <input type="date" value={projectEndDate} onChange={e => setProjectEndDate(e.target.value)} className="px-3 py-1.5 border border-gray-300 rounded focus:border-brand-primary focus:ring-1 focus:ring-brand-primary outline-none text-sm font-medium transition-all" />
@@ -3102,7 +3887,7 @@
                      onClick={handleExportGanttExcel} 
                      className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-md text-sm font-bold shadow-sm hover:bg-green-700 transition-colors ml-4"
                    >
-                     <FileSpreadsheet size={16} /> 匯出為 Excel
+                     <FileSpreadsheet size={16} /> {LANGUAGES[language].exportExcel}
                    </button>
                 </div>
 
@@ -3118,7 +3903,7 @@
                     ))}
                   </svg>
                   <div className="flex border-b border-gray-200 sticky top-0 bg-gray-50 z-30">
-                    <div className="w-72 flex-shrink-0 border-r border-gray-200 p-4 font-bold text-sm sticky left-0 bg-gray-50 z-40">任務列表</div>
+                    <div className="w-72 flex-shrink-0 border-r border-gray-200 p-4 font-bold text-sm sticky left-0 bg-gray-50 z-40">{LANGUAGES[language].taskList}</div>
                     <div className="flex">
                       {ganttData.days.map((d, i) => {
                         const isToday = d.toISOString().split('T')[0] === getToday();
@@ -3132,7 +3917,7 @@
                     </div>
                   </div>
                   <div className="flex flex-col relative z-10">
-                    {filteredTasks.length === 0 && <div className="p-8 text-center text-sm font-bold text-gray-400 sticky left-0">沒有符合圖層篩選條件的任務</div>}
+                    {filteredTasks.length === 0 && <div className="p-8 text-center text-sm font-bold text-gray-400 sticky left-0">{LANGUAGES[language].noFilteredTasks}</div>}
                     
                     {ganttTasksByAssignee.map(group => (
                       <React.Fragment key={group.name}>
@@ -3167,8 +3952,8 @@
                         >
                            <div className="w-72 flex-shrink-0 border-r border-gray-200 p-2 pl-4 sticky left-0 bg-gray-100 z-20 flex items-center gap-2 pointer-events-none">
                              {group.user ? <UserAvatar user={group.user} size="w-6 h-6" /> : <div className="w-6 h-6 rounded-full bg-gray-200 border border-gray-300 flex items-center justify-center text-gray-500"><User size={12}/></div>}
-                             <span className="font-black text-sm text-brand-primary">{group.name} 的行事曆</span>
-                             <span className="text-[10px] text-brand-primary font-bold bg-white px-1.5 py-0.5 rounded-full border border-brand-primary/20 ml-auto">{group.tasks.length} 任務</span>
+                             <span className="font-black text-sm text-brand-primary">{group.name}{LANGUAGES[language].calendar}</span>
+                             <span className="text-[10px] text-brand-primary font-bold bg-white px-1.5 py-0.5 rounded-full border border-brand-primary/20 ml-auto">{group.tasks.length} {LANGUAGES[language].tasks}</span>
                            </div>
                            <div className="flex relative pointer-events-none">
                              {ganttData.days.map((d, i) => {
@@ -3205,9 +3990,9 @@
                           const left = ((sD - ganttData.minD) / 86400000) * 40;
 
                           const markerColorInfo = MARKER_COLORS.find(c => c.id === task.colorId);
-                          const bgColor = task.colorId ? markerColorInfo.stroke : (task.status === 'done' ? '#e5e7eb' : '#1f2937');
+                          const bgColor = task.colorId ? (markerColorInfo?.stroke || task.colorId) : (task.status === 'done' ? '#e5e7eb' : '#1f2937');
                           const textColor = task.colorId && ['warning', 'white'].includes(task.colorId) ? '#000' : (task.colorId ? '#fff' : (task.status === 'done' ? '#6b7280' : '#fff'));
-                          const borderColor = task.colorId ? markerColorInfo.stroke : (task.status === 'done' ? '#d1d5db' : '#111827');
+                          const borderColor = task.colorId ? (markerColorInfo?.stroke || task.colorId) : (task.status === 'done' ? '#d1d5db' : '#111827');
 
                           return (
                             <div 
@@ -3267,7 +4052,7 @@
                                     onPointerDown={(e) => e.stopPropagation()}
                                     onClick={(e) => { e.stopPropagation(); updateTasks(tasks.filter(t => t.id !== task.id)); if (activeTaskId === task.id) setActiveTaskId(null); }} 
                                     className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 text-gray-400 hover:text-white hover:bg-brand-danger rounded opacity-0 group-hover:opacity-100 transition-all shadow-sm bg-white border border-gray-200 z-30 cursor-pointer"
-                                    title="刪除任務"
+                                    title={LANGUAGES[language].deleteTask}
                                   >
                                     <Trash2 size={14} />
                                   </button>
@@ -3293,7 +4078,7 @@
                                       title={ganttLinkSourceTaskId ? (ganttLinkSourceTaskId === task.id ? '取消選取此任務' : '將此任務設為後續任務') : '選取此任務為前置任務'}
                                     />
                                   )}
-                                  {!isReadOnly && <GripVertical size={14} className="text-gray-300 flex-shrink-0" title="拖曳排序或變更負責人" />}
+                                  {!isReadOnly && <GripVertical size={14} className="text-gray-300 flex-shrink-0" title={LANGUAGES[language].dragToSortOrChangeAssignee} />}
                                   <span className="text-sm font-bold cursor-pointer hover:underline flex items-center gap-1.5 truncate" onClick={() => jumpToBlueprintTask(task)}>
                                     <TaskIcon type={task.type} colorId={task.colorId} />
                                     <span className="truncate">{task.title}</span>
@@ -3361,7 +4146,7 @@
                                    {!isReadOnly && (
                                      <div 
                                        className="absolute right-0 top-0 bottom-0 w-3.5 cursor-ew-resize opacity-0 group-hover/bar:opacity-100 flex items-center justify-center rounded-r transition-opacity hover:bg-black/20 z-20"
-                                       title="拖曳拉伸結束日期"
+                                       title={LANGUAGES[language].dragToAdjustEndDate}
                                      >
                                        <div className="w-[2px] h-3 border-l border-r border-white/50" />
                                      </div>
@@ -3432,7 +4217,7 @@
                         >
                           <div className="flex justify-between items-start mb-2.5">
                             <div className="flex gap-2 items-center">
-                              {!isReadOnly && <GripVertical size={14} className="text-gray-300 opacity-50 hover:opacity-100 cursor-grab" title="拖曳排序" />}
+                              {!isReadOnly && <GripVertical size={14} className="text-gray-300 opacity-50 hover:opacity-100 cursor-grab" title={LANGUAGES[language].dragToSort} />}
                               <StatusBadge status={task.status} />
                               <span className="text-[11px] font-bold text-gray-500 bg-gray-100 px-1.5 py-0.5 rounded-sm border flex items-center gap-1"><FileText size={10} /> P.{task.page}</span>
                             </div>
@@ -3448,7 +4233,7 @@
                                <span className="text-[11px] text-gray-600 font-medium">{users.find(u => u.id === task.assigneeId)?.name || '未指派'}</span>
                             </div>
                             <div className="flex items-center gap-1.5">
-                               {task.attachments && task.attachments.length > 0 && <ImageIcon size={12} className="text-gray-400" title="包含照片附件" />}
+                               {task.attachments && task.attachments.length > 0 && <ImageIcon size={12} className="text-gray-400" title={LANGUAGES[language].containsPhotoAttachment} />}
                                {task.tagId && task.tagId !== 'none' && (
                                   <span className="text-[10px] font-bold text-brand-secondary bg-brand-secondary/10 px-1.5 py-0.5 rounded border border-brand-secondary/20 flex items-center gap-1">
                                      <Tag size={10} /> {tags.find(t => t.id === task.tagId)?.name}
@@ -3503,26 +4288,26 @@
                   
                   <div className="absolute z-20 flex flex-col items-center gap-2" style={{ top: '20px', left: '50%', transform: `translate(calc(-50% + ${toolbarPos.x}px), ${toolbarPos.y}px)` }}>
                     <div className="bg-white shadow-sm border border-gray-200 rounded-full px-2 py-1.5 flex items-center gap-1.5 pointer-events-auto">
-                      <div className="cursor-grab text-gray-400 hover:text-black p-1 flex items-center" title="拖曳移動工具列" onPointerDown={(e) => { e.stopPropagation(); e.target.setPointerCapture(e.pointerId); setIsDraggingToolbar(true); setToolbarDragStart({ x: e.clientX - toolbarPos.x, y: e.clientY - toolbarPos.y }); }} onPointerMove={(e) => isDraggingToolbar && setToolbarPos({ x: e.clientX - toolbarDragStart.x, y: e.clientY - toolbarDragStart.y })} onPointerUp={() => setIsDraggingToolbar(false)}><GripVertical size={16} /></div>
+                      <div className="cursor-grab text-gray-400 hover:text-black p-1 flex items-center" title={LANGUAGES[language].dragToolbar} onPointerDown={(e) => { e.stopPropagation(); e.target.setPointerCapture(e.pointerId); setIsDraggingToolbar(true); setToolbarDragStart({ x: e.clientX - toolbarPos.x, y: e.clientY - toolbarPos.y }); }} onPointerMove={(e) => isDraggingToolbar && setToolbarPos({ x: e.clientX - toolbarDragStart.x, y: e.clientY - toolbarDragStart.y })} onPointerUp={() => setIsDraggingToolbar(false)}><GripVertical size={16} /></div>
                       <div className="w-px h-4 bg-gray-200" />
-                      <button onClick={() => setIsHeaderVisible(!isHeaderVisible)} className="p-1.5 rounded-full text-gray-500 hover:bg-gray-100 hover:text-black" title={isHeaderVisible ? "隱藏上選單" : "顯示上選單"}>{isHeaderVisible ? <PanelTopClose size={16} /> : <PanelTop size={16} />}</button>
-                      <button onClick={() => setIsSidebarVisible(!isSidebarVisible)} className="p-1.5 rounded-full text-gray-500 hover:bg-gray-100 hover:text-black" title={isSidebarVisible ? "隱藏側邊欄" : "顯示側邊欄"}>{isSidebarVisible ? <PanelLeftClose size={16} /> : <PanelLeft size={16} />}</button>
+                      <button onClick={() => setIsHeaderVisible(!isHeaderVisible)} className="p-1.5 rounded-full text-gray-500 hover:bg-gray-100 hover:text-black" title={isHeaderVisible ? LANGUAGES[language].hideHeader : LANGUAGES[language].showHeader}>{isHeaderVisible ? <PanelTopClose size={16} /> : <PanelTop size={16} />}</button>
+                      <button onClick={() => setIsSidebarVisible(!isSidebarVisible)} className="p-1.5 rounded-full text-gray-500 hover:bg-gray-100 hover:text-black" title={isSidebarVisible ? LANGUAGES[language].hideSidebar : LANGUAGES[language].showSidebar}>{isSidebarVisible ? <PanelLeftClose size={16} /> : <PanelLeft size={16} />}</button>
                       
                       {!isReadOnly && (
                         <>
                           <div className="w-px h-4 bg-gray-200" />
-                          <button onClick={handleUndoAction} disabled={!pastTasks.length} className="p-1.5 rounded-full text-gray-500 hover:bg-gray-100 hover:text-black disabled:opacity-30 disabled:hover:bg-transparent" title="復原 (Ctrl+Z)"><Undo size={16} /></button>
-                          <button onClick={handleRedoAction} disabled={!futureTasks.length} className="p-1.5 rounded-full text-gray-500 hover:bg-gray-100 hover:text-black disabled:opacity-30 disabled:hover:bg-transparent" title="重做 (Ctrl+Y)"><Redo size={16} /></button>
+                          <button onClick={handleUndoAction} disabled={!pastTasks.length} className="p-1.5 rounded-full text-gray-500 hover:bg-gray-100 hover:text-black disabled:opacity-30 disabled:hover:bg-transparent" title={LANGUAGES[language].undo}><Undo size={16} /></button>
+                          <button onClick={handleRedoAction} disabled={!futureTasks.length} className="p-1.5 rounded-full text-gray-500 hover:bg-gray-100 hover:text-black disabled:opacity-30 disabled:hover:bg-transparent" title={LANGUAGES[language].redo}><Redo size={16} /></button>
                         </>
                       )}
 
                       <div className="w-px h-4 bg-gray-200" />
-                      <button onClick={(e) => { e.stopPropagation(); setShowLayerMenu(!showLayerMenu); setAddMode('none'); }} className={`p-1.5 rounded-full transition-colors flex items-center justify-center ${showLayerMenu ? 'bg-black text-white shadow-md' : 'text-gray-600 hover:bg-gray-100 hover:text-black'}`} title="圖層選單 (一鍵隱藏狀態/工種/負責人)"><Layers size={16} /></button>
+                      <button onClick={(e) => { e.stopPropagation(); setShowLayerMenu(!showLayerMenu); setAddMode('none'); }} className={`p-1.5 rounded-full transition-colors flex items-center justify-center ${showLayerMenu ? 'bg-black text-white shadow-md' : 'text-gray-600 hover:bg-gray-100 hover:text-black'}`} title={LANGUAGES[language].layerMenuTooltip}><Layers size={16} /></button>
                       
                       <button 
                         onClick={(e) => { e.stopPropagation(); setShowLockIcons(!showLockIcons); }} 
                         className={`p-1.5 rounded-full transition-colors flex items-center justify-center ${showLockIcons ? 'bg-gray-100 text-brand-primary shadow-inner' : 'text-gray-500 hover:bg-gray-100 hover:text-black'}`} 
-                        title={showLockIcons ? "隱藏圖面上的鎖定標示 (不影響鎖定功能)" : "顯示圖面上的鎖定標示"}
+                        title={showLockIcons ? LANGUAGES[language].hideLockIcons : LANGUAGES[language].showLockIcons}
                       >
                         <Lock size={16} />
                       </button>
@@ -3531,30 +4316,30 @@
                         <>
                           <div className="w-px h-4 bg-gray-200" />
                           <input type="file" className="hidden" ref={oldFileInputRef} accept="application/pdf" onChange={handleOldFileUpload} />
-                          <button onClick={() => oldFileInputRef.current?.click()} className="p-1.5 rounded-full text-gray-600 hover:bg-gray-100 hover:text-black transition-colors" title="載入舊版 PDF"><FilePlus size={16} /></button>
+                          <button onClick={() => oldFileInputRef.current?.click()} className="p-1.5 rounded-full text-gray-600 hover:bg-gray-100 hover:text-black transition-colors" title={LANGUAGES[language].loadOldVersionPDF}><FilePlus size={16} /></button>
                           <input type="file" className="hidden" ref={fileInputRef} accept="image/*,application/pdf,.dxf" onChange={handleFileUpload} />
-                          <button onClick={() => fileInputRef.current?.click()} className="p-1.5 rounded-full text-gray-600 hover:bg-gray-100 hover:text-black transition-colors" title="載入圖紙 (支援 DXF/PDF/圖片)"><Upload size={16} /></button>
+                          <button onClick={() => fileInputRef.current?.click()} className="p-1.5 rounded-full text-gray-600 hover:bg-gray-100 hover:text-black transition-colors" title={LANGUAGES[language].loadBlueprint}><Upload size={16} /></button>
                           <button
                             onClick={() => {
                               if (!oldPdfDocument || !pdfDocument) return alert("請先載入新版與舊版 PDF，才能進入比對模式。");
                               setCompareMode(prev => !prev);
                             }}
                             className={`p-1.5 rounded-full transition-colors ${compareMode ? 'bg-brand-secondary text-white shadow-sm' : 'text-gray-600 hover:bg-gray-100 hover:text-black'}`}
-                            title="切換 PDF 比對模式 (舊版紅 / 新版藍)"
+                            title={LANGUAGES[language].togglePDFComparisonMode}
                           >
                             <Eye size={16} />
                           </button>
                           
                           <div className="w-px h-4 bg-gray-200" />
                           <ToolbarBtn mode="select" icon={MousePointerClick} title={LANGUAGES[language].selectTitle} onClick={() => setAddMode('none')} />
-                          <ToolbarBtn mode="pin" icon={MapPin} title="放置圖釘 (快捷鍵 1)" />
-                          <ToolbarBtn mode="cloud" icon={Cloud} title="拖曳產生雲形 (快捷鍵 2)" />
+                          <ToolbarBtn mode="pin" icon={MapPin} title={LANGUAGES[language].pinTitle} />
+                          <ToolbarBtn mode="cloud" icon={Cloud} title={LANGUAGES[language].cloudTitle} />
                           <ToolbarBtn mode="highlight" icon={Highlighter} title={LANGUAGES[language].highlightTitle} />
                           <ToolbarBtn mode="pen" icon={PenLine} title={LANGUAGES[language].penTitle} />
-                          <ToolbarBtn mode="area" icon={Hexagon} title="多邊形面積測量 (點擊繪製頂點) (快捷鍵 5)" />
-                          <ToolbarBtn mode="measure" icon={Ruler} title="兩點測量 (按住 Shift 正交鎖點) (快捷鍵 6)" />
-                          <ToolbarBtn mode="calibrate" icon={Maximize} title="校正比例尺" />
-                          <ToolbarBtn mode="stamp" icon={Stamp} title="套用印章" onClick={() => stamps.length ? setAddMode(addMode === 'stamp' ? 'none' : 'stamp') : alert("請先設定印章！")} />
+                          <ToolbarBtn mode="area" icon={Hexagon} title={LANGUAGES[language].areaTitle} />
+                          <ToolbarBtn mode="measure" icon={Ruler} title={LANGUAGES[language].measureTitle} />
+                          <ToolbarBtn mode="calibrate" icon={Maximize} title={LANGUAGES[language].calibrateTitle} />
+                          <ToolbarBtn mode="stamp" icon={Stamp} title={LANGUAGES[language].applyStamp} onClick={() => stamps.length ? setAddMode(addMode === 'stamp' ? 'none' : 'stamp') : alert(LANGUAGES[language].pleaseSetStamp)} />
 
                           <div className="w-px h-4 bg-gray-200" />
                           <button 
@@ -3566,7 +4351,7 @@
                             }}
                             disabled={!activeTaskId}
                             className={`p-1.5 rounded-full transition-colors flex items-center justify-center ${activeTaskId ? 'text-brand-danger hover:bg-brand-danger/10 hover:text-brand-danger shadow-sm' : 'text-gray-300'}`}
-                            title="刪除選取的標記 (Delete鍵)"
+                            title={LANGUAGES[language].deleteSelected}
                           >
                             <Trash2 size={16} />
                           </button>
@@ -3575,13 +4360,30 @@
                     </div>
                     
                     {(addMode === 'highlight' || addMode === 'pen') && !isReadOnly && (
-                      <div className="bg-white shadow-md border border-gray-200 rounded-full px-3 py-1.5 flex items-center gap-2 pointer-events-auto">
-                        <span className="text-xs font-bold text-gray-600 mr-1">
-                          {addMode === 'highlight' ? LANGUAGES[language].highlightMode : LANGUAGES[language].penMode}
-                        </span>
-                        {MARKER_COLORS.map(c => (
-                          <button key={c.id} onClick={(e) => { e.stopPropagation(); setActiveColor(c); }} className={`w-5 h-5 rounded-full border-2 transition-all ${activeColor.id === c.id ? 'scale-125 shadow-sm' : 'hover:scale-110'}`} style={{ backgroundColor: c.stroke, borderColor: activeColor.id === c.id ? '#000' : 'transparent' }} title={c.name} />
-                        ))}
+                      <div className="bg-white shadow-md border border-gray-200 rounded-xl px-4 py-2.5 flex flex-col gap-2.5 pointer-events-auto relative">
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs font-bold text-gray-500 w-8 text-right whitespace-nowrap">預設:</span>
+                          {MARKER_COLORS.map(c => (
+                            <button key={c.id} onClick={(e) => { e.stopPropagation(); setActiveColor(c); }} className={`w-5 h-5 rounded-full border-2 transition-all ${activeColor.id === c.id ? 'scale-125 shadow-sm border-black' : 'border-transparent hover:scale-110'}`} style={{ backgroundColor: c.stroke }} title={c.name} />
+                          ))}
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs font-bold text-gray-500 w-8 text-right whitespace-nowrap">自訂:</span>
+                          {customPalette.map((c, idx) => (
+                            <button 
+                              key={`${c.id}-${idx}`} 
+                              onClick={(e) => { e.stopPropagation(); if(!c.isEmpty) setActiveColor(c); }} 
+                              className={`w-5 h-5 rounded-full border-2 transition-all ${!c.isEmpty && activeColor.id === c.id ? 'scale-125 shadow-sm border-black' : 'border-transparent hover:scale-110'} ${c.isEmpty ? 'border-dashed border-gray-300 cursor-default opacity-50' : ''}`} 
+                              style={{ backgroundColor: c.isEmpty ? '#f9fafb' : c.stroke }} 
+                              title={c.isEmpty ? '尚未設定' : c.name} 
+                            />
+                          ))}
+                          <div className="w-px h-4 bg-gray-200 ml-1" />
+                          <label className="w-5 h-5 rounded-full border border-gray-300 overflow-hidden cursor-pointer relative hover:scale-110 transition-transform shadow-sm" title={LANGUAGES[language].addNewColor}>
+                            <div className="absolute inset-0" style={{ background: 'conic-gradient(red, yellow, lime, cyan, blue, magenta, red)' }}></div>
+                            <input type="color" className="opacity-0 absolute inset-0 w-full h-full cursor-pointer" onChange={handleColorPick} />
+                          </label>
+                        </div>
                       </div>
                     )}
 
@@ -3591,12 +4393,12 @@
                         onPointerDown={e => e.stopPropagation()} 
                       >
                         <div className="px-4 py-3 border-b border-gray-100 bg-gray-50 flex justify-between items-center">
-                          <span className="font-bold text-sm text-gray-800 flex items-center gap-2"><Layers size={16}/> 圖層與篩選</span>
+                          <span className="font-bold text-sm text-gray-800 flex items-center gap-2"><Layers size={16}/> {LANGUAGES[language].layerAndFilter}</span>
                           <button onClick={() => setShowLayerMenu(false)} className="text-gray-400 hover:text-black transition-colors bg-white rounded shadow-sm p-1 border border-gray-200"><X size={14}/></button>
                         </div>
                         <div className="p-3 flex flex-col gap-4 max-h-[60vh] overflow-y-auto">
                           <div>
-                            <div className="text-[10px] font-bold text-gray-400 mb-1.5 uppercase tracking-wider px-1">依狀態顯示</div>
+                            <div className="text-[10px] font-bold text-gray-400 mb-1.5 uppercase tracking-wider px-1">{LANGUAGES[language].byStatus}</div>
                             {Object.entries(STATUS_CONFIG).map(([k, c]) => (
                                <div key={k} className="flex items-center justify-between py-1.5 cursor-pointer hover:bg-gray-50 rounded px-1.5 transition-colors" onClick={() => toggleLayerStatus(k)}>
                                   <div className="flex items-center gap-2">
@@ -3610,13 +4412,13 @@
                           <div className="w-full h-px bg-gray-100"></div>
                           <div>
                             <div className="text-[10px] font-bold text-gray-400 mb-1.5 uppercase tracking-wider px-1 flex items-center justify-between">
-                              <span>依工種 / 標籤顯示</span>
-                              <button onClick={() => { setShowLayerMenu(false); setAppView('settings'); }} className="text-brand-secondary hover:underline">管理</button>
+                              <span>{LANGUAGES[language].byTag}</span>
+                              <button onClick={() => { setShowLayerMenu(false); setAppView('settings'); }} className="text-brand-secondary hover:underline">{LANGUAGES[language].manage}</button>
                             </div>
                             <div className="flex items-center justify-between py-1.5 cursor-pointer hover:bg-gray-50 rounded px-1.5 transition-colors" onClick={() => toggleLayerTag('none')}>
                                <div className="flex items-center gap-2">
                                   <Tag size={12} className="text-gray-400" />
-                                  <span className="text-xs font-bold text-gray-700">無標籤</span>
+                                  <span className="text-xs font-bold text-gray-700">{LANGUAGES[language].noTag}</span>
                                </div>
                                {layerVisibility.tags['none'] !== false ? <Eye size={16} className="text-gray-500" /> : <EyeOff size={16} className="text-gray-300" />}
                             </div>
@@ -3633,12 +4435,12 @@
                           <div className="w-full h-px bg-gray-100"></div>
                           <div>
                             <div className="text-[10px] font-bold text-gray-400 mb-1.5 uppercase tracking-wider px-1 flex items-center justify-between">
-                              <span>依負責人顯示</span>
+                              <span>{LANGUAGES[language].byAssignee}</span>
                             </div>
                             <div className="flex items-center justify-between py-1.5 cursor-pointer hover:bg-gray-50 rounded px-1.5 transition-colors" onClick={() => toggleLayerAssignee('unassigned')}>
                                <div className="flex items-center gap-2">
                                   <div className="w-4 h-4 rounded-full bg-gray-200 flex items-center justify-center text-gray-500"><User size={10}/></div>
-                                  <span className="text-xs font-bold text-gray-700">未指派</span>
+                                  <span className="text-xs font-bold text-gray-700">{LANGUAGES[language].unassigned}</span>
                                </div>
                                {layerVisibility.assignees['unassigned'] !== false ? <Eye size={16} className="text-gray-500" /> : <EyeOff size={16} className="text-gray-300" />}
                             </div>
@@ -3661,7 +4463,7 @@
                     <button 
                       onClick={() => setShowMinimap(!showMinimap)}
                       className={`p-2 rounded-lg border shadow-sm transition-colors flex items-center gap-1.5 ${showMinimap ? 'bg-brand-primary/10 border-brand-primary/20 text-brand-primary' : 'bg-white border-gray-200 hover:bg-gray-50 text-gray-500'}`}
-                      title="切換鷹眼小地圖"
+                      title={LANGUAGES[language].toggleMinimap}
                     >
                       <MapIcon size={18} />
                     </button>
@@ -3670,7 +4472,7 @@
                       <button 
                         onClick={() => setShowDisplaySettings(!showDisplaySettings)}
                         className={`p-2 rounded-lg border shadow-sm transition-colors flex items-center gap-1.5 ${showDisplaySettings ? 'bg-brand-secondary/10 border-brand-secondary/20 text-brand-secondary' : 'bg-white border-gray-200 hover:bg-gray-50 text-gray-500'}`}
-                        title="調整圖面亮度/對比"
+                        title={LANGUAGES[language].displaySettings}
                       >
                         <SlidersHorizontal size={18} />
                       </button>
@@ -3703,7 +4505,7 @@
                         {scaleInfo.isCalibrated ? `${LANGUAGES[language].scaleLabel} 1 : ${Math.round(scaleInfo.ratio)}` : `${LANGUAGES[language].scaleLabel}: ${LANGUAGES[language].scaleNotCalibrated}`}
                       </div>
                       {scaleInfo.isCalibrated && !isReadOnly && (
-                        <button onClick={() => setScaleInfo({ ratio: 1, unit: 'mm', isCalibrated: false })} className="ml-2 text-gray-400 hover:text-brand-danger bg-gray-100 hover:bg-brand-danger/10 rounded-full p-0.5 transition-colors" title="清除比例尺">
+                        <button onClick={() => setScaleInfo({ ratio: 1, unit: 'mm', isCalibrated: false })} className="ml-2 text-gray-400 hover:text-brand-danger bg-gray-100 hover:bg-brand-danger/10 rounded-full p-0.5 transition-colors" title={LANGUAGES[language].clearScale}>
                           <X size={12} />
                         </button>
                       )}
@@ -3716,7 +4518,7 @@
                           });
                         }}
                         className={`inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold rounded-full transition-colors ${showSopGuide ? 'bg-brand-secondary text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
-                        title="開啟系統SOP說明"
+                        title={LANGUAGES[language].openSOPGuide}
                       >
                         <FileText size={14} />
                         {LANGUAGES[language].sop}
@@ -3731,7 +4533,7 @@
                           });
                         }}
                         className={`inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold rounded-full transition-colors ${showHelpGuide ? 'bg-brand-primary text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
-                        title="切換操作指南"
+                        title={LANGUAGES[language].toggleOperationGuide}
                       >
                         <HelpCircle size={14} />
                         {LANGUAGES[language].guide}
@@ -3747,7 +4549,7 @@
                             <p className="font-semibold text-gray-800">快速上手</p>
                             <p>• 左側工具列：新增任務、篩選人員、管理標籤與章節。</p>
                             <p>• 中央工作區：拖曳任務條排程，拖曳右側邊緣調整結束日期。</p>
-                            <p>• 上方比例尺與顯示設定：校正圖面比例、調整亮度/對比。</p>
+                            <p>• 上方比例尺與顯示設定：校正圖面比例、調整亮度/対比。</p>
                             <p>• 右下放大 / 縮小：快速檢視整體圖面。</p>
                             <p>• 支援離線儲存，重新開啟瀏覽器可繼續使用。</p>
                           </div>
@@ -3893,7 +4695,8 @@
                           onPointerMove: handleMarkerDragMove,
                           onPointerUp: handleMarkerDragEnd,
                           onPointerCancel: handleMarkerDragEnd,
-                          showLockIcons: showLockIcons 
+                          showLockIcons: showLockIcons,
+                          STATUS_CONFIG: STATUS_CONFIG
                         };
                         
                         if (task.type === 'cloud') return <CloudMark {...props} />;
@@ -3912,11 +4715,11 @@
                               key={idx} 
                               points={path.map(p => `${p.x},${p.y}`).join(' ')} 
                               fill="none" 
-                              stroke={MARKER_COLORS.find(c => c.id === pendingDrawing.colorId)?.stroke || '#000'} 
-                              strokeWidth={pendingDrawing.mode === 'highlight' ? "4" : "2"} 
+                              stroke={pendingDrawing.colorId && pendingDrawing.colorId.startsWith('#') ? pendingDrawing.colorId : (MARKER_COLORS.find(c => c.id === pendingDrawing.colorId)?.stroke || '#000')} 
+                              strokeWidth={pendingDrawing.mode === 'highlight' ? "12" : "3"} 
                               strokeLinecap="round" 
                               strokeLinejoin="round" 
-                              opacity={pendingDrawing.mode === 'highlight' ? "0.8" : "1"} 
+                              opacity={pendingDrawing.mode === 'highlight' ? "0.4" : "1"} 
                               vectorEffect="non-scaling-stroke" 
                             />
                           ))}
@@ -3927,7 +4730,7 @@
                       
                       {isDrawing && (addMode === 'highlight' || addMode === 'pen') && drawPoints.length > 0 && (
                         <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="absolute inset-0 w-full h-full pointer-events-none z-40">
-                          <polyline points={drawPoints.map(p => `${p.x},${p.y}`).join(' ')} fill="none" stroke={activeColor.stroke} strokeWidth={addMode === 'highlight' ? "4" : "2"} strokeLinecap="round" strokeLinejoin="round" opacity={addMode === 'highlight' ? "0.8" : "1"} vectorEffect="non-scaling-stroke" />
+                          <polyline points={drawPoints.map(p => `${p.x},${p.y}`).join(' ')} fill="none" stroke={activeColor.stroke} strokeWidth={addMode === 'highlight' ? "12" : "3"} strokeLinecap="round" strokeLinejoin="round" opacity={addMode === 'highlight' ? "0.4" : "1"} vectorEffect="non-scaling-stroke" />
                           {drawPoints.length > 0 && (
                             <circle cx={drawPoints[drawPoints.length - 1].x} cy={drawPoints[drawPoints.length - 1].y} r={addMode === 'highlight' ? 1.2 : 0.8} fill={activeColor.stroke} opacity="0.9" vectorEffect="non-scaling-stroke" />
                           )}
@@ -4086,7 +4889,7 @@
                       <input type="number" value={manualRatio} onChange={e => setManualRatio(e.target.value)} className={INPUT_CLASS} placeholder="如 100, 200..." onClick={e => setCalibMode('manual')} />
                     </div>
                     <div className="text-[11px] mt-2 pl-6 font-medium text-gray-500">
-                      適用於已知圖面比例的狀況 (例如輸入 100 代表 1:100)
+                      適用於已知圖面比例の狀況 (例如輸入 100 代表 1:100)
                     </div>
                   </div>
                 </div>
@@ -4124,7 +4927,7 @@
                 <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-white rounded-t-xl shrink-0">
                   <h3 className="text-lg font-black flex items-center gap-2 text-gray-900">
                     <TaskIcon type={formData.type || newTaskCoords?.type || (editingId && currentDisplayTasks.find(t=>t.id===editingId)?.type)} colorId={formData.colorId} size={18} />
-                    {editingId ? (isReadOnly ? '檢視任務詳情' : '編輯任務') : '新增任務'}
+                    {editingId ? (isReadOnly ? LANGUAGES[language].viewTaskDetails : LANGUAGES[language].editTask) : LANGUAGES[language].newTask}
                   </h3>
                   <button onClick={() => setShowTaskModal(false)} className="text-gray-400 hover:bg-gray-100 rounded p-1"><X size={18} /></button>
                 </div>
@@ -4143,46 +4946,67 @@
 
                   {!isReadOnly && (formData.type === 'highlight' || formData.type === 'pen') && (
                     <FormField label="標記顏色">
-                      <div className="flex gap-2.5">
-                        {MARKER_COLORS.map(c => (
-                          <button
-                            key={c.id}
-                            type="button"
-                            className={`w-8 h-8 rounded-full border-2 transition-transform shadow-sm ${formData.colorId === c.id ? 'scale-110' : 'border-transparent hover:scale-110'}`}
-                            style={{ backgroundColor: c.stroke, borderColor: formData.colorId === c.id ? '#000' : 'transparent' }}
-                            onClick={() => setFormData({ ...formData, colorId: c.id })}
-                            title={c.name}
-                          />
-                        ))}
+                      <div className="flex flex-col gap-3">
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs font-bold text-gray-400 w-8">預設:</span>
+                          <div className="flex gap-2.5">
+                            {MARKER_COLORS.map(c => (
+                              <button
+                                key={c.id}
+                                type="button"
+                                className={`w-8 h-8 rounded-full border-2 transition-transform shadow-sm ${formData.colorId === c.id ? 'scale-110 border-black' : 'border-transparent hover:scale-110'}`}
+                                style={{ backgroundColor: c.stroke }}
+                                onClick={() => setFormData({ ...formData, colorId: c.id })}
+                                title={c.name}
+                              />
+                            ))}
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs font-bold text-gray-400 w-8">自訂:</span>
+                          <div className="flex gap-2.5">
+                            {customPalette.map((c, idx) => (
+                              <button
+                                key={`custom-${idx}`}
+                                type="button"
+                                disabled={c.isEmpty}
+                                className={`w-8 h-8 rounded-full border-2 transition-transform shadow-sm ${!c.isEmpty && formData.colorId === c.id ? 'scale-110 border-black' : 'border-transparent hover:scale-110'} ${c.isEmpty ? 'border-dashed border-gray-300 opacity-50 cursor-not-allowed' : ''}`}
+                                style={{ backgroundColor: c.isEmpty ? '#f9fafb' : c.stroke }}
+                                onClick={() => { if(!c.isEmpty) setFormData({ ...formData, colorId: c.id }) }}
+                                title={c.isEmpty ? '尚未設定' : c.name}
+                              />
+                            ))}
+                          </div>
+                        </div>
                       </div>
                     </FormField>
                   )}
 
-                  <FormField label="工種 / 標籤">
+                  <FormField label={LANGUAGES[language].tradeTag}>
                     <select value={formData.tagId} onChange={e => setFormData({...formData, tagId: e.target.value})} className={INPUT_CLASS} disabled={isReadOnly}>
-                      <option value="none">無標籤</option>
+                      <option value="none">{LANGUAGES[language].noTag}</option>
                       {tags.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
                     </select>
                   </FormField>
 
-                  <FormField label="任務名稱"><input type="text" value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} className={INPUT_CLASS} disabled={isReadOnly} /></FormField>
-                  <FormField label="詳細說明"><textarea value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} className={INPUT_CLASS} rows="3" disabled={isReadOnly} /></FormField>
+                  <FormField label={LANGUAGES[language].taskName}><input type="text" value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} className={INPUT_CLASS} disabled={isReadOnly} /></FormField>
+                  <FormField label={LANGUAGES[language].detailDesc}><textarea value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} className={INPUT_CLASS} rows="3" disabled={isReadOnly} /></FormField>
                   
                   <div className="grid grid-cols-2 gap-4">
-                    <FormField label="開始日期"><input type="date" value={formData.startDate} onChange={e => setFormData({...formData, startDate: e.target.value})} className={INPUT_CLASS} disabled={isReadOnly} /></FormField>
-                    <FormField label="結束日期"><input type="date" value={formData.endDate} onChange={e => setFormData({...formData, endDate: e.target.value})} className={INPUT_CLASS} disabled={isReadOnly} /></FormField>
+                    <FormField label={LANGUAGES[language].startDate}><input type="date" value={formData.startDate} onChange={e => setFormData({...formData, startDate: e.target.value})} className={INPUT_CLASS} disabled={isReadOnly} /></FormField>
+                    <FormField label={LANGUAGES[language].endDate}><input type="date" value={formData.endDate} onChange={e => setFormData({...formData, endDate: e.target.value})} className={INPUT_CLASS} disabled={isReadOnly} /></FormField>
                   </div>
                   <div className="grid grid-cols-2 gap-4 pt-2">
-                    <FormField label="狀態">
+                    <FormField label={LANGUAGES[language].status}>
                       <select value={formData.status} onChange={e => setFormData({...formData, status: e.target.value})} className={INPUT_CLASS} disabled={isReadOnly}>{Object.entries(STATUS_CONFIG).map(([k, c]) => <option key={k} value={k}>{c.label}</option>)}</select>
                     </FormField>
-                    <FormField label="經手人員">
-                      <select value={formData.assigneeId} onChange={e => setFormData({...formData, assigneeId: e.target.value})} className={INPUT_CLASS} disabled={isReadOnly}><option value="unassigned">未指派</option>{users.map(u => <option key={u.id} value={u.id}>{u.name}</option>)}</select>
+                    <FormField label={LANGUAGES[language].assignee}>
+                      <select value={formData.assigneeId} onChange={e => setFormData({...formData, assigneeId: e.target.value})} className={INPUT_CLASS} disabled={isReadOnly}><option value="unassigned">{LANGUAGES[language].unassigned}</option>{users.map(u => <option key={u.id} value={u.id}>{u.name}</option>)}</select>
                     </FormField>
                   </div>
 
                   <div className="pt-2 border-t border-gray-200">
-                    <label className="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider flex items-center gap-1.5"><Camera size={14} />現場照片 / 附件</label>
+                    <label className="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider flex items-center gap-1.5"><Camera size={14} />{LANGUAGES[language].sitePhotos}</label>
                     <div className="flex flex-wrap gap-2">
                       {(formData.attachments || []).map((src, idx) => (
                         <div key={idx} className="relative w-16 h-16 rounded border border-gray-200 overflow-hidden group shadow-sm">
@@ -4201,7 +5025,7 @@
                       {!isReadOnly && (
                         <label className="w-16 h-16 flex flex-col items-center justify-center bg-gray-50 border border-dashed border-gray-300 rounded cursor-pointer hover:bg-gray-100 transition-colors text-gray-400 hover:text-gray-600 shadow-sm">
                           <Camera size={16} className="mb-1" />
-                          <span className="text-[9px] font-bold">上傳照片</span>
+                          <span className="text-[9px] font-bold">{LANGUAGES[language].uploadPhoto}</span>
                           <input type="file" accept="image/*" capture="environment" multiple className="hidden" onChange={handlePhotoUpload} />
                         </label>
                       )}
@@ -4209,7 +5033,7 @@
                   </div>
 
                   <div className="pt-4 border-t border-gray-200">
-                    <label className="block text-xs font-bold text-gray-500 mb-3 uppercase tracking-wider flex items-center gap-1.5"><MessageSquare size={14} /> 討論區</label>
+                    <label className="block text-xs font-bold text-gray-500 mb-3 uppercase tracking-wider flex items-center gap-1.5"><MessageSquare size={14} /> {LANGUAGES[language].discussion}</label>
                     
                     <div className="space-y-4 mb-4 max-h-64 overflow-y-auto pr-2 bg-white/50 p-3 rounded-lg border border-gray-100 shadow-inner">
                       {(formData.comments || []).map(c => {
@@ -4230,7 +5054,7 @@
                           </div>
                         );
                       })}
-                      {!(formData.comments || []).length && <div className="text-xs text-gray-400 text-center py-6 border border-dashed border-gray-200 rounded-lg">目前沒有留言，輸入 @ 可標記相關人員。</div>}
+                      {!(formData.comments || []).length && <div className="text-xs text-gray-400 text-center py-6 border border-dashed border-gray-200 rounded-lg">{LANGUAGES[language].noComments}</div>}
                     </div>
 
                     {!isReadOnly && (
@@ -4240,7 +5064,7 @@
                             ref={commentInputRef}
                             value={commentText}
                             onChange={handleCommentChange}
-                            placeholder="輸入留言... 輸入 @ 標記人員"
+                            placeholder={LANGUAGES[language].commentPlaceholder}
                             className="w-full border-none bg-transparent px-2 py-1.5 text-sm focus:ring-0 outline-none resize-none min-h-[40px] max-h-24 leading-snug transition-colors placeholder-gray-400"
                             rows="1"
                           />
@@ -4269,7 +5093,7 @@
                           onClick={handleAddComment}
                           disabled={!commentText.trim()}
                           className="bg-black text-white p-2 rounded-full hover:bg-gray-800 disabled:opacity-30 transition-colors flex-shrink-0 shadow-md transform active:scale-95 disabled:active:scale-100"
-                          title="送出留言"
+                          title={LANGUAGES[language].sendComment}
                         >
                           <Send size={16} className="relative -left-0.5" />
                         </button>
