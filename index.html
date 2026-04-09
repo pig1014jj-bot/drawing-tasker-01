@@ -2359,10 +2359,25 @@
         const baseData = { type: addMode, colorId: activeColor.id, status: 'todo', startDate: getToday(), endDate: getToday(1), assigneeId: 'unassigned', tagId: 'none', attachments: [], history: [], comments: [], isLocked: true };
 
         if (addMode === 'pin') {
-          setNewTaskCoords({ type: 'pin', x, y, page: currentPage });
-          setFormData({ title: '', description: '', stampCode: '', ...baseData });
-          setEditingId(null); setShowTaskModal(true); setAddMode('none');
-          drawingPointerId.current = null; drawingPointerType.current = null;
+          const newTask = {
+            id: Date.now().toString() + Math.floor(Math.random() * 1000), // 防止快速點擊 ID 衝突
+            x,
+            y,
+            page: currentPage,
+            title: '新圖釘標記',
+            description: '',
+            ...baseData,
+            history: [{ date: getNow(), message: '任務建立 (快速放置)' }]
+          };
+
+          // 💡 關鍵魔法：用 setTimeout 讓觸控事件優先處理完，絕不卡住 Apple Pencil 引擎
+          setTimeout(() => {
+            updateTasks(prev => [...prev, newTask]);
+          }, 10);
+
+          drawingPointerId.current = null;
+          drawingPointerType.current = null;
+          return; // 💡 提早 return，徹底阻斷任何後續可能干擾畫筆的邏輯
         } else if (addMode === 'stamp') {
           const selectedStamp = stamps.find(s => s.id === activeStampId) || stamps[0];
           const newTask = {
