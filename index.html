@@ -178,31 +178,31 @@
     ];
 
     const INITIAL_USERS = [
-      { id: 'u1', name: '田中太郎', avatar: 'https://i.pravatar.cc/150?u=11' },
-      { id: 'u2', name: '鈴木一郎', avatar: 'https://i.pravatar.cc/150?u=22' },
-      { id: 'u3', name: '佐藤健', avatar: 'https://i.pravatar.cc/150?u=33' }
+      { id: 'u1', name: '王小明', avatar: 'https://i.pravatar.cc/150?u=11' },
+      { id: 'u2', name: '李大華', avatar: 'https://i.pravatar.cc/150?u=22' },
+      { id: 'u3', name: '陳建志', avatar: 'https://i.pravatar.cc/150?u=33' }
     ];
 
     const INITIAL_TAGS = [
-      { id: 'tg1', name: '設備・電気' },
-      { id: 'tg2', name: '左官・タイル' },
-      { id: 'tg3', name: '消防設備' },
-      { id: 'tg4', name: '大工・木工事' }
+      { id: 'tg1', name: '水電' },
+      { id: 'tg2', name: '泥作' },
+      { id: 'tg3', name: '消防' },
+      { id: 'tg4', name: '木作' }
     ];
 
     const INITIAL_STAMPS = [
-      { id: 'st1', code: 'W-01', title: '壁からの水漏れ', description: '壁に異常な水跡や水漏れが見られます。配管または防水層の点検を依頼してください。' },
-      { id: 'st2', code: 'E-01', title: '設備干渉', description: '配管、コンセント、または照明の位置が躯体・木工事と干渉しています。図面の再検討が必要です。' },
-      { id: 'st3', code: 'F-01', title: '表面の損傷', description: '床、壁、または設備の表面に傷や破損があります。補修または交換の手配をお願いします。' }
+      { id: 'st1', code: 'W-01', title: '壁面漏水', description: '發現牆面有不正常水痕或滲漏狀況，請相關人員進行管線或防水層查驗。' },
+      { id: 'st2', code: 'E-01', title: '機電干涉', description: '管線、插座或照明位置與結構體/木作有干涉，需重新檢討圖面。' },
+      { id: 'st3', code: 'F-01', title: '表面受損', description: '地板、牆面或設備表面有刮傷或破損，需安排修補或更換。' }
     ];
 
     const INITIAL_TASKS = [
-      { id: '1', type: 'pin', title: '主寝室の配管確認', description: 'エアコンの排水管が柱と干渉しているようです。設備担当者に確認を依頼してください。', status: 'done', x: 35.5, y: 42.1, page: 1, startDate: getToday(-5), endDate: getToday(-2), assigneeId: 'u1', tagId: 'tg1', attachments: [], history: [{ date: '2026-03-25 09:00', message: 'タスク作成' }, { date: '2026-03-27 14:30', message: 'ステータスが「進行中」から「完了」に変更' }], comments: [{id: 'c1', userId: 'u2', text: 'この問題は確認済みでしょうか @田中太郎？', date: '2026-03-26 10:15'}, {id: 'c2', userId: 'u1', text: 'すでに確認し、図面を修正しました。', date: '2026-03-27 14:25'}], isLocked: true },
-      { id: '2', type: 'stamp', stampCode: 'W-01', title: '壁からの水漏れ', description: '壁に異常な水跡や水漏れが見られます。配管または防水層の点検を依頼してください。', status: 'in-progress', x: 65.2, y: 55.4, page: 1, startDate: getToday(-1), endDate: getToday(2), assigneeId: 'u2', tagId: 'tg2', attachments: [], history: [{ date: '2026-03-31 10:15', message: 'タスク作成' }, { date: '2026-04-01 08:20', message: 'ステータスが「未完了」から「進行中」に変更' }], comments: [], dependencies: ['1'], isLocked: true },
-      { id: '3', type: 'cloud', title: '壁のひび割れ補修', description: 'この範囲内の壁のひび割れを補修する必要があります。', status: 'todo', x: 10, y: 65, width: 25, height: 18, page: 1, startDate: getToday(2), endDate: getToday(5), assigneeId: 'u3', tagId: 'tg2', attachments: [], dependencies: ['2'], isInverted: false, history: [{ date: getNow(), message: 'タスク作成' }], comments: [], isLocked: true },
-      { id: '4', type: 'highlight', colorId: 'warning', title: '弱電配線の確認', description: 'この廊下の弱電ケーブルラックの配置を再確認し、十分なスペースがあるか確認してください。', status: 'done', x: 45, y: 15, width: 35, height: 10, page: 1, paths: [[{x: 0, y: 5}, {x: 15, y: 0}, {x: 25, y: 8}, {x: 35, y: 10}]], startDate: getToday(-3), endDate: getToday(0), assigneeId: 'u1', tagId: 'tg1', attachments: [], history: [{ date: getNow(), message: 'タスク作成' }], comments: [], isLocked: true },
-      { id: '5', type: 'pen', colorId: 'danger', title: '配管ルートの追加', description: 'このルートで消防配管を再配置することを推奨します。', status: 'todo', x: 20, y: 30, width: 20, height: 20, page: 1, paths: [[{x: 0, y: 0}, {x: 10, y: 5}, {x: 15, y: 15}, {x: 20, y: 20}]], startDate: getToday(), endDate: getToday(2), assigneeId: 'u2', tagId: 'tg3', attachments: [], dependencies: ['4'], history: [{ date: getNow(), message: 'タスク作成' }], comments: [], isLocked: true },
-      { id: '6', type: 'pin', title: '塗装補修', description: '角の塗装が剥がれています。', status: 'todo', x: 15, y: 40, page: 1, startDate: getToday(1), endDate: getToday(3), assigneeId: 'unassigned', tagId: 'tg2', attachments: [], history: [], comments: [], isLocked: true }
+      { id: '1', type: 'pin', title: '主臥室管線確認', description: '冷氣排水管似乎與柱子干擾，請機電人員確認。', status: 'done', x: 35.5, y: 42.1, page: 1, startDate: getToday(-5), endDate: getToday(-2), assigneeId: 'u1', tagId: 'tg1', attachments: [], history: [{ date: '2026-03-25 09:00', message: '任務建立' }, { date: '2026-03-27 14:30', message: '狀態由「進行中」變更為「已完成」' }], comments: [{id: 'c1', userId: 'u2', text: '請問這個問題有確認了嗎 @王小明？', date: '2026-03-26 10:15'}, {id: 'c2', userId: 'u1', text: '已經確認並修改圖面囉。', date: '2026-03-27 14:25'}], isLocked: true },
+      { id: '2', type: 'stamp', stampCode: 'W-01', title: '壁面漏水', description: '發現牆面有不正常水痕或滲漏狀況，請相關人員進行管線或防水層查驗。', status: 'in-progress', x: 65.2, y: 55.4, page: 1, startDate: getToday(-1), endDate: getToday(2), assigneeId: 'u2', tagId: 'tg2', attachments: [], history: [{ date: '2026-03-31 10:15', message: '任務建立' }, { date: '2026-04-01 08:20', message: '狀態由「待辦」變更為「進行中」' }], comments: [], dependencies: ['1'], isLocked: true },
+      { id: '3', type: 'cloud', title: '牆面裂縫修補', description: '此範圍內的牆面裂縫需要進行修補作業。', status: 'todo', x: 10, y: 65, width: 25, height: 18, page: 1, startDate: getToday(2), endDate: getToday(5), assigneeId: 'u3', tagId: 'tg2', attachments: [], dependencies: ['2'], isInverted: false, history: [{ date: getNow(), message: '任務建立' }], comments: [], isLocked: true },
+      { id: '4', type: 'highlight', colorId: 'warning', title: '確認弱電走線', description: '請再次確認這段走廊の弱電線槽配置，確認是否有足夠空間。', status: 'done', x: 45, y: 15, width: 35, height: 10, page: 1, paths: [[{x: 0, y: 5}, {x: 15, y: 0}, {x: 25, y: 8}, {x: 35, y: 10}]], startDate: getToday(-3), endDate: getToday(0), assigneeId: 'u1', tagId: 'tg1', attachments: [], history: [{ date: getNow(), message: '任務建立' }], comments: [], isLocked: true },
+      { id: '5', type: 'pen', colorId: 'danger', title: '新增管線路徑', description: '建議以此路線重新配置消防管線。', status: 'todo', x: 20, y: 30, width: 20, height: 20, page: 1, paths: [[{x: 0, y: 0}, {x: 10, y: 5}, {x: 15, y: 15}, {x: 20, y: 20}]], startDate: getToday(), endDate: getToday(2), assigneeId: 'u2', tagId: 'tg3', attachments: [], dependencies: ['4'], history: [{ date: getNow(), message: '任務建立' }], comments: [], isLocked: true },
+      { id: '6', type: 'pin', title: '油漆修補', description: '角落有掉漆現象。', status: 'todo', x: 15, y: 40, page: 1, startDate: getToday(1), endDate: getToday(3), assigneeId: 'unassigned', tagId: 'tg2', attachments: [], history: [], comments: [], isLocked: true }
     ];
 
     const LANGUAGES = {
@@ -368,7 +368,6 @@
         applyStamp: '套用印章',
         pleaseSetStamp: '請先設定印章！',
         deleteSelected: '刪除選取的標記 (Delete鍵)',
-        selectStamp: '選擇印章',
         // Layer menu
         layerAndFilter: '圖層與篩選',
         byStatus: '依狀態顯示',
@@ -634,7 +633,6 @@
         applyStamp: 'スタンプを適用',
         pleaseSetStamp: 'まずスタンプを設定してください！',
         deleteSelected: '選択したマーカーを削除 (Deleteキー)',
-        selectStamp: 'スタンプを選択',
         // Layer menu
         layerAndFilter: 'レイヤーとフィルター',
         byStatus: 'ステータス別表示',
@@ -900,7 +898,6 @@
         applyStamp: 'Apply Stamp',
         pleaseSetStamp: 'Please configure stamps first!',
         deleteSelected: 'Delete Selected Marker (Delete key)',
-        selectStamp: 'Select Stamp',
         // Layer menu
         layerAndFilter: 'Layers & Filters',
         byStatus: 'By Status',
@@ -1009,7 +1006,7 @@
     const INITIAL_SNAPSHOTS = [
       {
         id: 'snap_demo_1',
-        name: '2026-04-01 初回検査版',
+        name: '2026-04-01 初驗版',
         date: '2026-04-01',
         tasks: INITIAL_TASKS.map(t => ({ ...t, status: 'todo' })) 
       }
@@ -1130,18 +1127,18 @@
     function App() {
       const [appView, setAppView] = useState('blueprint'); 
       
-      const [tasks, setTasks] = useState(() => JSON.parse(JSON.stringify(INITIAL_TASKS)));
+      const [tasks, setTasks] = useState(INITIAL_TASKS);
       const [pendingDrawing, setPendingDrawing] = useState(null);
-      const [snapshots, setSnapshots] = useState(() => JSON.parse(JSON.stringify(INITIAL_SNAPSHOTS)));
+      const [snapshots, setSnapshots] = useState(INITIAL_SNAPSHOTS);
       const [activeSnapshotId, setActiveSnapshotId] = useState(null); 
       const [newSnapshotName, setNewSnapshotName] = useState('');
       
       const [pastTasks, setPastTasks] = useState([]);
       const [futureTasks, setFutureTasks] = useState([]);
 
-      const [stamps, setStamps] = useState(() => JSON.parse(JSON.stringify(INITIAL_STAMPS))); 
-      const [users, setUsers] = useState(() => JSON.parse(JSON.stringify(INITIAL_USERS))); 
-      const [tags, setTags] = useState(() => JSON.parse(JSON.stringify(INITIAL_TAGS)));
+      const [stamps, setStamps] = useState(INITIAL_STAMPS); 
+      const [users, setUsers] = useState(INITIAL_USERS); 
+      const [tags, setTags] = useState(INITIAL_TAGS);
       const [activeTaskId, setActiveTaskId] = useState(null);
       const [isOffline, setIsOffline] = useState(() => typeof navigator !== 'undefined' ? !navigator.onLine : false);
       
@@ -1154,7 +1151,6 @@
       );
       const [paletteReplaceIndex, setPaletteReplaceIndex] = useState(0);
       const [activeColor, setActiveColor] = useState(MARKER_COLORS[0]);
-      const [activeStampId, setActiveStampId] = useState(null);
 
       const [language, setLanguage] = useState('ja');
 
@@ -1277,7 +1273,7 @@
         assignees: {} 
       });
       
-      const [showLockIcons, setShowLockIcons] = useState(false);
+      const [showLockIcons, setShowLockIcons] = useState(true);
 
       const [scaleInfo, setScaleInfo] = useState({ ratio: 1, unit: 'mm', isCalibrated: false });
       const [showCalibrateModal, setShowCalibrateModal] = useState(false);
@@ -1681,8 +1677,8 @@
         });
       }, [isReadOnly]);
 
-      const activeStatesRef = useRef({ isDrawing, showTaskModal, measureResult, areaResult, showCalibrateModal, showLayerMenu, activeTaskId, showConfirmNew, showConfirmTemplate });
-      useEffect(() => { activeStatesRef.current = { isDrawing, showTaskModal, measureResult, areaResult, showCalibrateModal, showLayerMenu, activeTaskId, showConfirmNew, showConfirmTemplate }; }, [isDrawing, showTaskModal, measureResult, areaResult, showCalibrateModal, showLayerMenu, activeTaskId, showConfirmNew, showConfirmTemplate]);
+      const activeStatesRef = useRef({ isDrawing, showTaskModal, measureResult, areaResult, showCalibrateModal, showLayerMenu, activeTaskId, showConfirmNew });
+      useEffect(() => { activeStatesRef.current = { isDrawing, showTaskModal, measureResult, areaResult, showCalibrateModal, showLayerMenu, activeTaskId, showConfirmNew }; }, [isDrawing, showTaskModal, measureResult, areaResult, showCalibrateModal, showLayerMenu, activeTaskId, showConfirmNew]);
 
       useEffect(() => {
         const handleKeyDown = (e) => {
@@ -1701,7 +1697,7 @@
           }
 
           if (e.key === 'Escape') {
-            const { isDrawing: drawing, showTaskModal: modal, measureResult: mRes, areaResult: aRes, showCalibrateModal: cModal, showLayerMenu: lMenu, showConfirmNew: cNew, showConfirmTemplate: cTemplate } = activeStatesRef.current;
+            const { isDrawing: drawing, showTaskModal: modal, measureResult: mRes, areaResult: aRes, showCalibrateModal: cModal, showLayerMenu: lMenu, showConfirmNew: cNew } = activeStatesRef.current;
             if (drawing) { setIsDrawing(false); setDrawStart(null); setDrawCurrent(null); setDrawPoints([]); drawPointsRef.current = []; drawingPointerId.current = null; drawingPointerType.current = null; }
             if (modal) setShowTaskModal(false);
             if (cModal) setShowCalibrateModal(false);
@@ -1709,7 +1705,6 @@
             if (mRes) setMeasureResult(null);
             if (aRes) setAreaResult(null);
             if (cNew) setShowConfirmNew(false);
-            if (cTemplate) setShowConfirmTemplate(false);
             setContextMenu(null);
             setShowDisplaySettings(false);
             setShowAssigneeFilter(false);
@@ -2174,11 +2169,11 @@
             if (pdfDocument) {
               setCompareMode(true);
             } else {
-              alert('已載入旧版 PDF，請再載入新版 PDF 以啟動比對模式。');
+              alert('已載入舊版 PDF，請再載入新版 PDF 以啟動比對模式。');
             }
           } catch (err) {
             console.error(err);
-            alert("旧版 PDF 讀取失敗，請確認檔案格式。");
+            alert("舊版 PDF 讀取失敗，請確認檔案格式。");
           }
         };
         reader.readAsArrayBuffer(file);
@@ -2220,9 +2215,9 @@
             if (data.projectStartDate) setProjectStartDate(data.projectStartDate);
             if (data.projectEndDate) setProjectEndDate(data.projectEndDate);
             setPastTasks([]); setFutureTasks([]);
-            alert("プロジェクト読み込み成功！");
+            alert("專案讀取成功！");
           } catch (err) {
-            alert("プロジェクトファイルが壊れています！");
+            alert("專案檔案格式錯誤或已損毀！");
           }
         };
         reader.readAsText(file);
@@ -2230,7 +2225,7 @@
       };
 
       const exportToICal = () => {
-        if (filteredTasks.length === 0) return alert("エクスポート対象なし！");
+        if (filteredTasks.length === 0) return alert("目前沒有可匯出的任務！");
         let icsContent = "BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Drawing Task Manager//TW\n";
         filteredTasks.forEach(task => {
           const start = task.startDate.replace(/-/g, '');
@@ -2281,7 +2276,7 @@
       };
 
       const resetToTemplate = () => {
-        updateTasks(JSON.parse(JSON.stringify(INITIAL_TASKS)));
+        updateTasks(INITIAL_TASKS.map(t => ({ ...t })));
         setSnapshots([]);
         setPastTasks([]);
         setFutureTasks([]);
@@ -2296,9 +2291,9 @@
         setViewMode('image');
         setProjectStartDate(getToday(-7));
         setProjectEndDate(getToday(30));
-        setTags(JSON.parse(JSON.stringify(INITIAL_TAGS)));
-        setUsers(JSON.parse(JSON.stringify(INITIAL_USERS)));
-        setStamps(JSON.parse(JSON.stringify(INITIAL_STAMPS)));
+        setTags(INITIAL_TAGS);
+        setUsers(INITIAL_USERS);
+        setStamps(INITIAL_STAMPS);
         setCurrentPage(1);
         setTotalPages(1);
         setAppView('blueprint');
@@ -2363,38 +2358,15 @@
         const baseData = { type: addMode, colorId: activeColor.id, status: 'todo', startDate: getToday(), endDate: getToday(1), assigneeId: 'unassigned', tagId: 'none', attachments: [], history: [], comments: [], isLocked: true };
 
         if (addMode === 'pin') {
-          // 直接建立新任務物件，預設給予一個標題
-          const newTask = {
-            id: Date.now().toString() + Math.floor(Math.random() * 1000), // 加入亂數防止連續點擊 ID 衝突
-            x,
-            y,
-            page: currentPage,
-            title: '新圖釘標記', // 之後可以在清單中修改
-            description: '',
-            ...baseData,
-            history: [{ date: getNow(), message: '任務建立 (快速放置)' }]
-          };
-
-          // 將新任務直接存入狀態中
-          updateTasks(prev => [...prev, newTask]);
-
-          // 不關閉 addMode，也不觸發 setShowTaskModal，藉此允許連續點擊
-          drawingPointerId.current = null; 
-          drawingPointerType.current = null;
+          setNewTaskCoords({ type: 'pin', x, y, page: currentPage });
+          setFormData({ title: '', description: '', stampCode: '', ...baseData });
+          setEditingId(null); setShowTaskModal(true); setAddMode('none');
+          drawingPointerId.current = null; drawingPointerType.current = null;
         } else if (addMode === 'stamp') {
+          setNewTaskCoords({ type: 'stamp', x, y, page: currentPage });
           const selectedStamp = stamps.find(s => s.id === activeStampId) || stamps[0];
-          const newTask = {
-            id: Date.now().toString(),
-            type: 'stamp',
-            x, y, page: currentPage,
-            stampCode: selectedStamp?.code || '',
-            title: selectedStamp?.title || '',
-            description: selectedStamp?.description || '',
-            ...baseData,
-            history: [{ date: getNow(), message: 'タスク作成 (クイックスタンプ)' }]
-          };
-          updateTasks(prev => [...prev, newTask]);
-          // 不關閉 addMode，允許連續蓋章
+          setFormData({ title: selectedStamp?.title || '', description: selectedStamp?.description || '', stampCode: selectedStamp?.code || '', ...baseData });
+          setEditingId(null); setShowTaskModal(true); setAddMode('none');
           drawingPointerId.current = null; drawingPointerType.current = null;
         } else if (addMode === 'cloud' || addMode === 'measure' || addMode === 'calibrate') {
           setIsDrawing(true); setDrawStart({ x, y }); setDrawCurrent({ x, y });
@@ -2500,7 +2472,7 @@
         if (addMode === 'cloud' && drawStart && drawCurrent) {
           const width = Math.abs(drawCurrent.x - drawStart.x), height = Math.abs(drawCurrent.y - drawStart.y);
           if (width < 1 || height < 1) { setDrawStart(null); setDrawCurrent(null); return; }
-          const newTask = { id: Date.now().toString(), type: 'cloud', x: Math.min(drawStart.x, drawCurrent.x), y: Math.min(drawStart.y, drawCurrent.y), width, height, page: currentPage, isInverted: drawCurrent.x < drawStart.x, ...baseData, title: '雲狀線標記', history: [{ date: getNow(), message: 'タスク作成' }] };
+          const newTask = { id: Date.now().toString(), type: 'cloud', x: Math.min(drawStart.x, drawCurrent.x), y: Math.min(drawStart.y, drawCurrent.y), width, height, page: currentPage, isInverted: drawCurrent.x < drawStart.x, ...baseData, title: '雲狀線標記', history: [{ date: getNow(), message: '任務建立' }] };
           updateTasks([...tasks, newTask]); setActiveTaskId(newTask.id);
           setEditingId(null); setAddMode('none'); setDrawStart(null); setDrawCurrent(null);
         } 
@@ -2656,7 +2628,7 @@
           }
           updateTasks(tasks.map(t => t.id === editingId ? { ...t, ...safeData, history: newHistory } : t));
         } else {
-          const newTask = { id: Date.now().toString(), ...newTaskCoords, ...safeData, history: [{ date: getNow(), message: 'タスク作成' }] };
+          const newTask = { id: Date.now().toString(), ...newTaskCoords, ...safeData, history: [{ date: getNow(), message: '任務建立' }] };
           updateTasks([...tasks, newTask]); setActiveTaskId(newTask.id);
         }
         setShowTaskModal(false);
@@ -2679,7 +2651,7 @@
       };
 
       const handleExportCSV = () => {
-        if (filteredTasks.length === 0) return alert("エクスポート対象なし！");
+        if (filteredTasks.length === 0) return alert("目前沒有可匯出的任務資料！");
         const headers = ['任務名稱', '任務類型', '印章編號', '狀態', '工種/標籤', '經手人', '所在頁數', '開始日期', '結束日期', '照片數量', '詳細說明'];
         const rows = filteredTasks.map(task => [
           `"${task.title}"`, `"${task.type === 'stamp' ? '印章' : task.type === 'cloud' ? '雲形' : task.type === 'area' ? '面積' : task.type === 'highlight' ? '螢光筆' : task.type === 'pen' ? '色筆' : '圖釘'}"`, `"${task.stampCode || ''}"`,
@@ -2833,7 +2805,7 @@
           return;
         }
         if (filteredTasks.length === 0) {
-          alert("エクスポート対象なし！");
+          alert("目前沒有任務可匯出！");
           return;
         }
 
@@ -3117,34 +3089,6 @@
                       className="px-4 py-2 text-sm font-bold text-white bg-brand-danger rounded-md hover:bg-brand-danger/90 transition-colors shadow-sm"
                     >
                       {LANGUAGES[language].confirmNew}
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {showConfirmTemplate && (
-            <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/40 backdrop-blur-sm">
-              <div className="bg-white rounded-xl shadow-2xl w-full max-w-sm border border-gray-200 overflow-hidden">
-                <div className="p-6">
-                  <h3 className="text-lg font-black flex items-center gap-2 text-brand-warning mb-3">
-                    <AlertTriangle size={20} /> {LANGUAGES[language].confirmTemplateTitle}
-                  </h3>
-                  <p className="text-sm text-gray-600 mb-6 leading-relaxed">
-                    {LANGUAGES[language].confirmTemplateMessage}
-                  </p>
-                  <div className="flex justify-end gap-3">
-                    <button onClick={() => setShowConfirmTemplate(false)} className="px-4 py-2 text-sm font-bold text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors">
-                      {LANGUAGES[language].cancel}
-                    </button>
-                    <button 
-                      onClick={() => {
-                        resetToTemplate();
-                      }} 
-                      className="px-4 py-2 text-sm font-bold text-white bg-brand-warningDark rounded-md hover:opacity-90 transition-colors shadow-sm"
-                    >
-                      {LANGUAGES[language].confirmTemplate}
                     </button>
                   </div>
                 </div>
@@ -3553,7 +3497,7 @@
                          <li><strong>快捷鍵：</strong> 在圖面檢視時，按下 <code>1</code>~<code>6</code> 可以快速切換不同的繪圖工具。</li>
                          <li><strong>右鍵選單：</strong> 在圖面的標記上點擊右鍵，可以直接更改任務狀態或刪除。</li>
                          <li><strong>本地備份：</strong> 點擊下方選單「備份專案」，可以將目前所有設定與標記打包存入您的電腦。</li>
-                         <li><strong>顯示濾鏡：</strong> 點擊右下角設定圖示，可調整底圖亮度與対比。</li>
+                         <li><strong>顯示濾鏡：</strong> 點擊右下角設定圖示，可調整底圖亮度與對比。</li>
                        </ul>
                      </div>
                   </div>
@@ -4133,9 +4077,9 @@
                                         const targetTask = newTasks[dropIndex];
                                         
                                         if (draggedTask.assigneeId !== targetTask.assigneeId) {
-                                           const oldAssigneeName = users.find(u => u.id === draggedTask.assigneeId)?.name || '未設定';
-                                           const newAssigneeName = users.find(u => u.id === targetTask.assigneeId)?.name || '未設定';
-                                           draggedTask.history = [...(draggedTask.history || []), { date: getNow(), message: `進捗表からのドラッグで、担当者を「${oldAssigneeName}」から「${newAssigneeName}」に変更しました` }];
+                                           const oldAssigneeName = users.find(u => u.id === draggedTask.assigneeId)?.name || '未指派';
+                                           const newAssigneeName = users.find(u => u.id === targetAssigneeId)?.name || '未指派';
+                                           draggedTask.history = [...(draggedTask.history || []), { date: getNow(), message: `透過進度表拖曳，將經手人由「${oldAssigneeName}」變更為「${newAssigneeName}」` }];
                                            draggedTask.assigneeId = targetTask.assigneeId;
                                         }
 
@@ -4175,7 +4119,7 @@
                                         connectGanttTasks(ganttLinkSourceTaskId, task.id);
                                       }}
                                       className={`w-3.5 h-3.5 rounded-full border ${ganttLinkSourceTaskId === task.id ? 'bg-blue-600 border-blue-600' : 'bg-white border-gray-300 hover:bg-blue-100'} transition-all`}
-                                      title={ganttLinkSourceTaskId ? (ganttLinkSourceTaskId === task.id ? LANGUAGES[language].cancelSelectTask : LANGUAGES[language].setAsPredecessor) : LANGUAGES[language].selectAsPredecessor}
+                                      title={ganttLinkSourceTaskId ? (ganttLinkSourceTaskId === task.id ? '取消選取此任務' : '將此任務設為後續任務') : '選取此任務為前置任務'}
                                     />
                                   )}
                                   {!isReadOnly && <GripVertical size={14} className="text-gray-300 flex-shrink-0" title={LANGUAGES[language].dragToSortOrChangeAssignee} />}
@@ -4272,8 +4216,7 @@
                     onTouchMove={handleSidebarTouchMove}
                   >
                     <div className="p-4 border-b border-gray-200 flex justify-between items-center bg-white">
-                      <span className="font-bold text-sm">{LANGUAGES[language].markerList}</span>
-                      <span className="text-xs bg-gray-100 px-2 py-0.5 rounded-md font-bold border">{LANGUAGES[language].visible.replace('{n}', filteredTasks.length)}</span>
+                      <span className="font-bold text-sm">圖面標記列表</span><span className="text-xs bg-gray-100 px-2 py-0.5 rounded-md font-bold border">可見 {filteredTasks.length} 件</span>
                     </div>
                     <div className="flex-1 overflow-y-auto p-4 space-y-3">
                       {filteredTasks.map(task => (
@@ -4331,7 +4274,7 @@
                           <div className="flex items-center justify-between pt-3 border-t border-gray-100">
                             <div className="flex items-center gap-1.5">
                                <UserAvatar user={users.find(u => u.id === task.assigneeId)} />
-                               <span className="text-[11px] text-gray-600 font-medium">{users.find(u => u.id === task.assigneeId)?.name || LANGUAGES[language].unassigned}</span>
+                               <span className="text-[11px] text-gray-600 font-medium">{users.find(u => u.id === task.assigneeId)?.name || '未指派'}</span>
                             </div>
                             <div className="flex items-center gap-1.5">
                                {task.attachments && task.attachments.length > 0 && <ImageIcon size={12} className="text-gray-400" title={LANGUAGES[language].containsPhotoAttachment} />}
@@ -4344,7 +4287,33 @@
                           </div>
                         </div>
                       ))}
-                      {filteredTasks.length === 0 && <div className="text-center text-gray-400 py-10 text-sm font-medium">{LANGUAGES[language].noMarkers}</div>}
+                      {filteredTasks.length === 0 && <div className="text-center text-gray-400 py-10 text-sm font-medium">目前的圖層/條件下沒有任何標記</div>}
+                    </div>
+                  </div>
+                )}
+
+                {showConfirmTemplate && (
+                  <div className="fixed inset-0 z-[65] flex items-center justify-center bg-black/40 backdrop-blur-sm">
+                    <div className="bg-white rounded-xl shadow-2xl w-full max-w-sm border border-gray-200 overflow-hidden">
+                      <div className="p-6">
+                        <h3 className="text-lg font-black flex items-center gap-2 text-brand-danger mb-3">
+                          <AlertTriangle size={20} /> {LANGUAGES[language].confirmTemplateTitle}
+                        </h3>
+                        <p className="text-sm text-gray-600 mb-6 leading-relaxed">
+                          {LANGUAGES[language].confirmTemplateMessage}
+                        </p>
+                        <div className="flex justify-end gap-3">
+                          <button onClick={() => setShowConfirmTemplate(false)} className="px-4 py-2 text-sm font-bold text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors">
+                            {LANGUAGES[language].cancel}
+                          </button>
+                          <button 
+                            onClick={resetToTemplate} 
+                            className="px-4 py-2 text-sm font-bold text-white bg-brand-danger rounded-md hover:bg-brand-danger/90 transition-colors shadow-sm"
+                          >
+                            {LANGUAGES[language].confirmTemplate}
+                          </button>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 )}
@@ -4437,20 +4406,20 @@
                     {(addMode === 'highlight' || addMode === 'pen') && !isReadOnly && (
                       <div className="bg-white shadow-md border border-gray-200 rounded-xl px-4 py-2.5 flex flex-col gap-2.5 pointer-events-auto relative">
                         <div className="flex items-center gap-2">
-                          <span className="text-xs font-bold text-gray-500 w-8 text-right whitespace-nowrap">{LANGUAGES[language].defaultColor}:</span>
+                          <span className="text-xs font-bold text-gray-500 w-8 text-right whitespace-nowrap">預設:</span>
                           {MARKER_COLORS.map(c => (
                             <button key={c.id} onClick={(e) => { e.stopPropagation(); setActiveColor(c); }} className={`w-5 h-5 rounded-full border-2 transition-all ${activeColor.id === c.id ? 'scale-125 shadow-sm border-black' : 'border-transparent hover:scale-110'}`} style={{ backgroundColor: c.stroke }} title={c.name} />
                           ))}
                         </div>
                         <div className="flex items-center gap-2">
-                          <span className="text-xs font-bold text-gray-500 w-8 text-right whitespace-nowrap">{LANGUAGES[language].custom}:</span>
+                          <span className="text-xs font-bold text-gray-500 w-8 text-right whitespace-nowrap">自訂:</span>
                           {customPalette.map((c, idx) => (
                             <button 
                               key={`${c.id}-${idx}`} 
                               onClick={(e) => { e.stopPropagation(); if(!c.isEmpty) setActiveColor(c); }} 
                               className={`w-5 h-5 rounded-full border-2 transition-all ${!c.isEmpty && activeColor.id === c.id ? 'scale-125 shadow-sm border-black' : 'border-transparent hover:scale-110'} ${c.isEmpty ? 'border-dashed border-gray-300 cursor-default opacity-50' : ''}`} 
                               style={{ backgroundColor: c.isEmpty ? '#f9fafb' : c.stroke }} 
-                              title={c.isEmpty ? LANGUAGES[language].notSet : c.name} 
+                              title={c.isEmpty ? '尚未設定' : c.name} 
                             />
                           ))}
                           <div className="w-px h-4 bg-gray-200 ml-1" />
@@ -4459,21 +4428,6 @@
                             <input type="color" className="opacity-0 absolute inset-0 w-full h-full cursor-pointer" onChange={handleColorPick} />
                           </label>
                         </div>
-                      </div>
-                    )}
-
-                    {addMode === 'stamp' && !isReadOnly && stamps.length > 0 && (
-                      <div className="bg-white shadow-md border border-gray-200 rounded-xl px-4 py-2.5 flex items-center pointer-events-auto relative">
-                        <span className="text-xs font-bold text-gray-500 mr-2">{LANGUAGES[language].selectStamp}:</span>
-                        <select 
-                          value={activeStampId || stamps[0].id} 
-                          onChange={e => setActiveStampId(e.target.value)}
-                          className="w-48 px-2 py-1.5 border border-gray-300 rounded text-sm focus:outline-none focus:border-black font-bold cursor-pointer bg-gray-50"
-                        >
-                          {stamps.map(s => (
-                            <option key={s.id} value={s.id}>[{s.code}] {s.title}</option>
-                          ))}
-                        </select>
                       </div>
                     )}
 
@@ -4569,21 +4523,21 @@
 
                       {showDisplaySettings && (
                         <div className="absolute bottom-full left-0 mb-2 bg-white border border-gray-200 shadow-xl rounded-lg p-4 w-64 text-sm font-bold">
-                          <div className="flex items-center gap-2 mb-4 text-black"><Sun size={16}/> {LANGUAGES[language].displaySettings}</div>
+                          <div className="flex items-center gap-2 mb-4 text-black"><Sun size={16}/> 圖面顯示設定</div>
                           <div className="space-y-4">
                             <div>
-                              <div className="flex justify-between text-xs text-gray-500 mb-1"><span>{LANGUAGES[language].brightness}</span><span>{imageFilters.brightness}%</span></div>
+                              <div className="flex justify-between text-xs text-gray-500 mb-1"><span>亮度</span><span>{imageFilters.brightness}%</span></div>
                               <input type="range" min="50" max="200" value={imageFilters.brightness} onChange={e => setImageFilters({...imageFilters, brightness: e.target.value})} className="w-full accent-brand-secondary" />
                             </div>
                             <div>
-                              <div className="flex justify-between text-xs text-gray-500 mb-1"><span>{LANGUAGES[language].contrast}</span><span>{imageFilters.contrast}%</span></div>
+                              <div className="flex justify-between text-xs text-gray-500 mb-1"><span>對比度</span><span>{imageFilters.contrast}%</span></div>
                               <input type="range" min="50" max="200" value={imageFilters.contrast} onChange={e => setImageFilters({...imageFilters, contrast: e.target.value})} className="w-full accent-brand-secondary" />
                             </div>
                             <div className="flex gap-2 pt-2 border-t border-gray-100">
-                              <button onClick={()=>setImageFilters({...imageFilters, invert: !imageFilters.invert})} className={`flex-1 py-1.5 rounded text-xs border ${imageFilters.invert ? 'bg-gray-800 text-white border-gray-800' : 'bg-gray-50 text-gray-700 hover:bg-gray-100'}`}>{LANGUAGES[language].negativeInvert}</button>
-                              <button onClick={()=>setImageFilters({...imageFilters, grayscale: !imageFilters.grayscale})} className={`flex-1 py-1.5 rounded text-xs border ${imageFilters.grayscale ? 'bg-gray-400 text-white border-gray-400' : 'bg-gray-50 text-gray-700 hover:bg-gray-100'}`}>{LANGUAGES[language].grayscaleMode}</button>
+                              <button onClick={()=>setImageFilters({...imageFilters, invert: !imageFilters.invert})} className={`flex-1 py-1.5 rounded text-xs border ${imageFilters.invert ? 'bg-gray-800 text-white border-gray-800' : 'bg-gray-50 text-gray-700 hover:bg-gray-100'}`}>負片反轉</button>
+                              <button onClick={()=>setImageFilters({...imageFilters, grayscale: !imageFilters.grayscale})} className={`flex-1 py-1.5 rounded text-xs border ${imageFilters.grayscale ? 'bg-gray-400 text-white border-gray-400' : 'bg-gray-50 text-gray-700 hover:bg-gray-100'}`}>灰階模式</button>
                             </div>
-                            <button onClick={()=>setImageFilters({brightness: 100, contrast: 100, invert: false, grayscale: false})} className="w-full py-1.5 text-xs text-gray-400 hover:text-black">{LANGUAGES[language].resetDefault}</button>
+                            <button onClick={()=>setImageFilters({brightness: 100, contrast: 100, invert: false, grayscale: false})} className="w-full py-1.5 text-xs text-gray-400 hover:text-black">重設為預設值</button>
                           </div>
                         </div>
                       )}
@@ -4636,12 +4590,12 @@
                             <button type="button" onClick={() => setShowSopGuide(false)} className="text-gray-400 hover:text-gray-800"><X size={16} /></button>
                           </div>
                           <div className="space-y-2 text-xs leading-relaxed">
-                            <p className="font-semibold text-gray-800">クイックスタート</p>
-                            <p>• 左側ツールバー：タスク追加、担当者フィルター、タグとレイヤー管理。</p>
-                            <p>• 中央ワークスペース：タスクバーをドラッグしてスケジュール変更、右端をドラッグして終了日調整。</p>
-                            <p>• 上部スケール・表示設定：図面スケールの校正、明るさ・コントラストの調整。</p>
-                            <p>• 右下の拡大/縮小：全体図を素早くプレビュー。</p>
-                            <p>• オフライン保存対応。ブラウザを再起動しても続きから利用可能。</p>
+                            <p className="font-semibold text-gray-800">快速上手</p>
+                            <p>• 左側工具列：新增任務、篩選人員、管理標籤與章節。</p>
+                            <p>• 中央工作區：拖曳任務條排程，拖曳右側邊緣調整結束日期。</p>
+                            <p>• 上方比例尺與顯示設定：校正圖面比例、調整亮度/対比。</p>
+                            <p>• 右下放大 / 縮小：快速檢視整體圖面。</p>
+                            <p>• 支援離線儲存，重新開啟瀏覽器可繼續使用。</p>
                           </div>
                         </div>
                       )}
@@ -4654,22 +4608,22 @@
                           </div>
                           {isTouchDevice ? (
                             <div className="space-y-2 text-xs leading-relaxed">
-                              <p className="font-semibold text-gray-800">iPad / タッチ操作</p>
-                              <p>• タスクバーをタップ：タスクの編集・選択。</p>
-                              <p>• タスクバーをドラッグ：タスクの移動。</p>
-                              <p>• タスクバーの右端をドラッグ：終了日の調整。</p>
-                              <p>• 前置タスクをタップしてから後続タスクをタップ：Finish-to-Start 依存関係の作成。</p>
-                              <p>• 右上のX、または「ガイド」を再度タップ：説明を閉じる。</p>
+                              <p className="font-semibold text-gray-800">iPad / 觸控操作</p>
+                              <p>• 點擊任務條：開啟任務編輯或選取。</p>
+                              <p>• 拖曳任務條：移動任務日期。</p>
+                              <p>• 拖曳任務條右側邊緣：調整結束日期。</p>
+                              <p>• 先點前置任務，再點後續任務：建立 Finish-to-Start 依賴。</p>
+                              <p>• 右上 X 或再次點擊「指南」：關閉說明。</p>
                             </div>
                           ) : (
                             <div className="space-y-2 text-xs leading-relaxed">
-                              <p className="font-semibold text-gray-800">PC版ショートカットキー</p>
-                              <p>• F1 または ?：説明の表示/非表示。</p>
-                              <p>• Esc：説明を閉じる。</p>
-                              <p>• タスクバーをクリック：タスクの編集・選択。</p>
-                              <p>• タスクバーをドラッグ：タスクの移動。</p>
-                              <p>• タスクバーの右端をドラッグ：終了日の調整。</p>
-                              <p>• 前置タスクをクリックしてから後続タスクをクリック：Finish-to-Start 依存関係の作成。</p>
+                              <p className="font-semibold text-gray-800">電腦版快捷鍵</p>
+                              <p>• F1 或 ?：開啟 / 關閉說明。</p>
+                              <p>• Esc：關閉說明。</p>
+                              <p>• 點擊任務條：編輯或選取任務。</p>
+                              <p>• 拖曳任務條：移動任務日期。</p>
+                              <p>• 拖曳任務條右側邊緣：調整結束日期。</p>
+                              <p>• 先點前置任務，再點後續任務：建立 Finish-to-Start 依賴。</p>
                             </div>
                           )}
                         </div>
@@ -4690,7 +4644,7 @@
                       {viewMode === 'pdf' ? (
                         <div className="w-full h-full bg-white flex flex-col items-center justify-center text-gray-300 border border-gray-100">
                             <FileText size={24} className="mb-1" />
-                            <span className="text-[10px] font-bold">{LANGUAGES[language].pdfDrawing}</span>
+                            <span className="text-[10px] font-bold">PDF 圖紙</span>
                         </div>
                       ) : backgroundImage ? (
                         <img src={backgroundImage} alt="Minimap" className="w-full h-full object-cover opacity-60 grayscale blur-[0.5px]" draggable={false} />
@@ -4735,14 +4689,14 @@
                     <div className="bg-white shadow-sm border rounded-lg p-1.5 flex flex-col gap-1">
                       <button onClick={() => handleZoomStep(0.2)} className="p-1.5 hover:bg-gray-100 rounded text-gray-700"><Plus size={16} /></button>
                       <div className="w-full h-px bg-gray-100" />
-                      <button onClick={resetView} className="p-1.5 hover:bg-gray-100 rounded text-[10px] font-bold">{LANGUAGES[language].center}</button>
+                      <button onClick={resetView} className="p-1.5 hover:bg-gray-100 rounded text-[10px] font-bold">置中</button>
                       <div className="w-full h-px bg-gray-100" />
                       <button onClick={() => handleZoomStep(-0.2)} className="p-1.5 hover:bg-gray-100 rounded text-gray-700"><Minus size={16} /></button>
                     </div>
                   </div>
 
                   <div className="absolute origin-top-left pointer-events-none" style={{ transform: `translate3d(${pan.x}px, ${pan.y}px, 0) scale(${scale})`, width: '1200px' }}>
-                    <div className={`relative inline-block w-full bg-white ${scale > 1.5 ? 'shadow-sm' : 'shadow-2xl'} ${!isSpacePressed && !isPanning && addMode !== 'none' ? 'cursor-crosshair' : ''}`} style={{ pointerEvents: isSpacePressed || isPanning ? 'none' : 'auto', touchAction: 'none', userSelect: 'none', WebkitUserSelect: 'none' }} onPointerDown={!isSpacePressed ? handleContentPointerDown : undefined} onPointerMove={!isSpacePressed ? handleContentPointerMove : undefined} onPointerUp={!isSpacePressed ? handleContentPointerUp : undefined} onPointerLeave={!isSpacePressed ? handleContentPointerUp : undefined} onPointerCancel={!isSpacePressed ? handleContentPointerUp : undefined} onContextMenu={e => e.preventDefault()}>
+                    <div className={`relative inline-block w-full bg-white ${scale > 1.5 ? 'shadow-sm' : 'shadow-2xl'} ${!isSpacePressed && !isPanning && addMode !== 'none' ? 'cursor-crosshair' : ''}`} style={{ pointerEvents: isSpacePressed || isPanning ? 'none' : 'auto', touchAction: 'none', userSelect: 'none', WebkitUserSelect: 'none' }} onPointerDown={!isSpacePressed ? handleContentPointerDown : undefined} onPointerMove={!isSpacePressed ? handleContentPointerMove : undefined} onPointerUp={!isSpacePressed ? handleContentPointerUp : undefined} onPointerCancel={!isSpacePressed ? handleContentPointerUp : undefined}>
                       
                       <div style={filterStyle} className="w-full">
                         {isRendering && viewMode === 'pdf' && <div className="absolute inset-0 z-40 bg-white/80 backdrop-blur-sm flex items-center justify-center"><Loader2 className="w-6 h-6 animate-spin mb-3 text-black" /></div>}
@@ -4753,7 +4707,7 @@
                             <canvas ref={oldCanvasRef} className="w-full block bg-white" style={{ opacity: 0.46, filter: 'grayscale(100%) sepia(1) hue-rotate(-20deg) saturate(8) brightness(0.85)' }} />
                             <canvas ref={canvasRef} className="absolute inset-0 w-full h-full block bg-white" style={{ opacity: 0.46, filter: 'grayscale(100%) sepia(1) hue-rotate(180deg) saturate(8) brightness(0.85)' }} />
                             <div className="absolute top-3 left-3 z-30 rounded-full bg-black/60 text-white text-[11px] px-2 py-1 flex items-center gap-2">
-                              <span className="w-2 h-2 rounded-full bg-red-400" />旧版
+                              <span className="w-2 h-2 rounded-full bg-red-400" />舊版
                             </div>
                             <div className="absolute top-12 left-3 z-30 rounded-full bg-black/60 text-white text-[11px] px-2 py-1 flex items-center gap-2">
                               <span className="w-2 h-2 rounded-full bg-blue-400" />新版
@@ -4848,8 +4802,8 @@
                                 const pts = [...drawPoints, drawCurrent];
                                 let areaPx2 = 0;
                                 for (let i = 0; i < pts.length; i++) {
-                                  const j = (i + 1) % pts.length;
-                                  areaPx2 += (pts[i].x * 12) * (pts[j].y * 12) - (pts[j].x * 12) * (pts[i].y * 12);
+                                    const j = (i + 1) % pts.length;
+                                    areaPx2 += (pts[i].x * 12) * (pts[j].y * 12) - (pts[j].x * 12) * (pts[i].y * 12);
                                 }
                                 areaPx2 = Math.abs(areaPx2) / 2;
                                 return formatArea(areaPx2, scaleInfo.ratio, scaleInfo.unit, scaleInfo.isCalibrated);
@@ -4928,12 +4882,12 @@
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
               <div className="bg-white rounded-xl shadow-2xl w-full max-w-md border border-gray-200 overflow-hidden">
                 <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-white">
-                  <h3 className="text-lg font-black flex items-center gap-2 text-black"><Maximize size={18} className="text-brand-primary"/>{LANGUAGES[language].calibrateDialogTitle}</h3>
+                  <h3 className="text-lg font-black flex items-center gap-2 text-black"><Maximize size={18} className="text-brand-primary"/>設定圖面比例尺</h3>
                   <button onClick={() => setShowCalibrateModal(false)} className="text-gray-400 hover:bg-gray-100 hover:text-black transition-colors rounded p-1"><X size={18} /></button>
                 </div>
                 
                 <div className="p-6 space-y-5 bg-gray-50/50">
-                  <div className="text-xs font-bold text-gray-500 mb-2">{LANGUAGES[language].calibrateDesc.replace('...', ` (${calibrateData.logicalDist.toFixed(1)} 単位)`)}</div>
+                  <div className="text-xs font-bold text-gray-500 mb-2">系統已記錄您繪製的參考線 ({calibrateData.logicalDist.toFixed(1)} 單位)。請選擇校正方式：</div>
                   
                   <div 
                     className={`p-4 border-2 rounded-lg cursor-pointer transition-all ${calibMode === 'auto' ? 'border-brand-primary bg-brand-primary/10 shadow-sm' : 'border-gray-200 bg-white hover:border-brand-primary/40'}`} 
@@ -4943,10 +4897,10 @@
                       <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center transition-colors ${calibMode === 'auto' ? 'border-brand-primary' : 'border-gray-300'}`}>
                         {calibMode === 'auto' && <div className="w-2 h-2 bg-brand-primary rounded-full" />}
                       </div>
-                      {LANGUAGES[language].autoMode}
+                      依照線段真實長度反推
                     </label>
                     <div className="flex gap-2 pl-6">
-                      <input type="number" value={calibInput.dist} onChange={e => setCalibInput({...calibInput, dist: e.target.value})} className={INPUT_CLASS} placeholder={LANGUAGES[language].actualLength} onClick={e => setCalibMode('auto')} />
+                      <input type="number" value={calibInput.dist} onChange={e => setCalibInput({...calibInput, dist: e.target.value})} className={INPUT_CLASS} placeholder="實際長度" onClick={e => setCalibMode('auto')} />
                       <select value={calibInput.unit} onChange={e => setCalibInput({...calibInput, unit: e.target.value})} className={INPUT_CLASS} onClick={e => setCalibMode('auto')}>
                          <option value="mm">mm</option><option value="cm">cm</option><option value="m">m</option>
                       </select>
@@ -4954,9 +4908,9 @@
                     <div className="text-xs mt-3 pl-6 font-bold text-brand-primary">
                       {(()=>{
                          const val = parseFloat(calibInput.dist);
-                         if(!val) return `${LANGUAGES[language].calcRatio} (数値を入力)`;
+                         if(!val) return '換算比例: (請輸入長度)';
                          const mm = calibInput.unit === 'm' ? val * 1000 : calibInput.unit === 'cm' ? val * 10 : val;
-                         return `${LANGUAGES[language].calcRatio} 1 : ${Math.round(mm / calibrateData.logicalDist)}`;
+                         return `換算比例約 1 : ${Math.round(mm / calibrateData.logicalDist)}`;
                       })()}
                     </div>
                   </div>
@@ -4969,31 +4923,31 @@
                       <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center transition-colors ${calibMode === 'manual' ? 'border-brand-primary' : 'border-gray-300'}`}>
                         {calibMode === 'manual' && <div className="w-2 h-2 bg-brand-primary rounded-full" />}
                       </div>
-                      {LANGUAGES[language].manualMode}
+                      直接設定標準比例尺 (1:N)
                     </label>
                     <div className="flex items-center gap-3 pl-6">
                       <span className="font-bold text-lg text-gray-700">1 : </span>
-                      <input type="number" value={manualRatio} onChange={e => setManualRatio(e.target.value)} className={INPUT_CLASS} placeholder="例: 100, 200..." onClick={e => setCalibMode('manual')} />
+                      <input type="number" value={manualRatio} onChange={e => setManualRatio(e.target.value)} className={INPUT_CLASS} placeholder="如 100, 200..." onClick={e => setCalibMode('manual')} />
                     </div>
                     <div className="text-[11px] mt-2 pl-6 font-medium text-gray-500">
-                      {LANGUAGES[language].manualDesc}
+                      適用於已知圖面比例の狀況 (例如輸入 100 代表 1:100)
                     </div>
                   </div>
                 </div>
 
                 <div className="px-6 py-4 bg-white flex justify-end gap-3 border-t border-gray-200">
-                  <button onClick={() => setShowCalibrateModal(false)} className="px-4 py-2 text-sm font-bold text-gray-700 border border-gray-300 rounded-md hover:bg-gray-100 transition-colors">{LANGUAGES[language].cancel}</button>
+                  <button onClick={() => setShowCalibrateModal(false)} className="px-4 py-2 text-sm font-bold text-gray-700 border border-gray-300 rounded-md hover:bg-gray-100 transition-colors">取消</button>
                   <button 
                     onClick={() => {
                       let finalRatio = 1;
                       if (calibMode === 'auto') {
                         const val = parseFloat(calibInput.dist);
-                        if (!val || val <= 0) return alert('有効な数値を入力してください');
+                        if (!val || val <= 0) return alert('請輸入有效的實際長度');
                         const mm = calibInput.unit === 'm' ? val * 1000 : calibInput.unit === 'cm' ? val * 10 : val;
                         finalRatio = mm / calibrateData.logicalDist;
                       } else {
                         const val = parseFloat(manualRatio);
-                        if (!val || val <= 0) return alert('有効な数値を入力してください');
+                        if (!val || val <= 0) return alert('請輸入有效的比例数字');
                         finalRatio = val;
                       }
                       setScaleInfo({ ratio: finalRatio, unit: 'mm', isCalibrated: true });
@@ -5001,7 +4955,7 @@
                     }} 
                     className="px-5 py-2 text-sm font-bold text-white bg-brand-primary rounded-md hover:opacity-90 transition-colors shadow-sm"
                   >
-                    {LANGUAGES[language].saveSettings}
+                    儲存設定
                   </button>
                 </div>
               </div>
@@ -5020,11 +4974,11 @@
                 </div>
                 
                 <div className="p-6 space-y-5 overflow-y-auto bg-gray-50/30 flex-1 relative">
-                  <div className="text-xs font-bold bg-white shadow-sm border border-gray-200 px-3 py-1.5 rounded-md flex items-center gap-1.5 w-fit text-gray-700"><FileText size={14} /> {LANGUAGES[language].markerOnPage.replace('{n}', newTaskCoords?.page || currentPage)}</div>
+                  <div className="text-xs font-bold bg-white shadow-sm border border-gray-200 px-3 py-1.5 rounded-md flex items-center gap-1.5 w-fit text-gray-700"><FileText size={14} /> 標記位於： 第 {newTaskCoords?.page || currentPage} 頁</div>
                   
                   {!isReadOnly && (formData.type === 'stamp' || newTaskCoords?.type === 'stamp' || (editingId && currentDisplayTasks.find(t=>t.id===editingId)?.type === 'stamp')) && (
                     <div className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
-                      <label className="block text-sm font-bold mb-2 flex items-center gap-1.5 text-gray-800"><Stamp size={14}/> {LANGUAGES[language].quickApplyStamp}</label>
+                      <label className="block text-sm font-bold mb-2 flex items-center gap-1.5 text-gray-800"><Stamp size={14}/> 快速套用常用印章</label>
                       <select value={formData.stampCode} onChange={e => { const s = stamps.find(x => x.code === e.target.value); if(s) setFormData({...formData, stampCode: s.code, title: s.title, description: s.description}); }} className={INPUT_CLASS}>
                         {stamps.map(s => <option key={s.id} value={s.code}>[{s.code}] {s.title}</option>)}
                       </select>
@@ -5032,10 +4986,10 @@
                   )}
 
                   {!isReadOnly && (formData.type === 'highlight' || formData.type === 'pen') && (
-                    <FormField label={LANGUAGES[language].markerColor}>
+                    <FormField label="標記顏色">
                       <div className="flex flex-col gap-3">
                         <div className="flex items-center gap-2">
-                          <span className="text-xs font-bold text-gray-400 w-8">{LANGUAGES[language].defaultColor}:</span>
+                          <span className="text-xs font-bold text-gray-400 w-8">預設:</span>
                           <div className="flex gap-2.5">
                             {MARKER_COLORS.map(c => (
                               <button
@@ -5050,7 +5004,7 @@
                           </div>
                         </div>
                         <div className="flex items-center gap-2">
-                          <span className="text-xs font-bold text-gray-400 w-8">{LANGUAGES[language].custom}:</span>
+                          <span className="text-xs font-bold text-gray-400 w-8">自訂:</span>
                           <div className="flex gap-2.5">
                             {customPalette.map((c, idx) => (
                               <button
@@ -5060,7 +5014,7 @@
                                 className={`w-8 h-8 rounded-full border-2 transition-transform shadow-sm ${!c.isEmpty && formData.colorId === c.id ? 'scale-110 border-black' : 'border-transparent hover:scale-110'} ${c.isEmpty ? 'border-dashed border-gray-300 opacity-50 cursor-not-allowed' : ''}`}
                                 style={{ backgroundColor: c.isEmpty ? '#f9fafb' : c.stroke }}
                                 onClick={() => { if(!c.isEmpty) setFormData({ ...formData, colorId: c.id }) }}
-                                title={c.isEmpty ? LANGUAGES[language].notSet : c.name}
+                                title={c.isEmpty ? '尚未設定' : c.name}
                               />
                             ))}
                           </div>
@@ -5157,7 +5111,7 @@
                           />
                           {showMentionPopup && (
                             <div className="absolute bottom-full left-0 mb-2 w-48 bg-white border border-gray-200 shadow-2xl rounded-lg overflow-hidden z-50">
-                              <div className="px-2 py-1.5 bg-gray-50 border-b border-gray-100 text-[10px] font-bold text-gray-500 uppercase tracking-wider">{LANGUAGES[language].mentionPerson}</div>
+                              <div className="px-2 py-1.5 bg-gray-50 border-b border-gray-100 text-[10px] font-bold text-gray-500 uppercase tracking-wider">標記人員</div>
                               <div className="max-h-32 overflow-y-auto p-1">
                                 {users.filter(u => u.name.toLowerCase().includes(mentionFilter.toLowerCase())).map(u => (
                                   <button
@@ -5170,7 +5124,7 @@
                                   </button>
                                 ))}
                                 {users.filter(u => u.name.toLowerCase().includes(mentionFilter.toLowerCase())).length === 0 && (
-                                  <div className="text-xs text-gray-400 p-2 text-center">{LANGUAGES[language].noMatchPerson}</div>
+                                  <div className="text-xs text-gray-400 p-2 text-center">找不到相符的人員</div>
                                 )}
                               </div>
                             </div>
@@ -5189,7 +5143,7 @@
                   </div>
 
                   <div className="pt-3 border-t border-gray-200">
-                    <label className="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider flex items-center gap-1.5"><History size={14} />{LANGUAGES[language].activityLog}</label>
+                    <label className="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider flex items-center gap-1.5"><History size={14} />系統活動紀錄</label>
                     <div className="space-y-2 max-h-24 overflow-y-auto bg-white rounded border border-gray-200 p-2 shadow-sm">
                       {(formData.history || []).slice().reverse().map((h, i) => (
                         <div key={i} className="text-[11px] flex items-start gap-2 border-b border-gray-50 pb-1 mb-1 last:border-0 last:pb-0 last:mb-0">
@@ -5197,7 +5151,7 @@
                           <span className="text-gray-700 font-medium">{h.message}</span>
                         </div>
                       ))}
-                      {!(formData.history || []).length && <div className="text-xs text-gray-400 text-center py-2">{LANGUAGES[language].noLog}</div>}
+                      {!(formData.history || []).length && <div className="text-xs text-gray-400 text-center py-2">無紀錄</div>}
                     </div>
                   </div>
 
@@ -5206,17 +5160,17 @@
                   <div className="flex items-center">
                     {editingId && !isReadOnly && (
                       <a href={getGoogleCalendarUrl(formData)} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 px-3 py-2 text-sm font-bold text-blue-600 bg-blue-50 rounded-md hover:bg-blue-100 transition-colors">
-                        <CalendarPlus size={16} /> {LANGUAGES[language].addToGCal}
+                        <CalendarPlus size={16} /> 加到 Google 行事曆
                       </a>
                     )}
                   </div>
                   <div className="flex gap-3">
                       <button onClick={() => setShowTaskModal(false)} className="px-4 py-2 text-sm font-bold border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors">
-                        {isReadOnly ? LANGUAGES[language].close : LANGUAGES[language].cancel}
+                        {isReadOnly ? '關閉' : '取消'}
                       </button>
                       {!isReadOnly && (
                         <button onClick={handleSaveTask} disabled={!formData.title.trim()} className="px-5 py-2 text-sm font-bold text-white bg-brand-primary rounded-md hover:opacity-90 disabled:opacity-50 shadow-sm transition-colors">
-                          {LANGUAGES[language].saveTask}
+                          儲存任務
                         </button>
                       )}
                   </div>
