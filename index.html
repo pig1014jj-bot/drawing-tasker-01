@@ -1261,11 +1261,6 @@
       const drawPointsRef = useRef([]); // 【修復】高效能原生繪圖點陣列
       const livePolylineRef = useRef(null);
       const liveCircleRef = useRef(null);
-      // Area live-draw refs (原生 DOM 更新以降低重繪延遲)
-      const areaPointsRef = useRef([]);
-      const areaCurrentRef = useRef(null);
-      const liveAreaPolygonRef = useRef(null);
-      const liveAreaLabelRef = useRef(null);
 
       const [draggingMarker, setDraggingMarker] = useState(null);
       const markerDragInfo = useRef({ hasMoved: false });
@@ -2374,7 +2369,7 @@
             x,
             y,
             page: currentPage,
-            title: '新圖釘標記', // 之後可以在清單中修改
+            title: '新圖釘標記', // 可以依照需求改成你想要的預設標題
             description: '',
             ...baseData,
             history: [{ date: getNow(), message: '任務建立 (快速放置)' }]
@@ -2407,22 +2402,19 @@
         } else if (addMode === 'area') {
           if (!isDrawing) {
             setIsDrawing(true);
-            // 使用 refs 跳過 setState 以避免頻繁重繪
-            areaPointsRef.current = [{ x, y }];
-            areaCurrentRef.current = { x, y };
-            // 更新 live polygon
-            if (liveAreaPolygonRef.current) liveAreaPolygonRef.current.setAttribute('points', `${x},${y}`);
-            if (liveAreaLabelRef.current) { liveAreaLabelRef.current.style.display = 'none'; }
+            setDrawPoints([{ x, y }]);
+            setDrawCurrent({ x, y });
             try { e.currentTarget.setPointerCapture(e.pointerId); } catch(err){}
           } else {
-            const firstPt = areaPointsRef.current[0];
+            const firstPt = drawPoints[0];
             const dist = Math.hypot(x - firstPt.x, y - firstPt.y);
-            if (areaPointsRef.current.length >= 3 && dist < 3) {
-              const finalPoints = [...areaPointsRef.current];
+            if (drawPoints.length >= 3 && dist < 3) {
+              const finalPoints = [...drawPoints];
               const xs = finalPoints.map(p => p.x), ys = finalPoints.map(p => p.y), minX = Math.min(...xs), minY = Math.min(...ys);
               const width = Math.max(...xs) - minX, height = Math.max(...ys) - minY;
+              
               if (width < 0.5 && height < 0.5) {
-                 setIsDrawing(false); areaPointsRef.current = []; areaCurrentRef.current = null; drawingPointerId.current = null; drawingPointerType.current = null; return;
+                 setIsDrawing(false); setDrawPoints([]); setDrawCurrent(null); drawingPointerId.current = null; drawingPointerType.current = null; return;
               }
 
               let areaPx2 = 0;
@@ -2432,17 +2424,11 @@
               }
               areaPx2 = Math.abs(areaPx2) / 2;
               const areaStr = formatArea(areaPx2, scaleInfo.ratio, scaleInfo.unit, scaleInfo.isCalibrated);
-
+              
               setAreaResult({ points: finalPoints, area: areaStr });
-              setIsDrawing(false); areaPointsRef.current = []; areaCurrentRef.current = null; setAddMode('none'); drawingPointerId.current = null; drawingPointerType.current = null;
-              // 清除 live polygon/label
-              if (liveAreaPolygonRef.current) liveAreaPolygonRef.current.setAttribute('points', '');
-              if (liveAreaLabelRef.current) { liveAreaLabelRef.current.style.display = 'none'; liveAreaLabelRef.current.innerText = ''; }
+              setIsDrawing(false); setDrawPoints([]); setDrawCurrent(null); setAddMode('none'); drawingPointerId.current = null; drawingPointerType.current = null;
             } else {
-              areaPointsRef.current.push({ x, y });
-              // 更新 live polygon
-              const pts = [...areaPointsRef.current, areaCurrentRef.current].filter(Boolean).map(p => `${p.x},${p.y}`).join(' ');
-              if (liveAreaPolygonRef.current) liveAreaPolygonRef.current.setAttribute('points', pts);
+              setDrawPoints(prev => [...prev, { x, y }]);
             }
           }
         } else if (addMode === 'highlight' || addMode === 'pen') {
@@ -2485,24 +2471,7 @@
         }
 
         if ((addMode === 'cloud' || addMode === 'measure' || addMode === 'calibrate') && drawStart) setDrawCurrent({ x, y });
-        else if (addMode === 'area') {
-          // 使用 refs 更新當前位置與 DOM（避免 setState）
-          areaCurrentRef.current = { x, y };
-          const pts = [...areaPointsRef.current, areaCurrentRef.current].filter(Boolean);
-          if (liveAreaPolygonRef.current) liveAreaPolygonRef.current.setAttribute('points', pts.map(p => `${p.x},${p.y}`).join(' '));
-          if (pts.length >= 2 && liveAreaLabelRef.current) {
-            let areaPx2 = 0;
-            for (let i = 0; i < pts.length; i++) {
-              const j = (i + 1) % pts.length;
-              areaPx2 += (pts[i].x * 12) * (pts[j].y * 12) - (pts[j].x * 12) * (pts[i].y * 12);
-            }
-            areaPx2 = Math.abs(areaPx2) / 2;
-            liveAreaLabelRef.current.style.display = 'block';
-            liveAreaLabelRef.current.style.left = `calc(${areaCurrentRef.current.x}% - 50px)`;
-            liveAreaLabelRef.current.style.top = `calc(${areaCurrentRef.current.y}% - 26px)`;
-            liveAreaLabelRef.current.innerText = formatArea(areaPx2, scaleInfo.ratio, scaleInfo.unit, scaleInfo.isCalibrated);
-          }
-        }
+        else if (addMode === 'area') setDrawCurrent({ x, y });
         else if (addMode === 'highlight' || addMode === 'pen') {
           const prev = drawPointsRef.current;
           prev.push({ x, y });
