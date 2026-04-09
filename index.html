@@ -2363,24 +2363,10 @@
         const baseData = { type: addMode, colorId: activeColor.id, status: 'todo', startDate: getToday(), endDate: getToday(1), assigneeId: 'unassigned', tagId: 'none', attachments: [], history: [], comments: [], isLocked: true };
 
         if (addMode === 'pin') {
-          // 直接建立新任務物件，預設給予一個標題
-          const newTask = {
-            id: Date.now().toString() + Math.floor(Math.random() * 1000), // 加入亂數防止連續點擊 ID 衝突
-            x,
-            y,
-            page: currentPage,
-            title: '新圖釘標記', // 可以依照需求改成你想要的預設標題
-            description: '',
-            ...baseData,
-            history: [{ date: getNow(), message: '任務建立 (快速放置)' }]
-          };
-
-          // 將新任務直接存入狀態中
-          updateTasks(prev => [...prev, newTask]);
-
-          // 不關閉 addMode，也不觸發 setShowTaskModal，藉此允許連續點擊
-          drawingPointerId.current = null; 
-          drawingPointerType.current = null;
+          setNewTaskCoords({ type: 'pin', x, y, page: currentPage });
+          setFormData({ title: '', description: '', stampCode: '', ...baseData });
+          setEditingId(null); setShowTaskModal(true); setAddMode('none');
+          drawingPointerId.current = null; drawingPointerType.current = null;
         } else if (addMode === 'stamp') {
           const selectedStamp = stamps.find(s => s.id === activeStampId) || stamps[0];
           const newTask = {
@@ -4742,7 +4728,7 @@
                   </div>
 
                   <div className="absolute origin-top-left pointer-events-none" style={{ transform: `translate3d(${pan.x}px, ${pan.y}px, 0) scale(${scale})`, width: '1200px' }}>
-                    <div className={`relative inline-block w-full bg-white ${scale > 1.5 ? 'shadow-sm' : 'shadow-2xl'} ${!isSpacePressed && !isPanning && addMode !== 'none' ? 'cursor-crosshair' : ''}`} style={{ pointerEvents: isSpacePressed || isPanning ? 'none' : 'auto', touchAction: 'none', userSelect: 'none', WebkitUserSelect: 'none', WebkitTouchCallout: 'none' }} onPointerDown={!isSpacePressed ? handleContentPointerDown : undefined} onPointerMove={!isSpacePressed ? handleContentPointerMove : undefined} onPointerUp={!isSpacePressed ? handleContentPointerUp : undefined} onPointerLeave={!isSpacePressed ? handleContentPointerUp : undefined} onPointerCancel={!isSpacePressed ? handleContentPointerUp : undefined} onContextMenu={e => e.preventDefault()}>
+                    <div className={`relative inline-block w-full bg-white ${scale > 1.5 ? 'shadow-sm' : 'shadow-2xl'} ${!isSpacePressed && !isPanning && addMode !== 'none' ? 'cursor-crosshair' : ''}`} style={{ pointerEvents: isSpacePressed || isPanning ? 'none' : 'auto', touchAction: 'none', userSelect: 'none', WebkitUserSelect: 'none' }} onPointerDown={!isSpacePressed ? handleContentPointerDown : undefined} onPointerMove={!isSpacePressed ? handleContentPointerMove : undefined} onPointerUp={!isSpacePressed ? handleContentPointerUp : undefined} onPointerLeave={!isSpacePressed ? handleContentPointerUp : undefined} onPointerCancel={!isSpacePressed ? handleContentPointerUp : undefined} onContextMenu={e => e.preventDefault()}>
                       
                       <div style={filterStyle} className="w-full">
                         {isRendering && viewMode === 'pdf' && <div className="absolute inset-0 z-40 bg-white/80 backdrop-blur-sm flex items-center justify-center"><Loader2 className="w-6 h-6 animate-spin mb-3 text-black" /></div>}
