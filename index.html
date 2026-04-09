@@ -2309,6 +2309,13 @@
       const handleContentPointerDown = (e) => {
         if (isSpacePressed || e.button === 1 || e.button === 2) return;
         
+        // 💡 終極防干擾機制：徹底隔離手指與 Apple Pencil
+        // 如果目前是繪圖模式，且偵測到是「手指 (touch)」而不是「筆 (pen)」或「滑鼠 (mouse)」
+        // 則直接忽略！這樣手指就會 100% 被保留給外層做「兩指縮放」與「平移」，絕對不會再畫出多餘的點！
+        if (e.pointerType === 'touch' && (addMode === 'highlight' || addMode === 'pen' || addMode === 'cloud' || addMode === 'area' || addMode === 'measure' || addMode === 'calibrate')) {
+          return;
+        }
+
         // 使用 drawingPointerId 判斷，不受 React state 更新延遲影響
         if (drawingPointerId.current !== null && addMode !== 'area') {
           if (e.pointerType === 'pen' && drawingPointerType.current !== 'pen') {
