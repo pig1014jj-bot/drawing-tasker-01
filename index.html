@@ -2313,33 +2313,22 @@
       const handleContentPointerDown = (e) => {
         if (isSpacePressed || e.button === 1 || e.button === 2) return;
         
+        // 💡 1. 阻擋 iPad 原生滑動手勢，解決畫線變成「點點」或斷線的問題
+        if (addMode === 'highlight' || addMode === 'pen' || addMode === 'cloud') {
+          if (e.cancelable) e.preventDefault();
+        }
+
         // 使用 drawingPointerId 判斷，不受 React state 更新延遲影響
         if (drawingPointerId.current !== null && addMode !== 'area') {
           if (e.pointerType === 'pen' && drawingPointerType.current !== 'pen') {
             drawingPointerId.current = e.pointerId;
             drawingPointerType.current = 'pen';
+            setIsDrawing(true); // 💡 2. 確保 Apple Pencil 接管手掌防誤觸時，能正確重啟繪圖狀態
+
             const rect = e.currentTarget.getBoundingClientRect();
             let x = ((e.clientX - rect.left) / rect.width) * 100;
             let y = ((e.clientY - rect.top) / rect.height) * 100;
             setDrawStart({ x, y });
-            setDrawCurrent({ x, y });
-            setDrawPoints([{ x, y }]);
-            drawPointsRef.current = [{ x, y }]; 
-            
-            // 直接更新 DOM
-            if (livePolylineRef.current) {
-              livePolylineRef.current.setAttribute('points', `${x},${y}`);
-            }
-            if (liveCircleRef.current) {
-              liveCircleRef.current.setAttribute('cx', x);
-              liveCircleRef.current.setAttribute('cy', y);
-              liveCircleRef.current.setAttribute('r', addMode === 'highlight' ? "1.2" : "0.8");
-              liveCircleRef.current.style.opacity = "0.9";
-            }
-            try { e.currentTarget.setPointerCapture(e.pointerId); } catch(err){}
-          }
-          return; // 忽略其他非優先的觸控點
-        }
         
         if (showLayerMenu) setShowLayerMenu(false); 
         if (showDisplaySettings) setShowDisplaySettings(false);
